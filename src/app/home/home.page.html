@@ -7,14 +7,22 @@
 </ion-header>
 
 <ion-content>
+
   <div class="ion-padding">
     
     <!-- List of Text Items -->
-    <ion-list>
+    <ion-list class="listado-proyectos">
+
       <ion-item *ngFor="let proyecto of proyectos">
-        <ion-label> {{ proyecto.proynombre }} </ion-label>
-      </ion-item>      
+        <ion-label>
+          <p> {{ proyecto.proynombre }} </p>
+          <p> {{ proyecto.proyfechacreacion }} </p>
+          <p> {{ proyecto.proydescripcion }} </p>
+        </ion-label>
+      </ion-item>
+
     </ion-list>
 
   </div>
+
 </ion-content>

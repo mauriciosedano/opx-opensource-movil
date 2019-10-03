@@ -13,7 +13,7 @@ export class ApiRestService {
   getHeaders(){
 
     return new HttpHeaders({
-      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTcwMTEwMTQyLCJqdGkiOiI2ZDVlODQxODExOWE0MmQyYjQ4ZTI0ZjA1Y2MxZjMwOSIsInVzZXJfaWQiOiI3YWY5ZTNkNi1mN2Y3LTRiZWUtYjM0Yy1jYzJlZTI4NGFmZTcifQ.Z8-3ERx2MSLNKpZdA7MpvF54vABkG6REXNkuM8ZWwfA'
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTcwMTk4MjMwLCJqdGkiOiIxYWZlZWVjOTdhN2Q0YzFlODNiYzZhNGVkMWNjZjkyZCIsInVzZXJfaWQiOiI3YWY5ZTNkNi1mN2Y3LTRiZWUtYjM0Yy1jYzJlZTI4NGFmZTcifQ.b-87XVTa_5JOxeIEJzQN-S85nWHE0Iti4YsmV0Tw5bA'
     });
   }
 
