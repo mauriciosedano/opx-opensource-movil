@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiRestService } from './../services/api-rest.service';
 
 @Component({
@@ -9,9 +10,11 @@ import { ApiRestService } from './../services/api-rest.service';
 
 export class HomePage {
 
-  private proyectos:any;
+  private proyectos:any = [];
 
-  constructor(private api: ApiRestService) {
+  constructor(private router: Router, private api: ApiRestService) {}
+
+  ngOnInit(){
 
     this.listadoProyectos();
   }
@@ -28,6 +31,11 @@ export class HomePage {
       console.log("error")
     });
 
-  }  
+  }
+
+  detalleProyecto(id){
+    
+    this.router.navigate(['proyecto', id]);
+  }
 
 }

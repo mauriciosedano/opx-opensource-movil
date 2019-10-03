@@ -1,19 +1,13 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Proyectos
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
 
   <div class="ion-padding">
+
+    <p> {{ proyectos.length }} proyectos disponibles </p>
     
     <!-- List of Text Items -->
     <ion-list class="listado-proyectos">
 
-      <ion-item *ngFor="let proyecto of proyectos">
+      <ion-item *ngFor="let proyecto of proyectos" (click)="detalleProyecto(proyecto.proyid)">
         <ion-label>
           <p> {{ proyecto.proynombre }} </p>
           <p> {{ proyecto.proyfechacreacion }} </p>

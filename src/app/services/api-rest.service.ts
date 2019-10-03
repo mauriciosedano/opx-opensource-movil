@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 })
 export class ApiRestService {
 
-  private apiUrl = "http://localhost:7000/";
+  private apiUrl = "http://167.99.11.184:90/";
 
   constructor(private http: HttpClient) {}
 
@@ -20,5 +20,10 @@ export class ApiRestService {
   listadoProyectos(){
     
     return this.http.get(this.apiUrl + 'proyectos/list/', {headers: this.getHeaders()});    
+  }
+
+  detalleProyecto(id){
+
+    return this.http.get(this.apiUrl + 'proyectos/detail/' + id, {headers:this.getHeaders()});
   }
 }
