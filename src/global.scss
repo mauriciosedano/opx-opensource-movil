@@ -24,3 +24,69 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+// Contenido
+.content{
+
+    background: #F5F7FB;
+    height: 100vh;
+}
+
+// Tab de navegación
+ion-tab-bar{
+    background: #0CBAEF;
+    ion-tab-button{
+        background: #0CBAEF;
+        ion-icon{
+            color: #FFF !important;
+        }
+        ion-label{
+            color: #FFF;
+        }
+    }
+}
+
+app-home{
+    #cantidad-proyectos{
+        background: #FFF;
+        color: #9F9F9F;
+        padding: 1px;
+        P{
+            margin-left: 15px;
+        }
+    }
+    .proyecto{
+        background: #FFF;
+        border-radius: 10px;
+        box-shadow: 0px 2px 2px #C7C9CD;
+        margin-bottom: 10px;
+        padding: 10px;
+        h2{
+            font-size: 14pt !important;
+            //font-weight: bold !important;
+        }
+        p{
+            color: #9F9F9F;
+        }
+    }
+    .searchbar-input.sc-ion-searchbar-md{
+        box-shadow: none !important;
+    }
+}
+
+app-detalle-proyecto{
+    #detalle-proyecto{
+        background: #FFF;
+        padding: 10px;
+    }
+    #tareas{
+        padding: 10px;
+        .tarea{
+            background: #FFF;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px #C7C9CD;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    }    
+}

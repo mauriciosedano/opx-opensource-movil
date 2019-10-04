@@ -28,7 +28,7 @@ export class DetalleProyectoPage implements OnInit {
 
   detalleProyecto(id){
 
-    this.api.detalleProyecto(id).subscribe((response:any) => {
+    this.api.detalleProyecto(id).then((response:any) => {
 
       this.proyecto = response.detail.proyecto.fields;
       this.tareas = response.detail.tareas;

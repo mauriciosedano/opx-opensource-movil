@@ -5,22 +5,26 @@
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding">
+
+  <div class="content">   
+
+    <div id="detalle-proyecto">
     
-    <h1> {{ proyecto.proynombre }} </h1>  
-    <p> {{ proyecto.proydescripcion }} </p>
+      <h1> {{ proyecto.proynombre }} </h1>  
+      <p> {{ proyecto.proydescripcion }} </p>
+      
+    </div>
 
-    <h2>Tareas</h2>
+    <div id="tareas">
+        <h2>Tareas</h2>
 
-    <ion-list>
-      <ion-item *ngFor="let tarea of tareas">
-        <ion-label>
+        <div class="tarea" *ngFor="let tarea of tareas">
           {{ tarea.fields.tarenombre }}
-        </ion-label>
-      </ion-item>
-    </ion-list>
-
-    <p *ngIf="tareas.length == 0"> No hay Tareas para este proyecto </p>
+        </div>
+  
+        <p *ngIf="tareas.length == 0"> No hay Tareas para este proyecto </p>
+  
+    </div>
 
   </div>
 </ion-content>

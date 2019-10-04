@@ -1,29 +1,93 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiRestService {
 
-  private apiUrl = "http://167.99.11.184:90/";
+  private apiUrl = "http://localhost:7000/";
+  private token = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private storage: Storage) {}  
 
-  getHeaders(){
+  getHeadersQuery(){
+    
+    return new Promise((resolve, reject) => {
 
-    return new HttpHeaders({
-      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTcwMTk4MjMwLCJqdGkiOiIxYWZlZWVjOTdhN2Q0YzFlODNiYzZhNGVkMWNjZjkyZCIsInVzZXJfaWQiOiI3YWY5ZTNkNi1mN2Y3LTRiZWUtYjM0Yy1jYzJlZTI4NGFmZTcifQ.b-87XVTa_5JOxeIEJzQN-S85nWHE0Iti4YsmV0Tw5bA'
-    });
+      this.storage.get('token')
+      .then(response => {
+
+        let token = response
+        
+        let headers = {
+          Authorization: 'Bearer ' + token
+        }
+
+        console.log(response)
+        resolve(headers)
+      })
+      .catch(() => {
+
+        reject("Error");
+      });
+    });   
   }
 
-  listadoProyectos(){
-    
-    return this.http.get(this.apiUrl + 'proyectos/list/', {headers: this.getHeaders()});    
+  getHeadersAuth(){
+
+    return {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+  }
+
+  login(loginInfo:object){
+
+    let querystring = Object.keys(loginInfo).map(key => {
+
+      return key + "=" + loginInfo[key]
+    }).join('&');
+
+    return this.http.post(this.apiUrl + 'login/', querystring, {headers: this.getHeadersAuth()});
+  }
+
+  listadoProyectos(){    
+
+    return new Promise((resolve, reject) => {
+
+      this.getHeadersQuery()
+      .then((response:any) => {
+
+        this.http.get(this.apiUrl + 'proyectos/list/', {headers: new HttpHeaders(response) })
+        .subscribe(
+          (response) => {
+
+            resolve(response)
+          },
+          () => reject("error")
+        );    
+      })
+    })
+
   }
 
   detalleProyecto(id){
 
-    return this.http.get(this.apiUrl + 'proyectos/detail/' + id, {headers:this.getHeaders()});
+    return new Promise((resolve, reject) => {
+
+      this.getHeadersQuery()
+      .then((response:any) => {
+
+        this.http.get(this.apiUrl + 'proyectos/detail/' + id, {headers: new HttpHeaders(response)})
+        .subscribe(
+          (response) => {
+
+            resolve(response)
+          },
+          () => reject("error")
+        );    
+      })
+    })   
   }
 }

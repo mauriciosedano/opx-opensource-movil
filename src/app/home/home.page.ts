@@ -21,14 +21,12 @@ export class HomePage {
 
   listadoProyectos(){
 
-    this.api.listadoProyectos().subscribe(response => {
+    this.api.listadoProyectos().then(response => {
 
       this.proyectos = response;
-      console.log(this.proyectos)
     },
     () => {
 
-      console.log("error")
     });
 
   }

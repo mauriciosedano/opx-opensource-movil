@@ -1,0 +1,13 @@
+<ion-content>
+
+    <ion-item>        
+        <ion-input [(ngModel)]="loginInfo.username" type="email" placeholder="E-mail"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input [(ngModel)]="loginInfo.password" type="password" placeholder="Password"></ion-input>
+    </ion-item>
+    <div align="center">
+        <ion-button [disabled]="loginInfo.username == 0 || loginInfo.password.length == 0" (click)="login()" expand="block">Entrar</ion-button>
+    </div>
+
+</ion-content>
