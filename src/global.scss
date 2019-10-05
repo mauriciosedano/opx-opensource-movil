@@ -80,6 +80,9 @@ app-detalle-proyecto{
         padding: 10px;
     }
     #tareas{
+        h2{
+            margin-bottom: 20px;
+        }
         padding: 10px;
         .tarea{
             background: #FFF;
@@ -87,6 +90,27 @@ app-detalle-proyecto{
             box-shadow: 0px 2px 5px #C7C9CD;
             margin-bottom: 10px;
             padding: 10px;
+            h3{
+                font-size: 14pt;
+            }
         }
     }    
+}
+
+app-login{
+    #logo{
+        
+        margin-top: 50px;
+    }
+    form{
+        ion-item{
+            margin-bottom: 20px !important;
+        }
+        ion-button{
+            span{
+                text-transform: lowercase;
+            }
+        }
+    }
+    
 }

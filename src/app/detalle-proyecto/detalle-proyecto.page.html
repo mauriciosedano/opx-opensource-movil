@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+       <ion-back-button text="" icon="arrow-back"></ion-back-button>
+    </ion-buttons>
     <ion-title>Proyectos</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -16,10 +19,14 @@
     </div>
 
     <div id="tareas">
-        <h2>Tareas</h2>
+        <h2>
+          <ion-icon name="book"></ion-icon>
+          Tareas
+        </h2>
 
         <div class="tarea" *ngFor="let tarea of tareas">
-          {{ tarea.fields.tarenombre }}
+          <h3> {{ tarea.fields.tarenombre }} </h3>
+          <ion-progress-bar value="0.5"></ion-progress-bar>
         </div>
   
         <p *ngIf="tareas.length == 0"> No hay Tareas para este proyecto </p>

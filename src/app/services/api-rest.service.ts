@@ -1,16 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
+import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiRestService {
 
-  private apiUrl = "http://localhost:7000/";
+  private apiUrl = "http://167.99.11.184:90/";
   private token = '';
+  public authenticationState = new BehaviorSubject(false);
 
-  constructor(private http: HttpClient, private storage: Storage) {}  
+  constructor(private http: HttpClient, private storage: Storage, private router: Router) {}  
+
+  authenticationStateObservable(){
+
+    return this.authenticationState.asObservable();
+  }
 
   getHeadersQuery(){
     
@@ -44,12 +52,27 @@ export class ApiRestService {
 
   login(loginInfo:object){
 
-    let querystring = Object.keys(loginInfo).map(key => {
+    return new Promise((resolve, reject) => {    
 
-      return key + "=" + loginInfo[key]
-    }).join('&');
+      let querystring = Object.keys(loginInfo).map(key => {
 
-    return this.http.post(this.apiUrl + 'login/', querystring, {headers: this.getHeadersAuth()});
+        return key + "=" + loginInfo[key]
+      }).join('&');
+
+      this.http.post(this.apiUrl + 'login/', querystring, {headers: this.getHeadersAuth()}).subscribe((response:any) => {
+
+        this.storage.set('token', response.token).then(response => {
+
+          this.authenticationState.next(true);
+
+          resolve(response);
+        })       
+      },
+      response => {
+
+        reject(response)
+      });
+    });
   }
 
   listadoProyectos(){    
@@ -89,5 +112,24 @@ export class ApiRestService {
         );    
       })
     })   
+  }
+
+  logout(){
+
+    return new Promise((resolve, reject) => {
+
+      this.storage.remove('token').then(() => {
+
+        this.router.navigate(['/login']).then(() => {
+
+          resolve({});
+        })        
+        
+      })
+      .catch(() => {
+
+        reject({});
+      })
+    });   
   }
 }
