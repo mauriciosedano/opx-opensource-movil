@@ -98,15 +98,26 @@ app-detalle-proyecto{
 }
 
 app-login{
+    .login-center{
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: center;
+        padding: 15px;
+    }
     #logo{
         
-        margin-top: 50px;
+        //margin-top: 50px;
     }
     form{
         ion-item{
             margin-bottom: 20px !important;
+            ion-label{
+                color: #1ABEF0 !important;
+            }
         }
         ion-button{
+            --background: #1ABEF0 !important;
             span{
                 text-transform: lowercase;
             }
