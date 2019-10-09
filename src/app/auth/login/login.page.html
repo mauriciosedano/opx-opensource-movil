@@ -1,0 +1,48 @@
+<ion-content class="ion-padding">
+
+  <ion-img src="assets/logo.png"></ion-img>
+
+  <form #form="ngForm" (ngSubmit)="login(form)">
+
+    <ion-item lines="full">
+      <ion-label color="primary" position="floating">E-mail</ion-label>
+      <ion-icon color="primary" slot="start" name="mail"></ion-icon>
+      <ion-input type="email" clearInput name="email" (ngModel)="email"
+        pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label color="primary" position="floating">Contraseña</ion-label>
+      <ion-icon color="primary" slot="start" name="lock"></ion-icon>
+      <ion-input type="password" clearInput name="password" (ngModel)="password" required>
+      </ion-input>
+    </ion-item>
+
+    <ion-button class="ion-text-capitalize" color="primary" [disabled]="form.invalid" expand="block" type="submit">
+      Iniciar sesión
+    </ion-button>
+
+  </form>
+
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-text color="primary">
+          <p>¿Olvidaste tu contraseña?</p>
+        </ion-text>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-text class="ion-text-center">
+      <p>¿Aún no tienes cuenta? <ion-text color="primary">Registrate aquí</ion-text>
+      </p>
+    </ion-text>
+  </ion-toolbar>
+</ion-footer>

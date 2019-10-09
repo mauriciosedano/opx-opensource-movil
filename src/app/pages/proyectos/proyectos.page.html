@@ -1,0 +1,35 @@
+<ion-toolbar class="ion-padding-top">
+  <ion-searchbar animated placeholder="Buscar proyectos"></ion-searchbar>
+</ion-toolbar>
+
+<ion-content>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label color="medium" lines="full">{{proyectos.length}} proyectos disponibles</ion-label>
+          <ion-button slot="end" color="light">
+            <ion-icon slot="icon-only" name="options"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-col>
+
+
+      <ion-col size="12" *ngFor="let proyecto of proyectos" (click)="irProyecto(proyecto.proyid)">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title color="dark">{{proyecto.proynombre}}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            {{proyecto.proydescripcion}}
+            <ion-item>
+              <ion-icon name="radio-button-on" slot="start"></ion-icon>
+              <ion-label><b>Andres Mora </b> {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}}</ion-label>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
