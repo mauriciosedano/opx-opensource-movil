@@ -7,7 +7,9 @@ import { User } from '../interfaces/user';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-const URL = environment.API_URL + '/login/';
+const URL = environment.API_URL;
+// ID para el rol del invitado
+const ROLID = 'e52ec910-0f33-4f94-879f-2e83258dde0b';
 
 @Injectable({
   providedIn: 'root'
@@ -23,19 +25,33 @@ export class AuthService {
     private navCtrl: NavController
   ) { }
 
-  login(email: string, password: string) {
-    const querystring = Object.keys({ username: email, password })
+  querystring(obj: object): string {
+    return Object.keys(obj)
       .map(key => {
-        return key + '=' + { username: email, password }[key];
+        return key + '=' + obj[key];
       }).join('&');
+  }
+
+  login(email: string, password: string) {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    const querystring = this.querystring({ username: email, password });
 
-    return this.http.post(URL, querystring, { headers })
+    return this.http.post(URL + '/login/', querystring, { headers })
       .pipe(map(async (resp: any) => {
         await this.saveToken(resp.token);
         await this.saveUser(resp.user);
       }), catchError(this.handleError));
+  }
+
+  registro(userfullname: string, useremail: string, userpassword: string) {
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    const querystring = this.querystring({ userfullname, useremail, userpassword, rolid: ROLID });
+
+    return this.http.post(URL + '/usuarios/store/', querystring, { headers })
+      .pipe(catchError(this.handleError));
+
   }
 
   logout() {

@@ -29,6 +29,16 @@ export class UiService {
     toast.present();
   }
 
+  async presentToastSucess(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      position: 'top',
+      color: 'success',
+      duration: 1500
+    });
+    toast.present();
+  }
+
   async presentToastError(message: string) {
     const toast = await this.toastController.create({
       message,

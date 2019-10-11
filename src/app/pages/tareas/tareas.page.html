@@ -1,6 +1,7 @@
-<ion-header>
+<ion-header no-border>
   <ion-toolbar>
-    <ion-title>tareas</ion-title>
+    <ion-searchbar no-border (ionChange)="listarTareas($event)" showCancelButton="focus" debounce="300" animated
+      placeholder="Buscar tareas"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 

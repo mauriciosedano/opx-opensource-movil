@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ProyectosService } from 'src/app/services/proyectos.service';
-import { NavController } from '@ionic/angular';
+import { NavController, IonSearchbar } from '@ionic/angular';
 
 @Component({
   selector: 'app-proyectos',
@@ -8,6 +8,10 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./proyectos.page.scss']
 })
 export class ProyectosPage implements OnInit {
+
+  @ViewChild(IonSearchbar, { static: false }) buscador: IonSearchbar;
+
+  cargando = true;
 
   proyectos = [];
 
@@ -17,9 +21,21 @@ export class ProyectosPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.proyectosService.listadoProyectos()
+    this.listarProyectos();
+  }
+
+
+  listarProyectos(event?) {
+    this.cargando = true;
+    let valor = '';
+    if (event) {
+      valor = event.detail.value;
+    }
+
+    this.proyectosService.listadoProyectos(valor)
       .subscribe((resp: any) => {
         this.proyectos = resp;
+        this.cargando = false;
       });
   }
 

@@ -17,10 +17,14 @@ export class ProyectosService {
     private authService: AuthService
   ) { }
 
-  listadoProyectos() {
+  listadoProyectos(search?: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(URL + '/list/', { headers }).
-      pipe(catchError(this.handleError));
+    const url = search ? URL + `/list/?search=${search}` : URL + '/list/';
+
+    return this.http.get(url, { headers })
+      .pipe(map((resp: any) => {
+        return resp.proyectos;
+      }), catchError(this.handleError));
   }
 
   detalleProyecto(proyid: string) {
@@ -43,6 +47,12 @@ export class ProyectosService {
       `Backend returned code ${error.status}, ` +
       `body was: ${error.error.message}`);
     console.log(error);
+
+    console.log(error.status === 401, error.status);
+
+    if (error.status === 401) {
+      this.authService.logout();
+    }
     // return an observable with a user-facing error message
     return throwError(error.error);
   }
