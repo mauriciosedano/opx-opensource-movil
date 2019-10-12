@@ -1,6 +1,6 @@
 <ion-header no-border>
-  <ion-toolbar>
-    <ion-searchbar no-border (ionChange)="listarProyectos($event)" showCancelButton="focus" debounce="300" animated
+  <ion-toolbar color="light">
+    <ion-searchbar no-border (ionChange)="buscar($event)" showCancelButton="focus" debounce="300" animated
       placeholder="Buscar proyectos"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
@@ -14,11 +14,11 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid *ngIf="!cargando" fixed>
+  <ion-grid *ngIf="!cargando" class="ion-no-padding">
     <ion-row>
-      <ion-col *ngIf="proyectos.length > 0">
-        <ion-item>
-          <ion-label color="medium" lines="full">{{proyectos.length}}
+      <ion-col class="proyecto" *ngIf="proyectos.length > 0">
+        <ion-item lines="none">
+          <ion-label color="medium">{{proyectos.length}}
             {{proyectos.length === 1? 'proyecto disponible' : 'proyectos disponibles'}}</ion-label>
           <ion-button slot="end" color="light">
             <ion-icon slot="icon-only" name="options"></ion-icon>
@@ -34,20 +34,34 @@
           </ion-card-header>
           <ion-card-content>
             {{proyecto.proydescripcion}}
-            <ion-item>
+            <ion-item lines="none">
               <ion-icon name="radio-button-on" slot="start"></ion-icon>
-              <ion-label><b>Andres Mora </b> {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}}</ion-label>
+              <ion-label>
+                <ion-text>
+                  <p><b>Andres Mora</b>
+                    <ion-text class="ion-padding-start" color="medium">
+                      {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}} </ion-text>
+                  </p>
+                </ion-text>
+              </ion-label>
             </ion-item>
           </ion-card-content>
         </ion-card>
       </ion-col>
 
-      <ion-col size="12" *ngIf="proyectos.length===0">
-        <ion-item>
-          <ion-label color="medium" lines="full">No hay proyectos disponibles</ion-label>
+      <ion-col class="sin-proyectos" size="12" *ngIf="proyectos.length===0">
+        <ion-item lines="none">
+          <ion-label color="medium">No hay proyectos disponibles</ion-label>
         </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <!-- Infinite Scroll -->
+
+  <ion-infinite-scroll [disabled]="!enabled" threshold="150px" (ionInfinite)="incoming($event)">
+    <ion-infinite-scroll-content>
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
 </ion-content>

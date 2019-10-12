@@ -9,9 +9,9 @@ import { NavController, IonSearchbar } from '@ionic/angular';
 })
 export class ProyectosPage implements OnInit {
 
-  @ViewChild(IonSearchbar, { static: false }) buscador: IonSearchbar;
-
   cargando = true;
+  enabled = true;
+  search: string;
 
   proyectos = [];
 
@@ -21,22 +21,42 @@ export class ProyectosPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.listarProyectos();
+    this.incoming(null, true);
   }
 
-
-  listarProyectos(event?) {
+  buscar(event) {
     this.cargando = true;
-    let valor = '';
-    if (event) {
-      valor = event.detail.value;
-    }
-
-    this.proyectosService.listadoProyectos(valor)
+    this.search = event.detail.value;
+    this.proyectosService.listadoProyectos(this.search, true)
       .subscribe((resp: any) => {
-        this.proyectos = resp;
+        this.proyectos = resp.proyectos;
         this.cargando = false;
       });
+  }
+
+  refresh() {
+    // tslint:disable-next-line: deprecation
+    this.incoming(event, true);
+    this.enabled = true;
+    this.proyectos = [];
+  }
+
+  incoming(event?, pull: boolean = false) {
+    this.proyectosService.listadoProyectos(this.search, pull)
+      .subscribe(resp => {
+        this.proyectos.push(...resp.proyectos);
+        this.cargando = false;
+
+        if (resp.paginator.currentPage === resp.paginator.lastPage) {
+          this.enabled = false;
+        }
+
+        if (event) {
+          event.target.complete();
+        }
+      }, (e => {
+        this.cargando = false;
+      }));
   }
 
   irProyecto(proyid: string) {

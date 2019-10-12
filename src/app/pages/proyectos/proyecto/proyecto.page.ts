@@ -11,6 +11,7 @@ import { ProyectosService } from 'src/app/services/proyectos.service';
 export class ProyectoPage implements OnInit {
 
   proyecto = {};
+  tareas: [];
 
   constructor(
     private proyectosService: ProyectosService,
@@ -26,7 +27,8 @@ export class ProyectoPage implements OnInit {
   detalleProyecto(proyid: string) {
     this.proyectosService.detalleProyecto(proyid)
       .subscribe(resp => {
-        this.proyecto = resp;
+        this.proyecto = resp.proyecto.fields;
+        this.tareas = resp.tareas.map(t => t.fields);
       });
   }
 

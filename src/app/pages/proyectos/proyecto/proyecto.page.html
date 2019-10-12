@@ -7,12 +7,37 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-text color="dark">
-    <h1> {{proyecto.proynombre}}</h1>
-  </ion-text>
-  <ion-text color="medium">
-    <p>{{proyecto.proydescripcion}}</p>
-  </ion-text>
+<ion-content>
+
+  <!-- Descripción general del proyecto -->
+  <ion-grid class="proyecto">
+    <ion-row>
+      <ion-col size="12">
+        <ion-text color="dark">
+          <h1> {{proyecto.proynombre}}</h1>
+        </ion-text>
+        <ion-item lines="none">
+          <ion-icon name="radio-button-on" slot="start"></ion-icon>
+          <ion-label><b class="ion-padding-end">Andres Mora </b> {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}}
+          </ion-label>
+        </ion-item>
+        <ion-text color="medium">
+          <p>{{proyecto.proydescripcion}}. Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda, illum?
+            Quisquam similique maiores ducimus aspernatur soluta? Eius, a repellat placeat laborum quam sit cum officiis
+            perferendis reiciendis aliquid id maxime.</p>
+        </ion-text>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-item class="tareas" color="light" lines="none">
+    <ion-icon mode="md" name="clipboard" slot="start"></ion-icon>
+    <ion-label>
+      <ion-text>
+        <h1><b>Tareas</b></h1>
+      </ion-text>
+    </ion-label>
+  </ion-item>
+  <app-tareas [tareas]="tareas"></app-tareas>
 
 </ion-content>

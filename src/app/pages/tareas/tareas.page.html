@@ -6,5 +6,27 @@
 </ion-header>
 
 <ion-content>
+  <ion-grid *ngIf="cargando">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-spinner name="crescent"></ion-spinner>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
+  <!-- <ion-tabs>
+    <ion-tab-bar slot="top">
+      <ion-tab-button>
+        <ion-label>PENDIENTES</ion-label>
+      </ion-tab-button>
+      <ion-tab-button>
+        <ion-label>COMPLETADAS</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs> -->
+
+
+  <div *ngIf="!cargando">
+    <app-tareas id="1" [tareas]="tareas"></app-tareas>
+  </div>
 </ion-content>
