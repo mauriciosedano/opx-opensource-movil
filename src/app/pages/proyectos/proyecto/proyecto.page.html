@@ -17,8 +17,8 @@
           <h1> {{proyecto.proynombre}}</h1>
         </ion-text>
         <ion-item lines="none">
-          <ion-icon name="radio-button-on" slot="start"></ion-icon>
-          <ion-label><b class="ion-padding-end">Andres Mora </b> {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}}
+            <div slot="start" class="circle">AM</div>
+          <ion-label><b class="ion-padding-end">{{proyecto.proyectista}} </b> {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}}
           </ion-label>
         </ion-item>
         <ion-text color="medium">

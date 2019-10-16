@@ -18,8 +18,8 @@
     <ion-row>
       <ion-col class="proyecto" *ngIf="proyectos.length > 0">
         <ion-item lines="none">
-          <ion-label color="medium">{{proyectos.length}}
-            {{proyectos.length === 1? 'proyecto disponible' : 'proyectos disponibles'}}</ion-label>
+          <ion-label color="medium">{{proyectosTotales}}
+            {{proyectosTotales === 1? 'proyecto disponible' : 'proyectos disponibles'}}</ion-label>
           <ion-button slot="end" color="light">
             <ion-icon slot="icon-only" name="options"></ion-icon>
           </ion-button>
@@ -35,10 +35,10 @@
           <ion-card-content>
             {{proyecto.proydescripcion}}
             <ion-item lines="none">
-              <ion-icon name="radio-button-on" slot="start"></ion-icon>
+              <div slot="start" class="circle">{{proyecto.iniciales}}</div>
               <ion-label>
                 <ion-text>
-                  <p><b>Andres Mora</b>
+                  <p><b>{{proyecto.proyectista}}</b>
                     <ion-text class="ion-padding-start" color="medium">
                       {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}} </ion-text>
                   </p>

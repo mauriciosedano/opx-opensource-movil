@@ -1,9 +1,16 @@
 <ion-header no-border>
   <ion-toolbar>
-    <ion-title>Perfil</ion-title>
+    <ion-title>Ajustes</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button (click)="cerrarSesion()">
+        <ion-label><b>Cerrar sesión</b></ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
 </ion-content>

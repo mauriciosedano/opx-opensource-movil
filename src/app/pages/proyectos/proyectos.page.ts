@@ -14,6 +14,7 @@ export class ProyectosPage implements OnInit {
   search: string;
 
   proyectos = [];
+  proyectosTotales = 0;
 
   constructor(
     private proyectosService: ProyectosService,
@@ -45,6 +46,23 @@ export class ProyectosPage implements OnInit {
     this.proyectosService.listadoProyectos(this.search, pull)
       .subscribe(resp => {
         this.proyectos.push(...resp.proyectos);
+
+        this.proyectosTotales = resp.paginator.total;
+
+        resp.proyectos.forEach(p => {
+          const str = p.proyectista.split(' ');
+          if (str.length >= 2) {
+            let text = '';
+            for (let i = 0; i < 2; i++) {
+              text += str[i].charAt(0);
+            }
+            p.iniciales = text;
+          } else {
+            p.iniciales = p.proyectista.charAt(0);
+          }
+
+        });
+
         this.cargando = false;
 
         if (resp.paginator.currentPage === resp.paginator.lastPage) {

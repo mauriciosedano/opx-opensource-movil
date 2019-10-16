@@ -25,7 +25,8 @@ export class ProyectosService {
       this.pageProyectos = 0;
     }
     this.pageProyectos++;
-    const url = search ? URL + `/list/?page=${this.pageProyectos}&search=${search}` : URL + '/list/';
+
+    const url = search ? URL + `/list/?search=${search}` : URL + `/list/?page=${this.pageProyectos}`;
 
     return this.http.get(url, { headers })
       .pipe(map((resp: any) => {
