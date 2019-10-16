@@ -1,3 +1,4 @@
-ion-content {
-  --background: var(--ion-color-light) !important;
+ion-tab-button.tab-selected {
+  border-bottom: 2px;
+  border-bottom-style: solid;
 }

@@ -1,32 +1,37 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar color="light">
     <ion-searchbar no-border (ionChange)="listarTareas($event)" showCancelButton="focus" debounce="300" animated
       placeholder="Buscar tareas"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid *ngIf="cargando">
+
+  <!-- <ion-grid class="ion-padding">
     <ion-row>
-      <ion-col class="ion-text-center">
-        <ion-spinner name="crescent"></ion-spinner>
+      <ion-col size="6">
+        <round-progress [responsive]="true" [rounded]="true" [current]="10" [max]="100"></round-progress>
+      </ion-col>
+      <ion-col size="6" class="ion-text-center">
+        <ion-icon color="medium" name="stats"></ion-icon>
+        <ion-text color="medium">
+          <h3>Resumen</h3>
+        </ion-text>
+        <ion-text color="dark">
+          <h1>3/6 Tareas</h1>
+        </ion-text>
       </ion-col>
     </ion-row>
-  </ion-grid>
+  </ion-grid> -->
 
-  <!-- <ion-tabs>
+  <ion-tabs>
     <ion-tab-bar slot="top">
-      <ion-tab-button>
-        <ion-label>PENDIENTES</ion-label>
+      <ion-tab-button tab="pendientes">
+        <ion-label color="medium"><b>PENDIENTES</b></ion-label>
       </ion-tab-button>
-      <ion-tab-button>
-        <ion-label>COMPLETADAS</ion-label>
+      <ion-tab-button tab="completadas">
+        <ion-label color="medium"><b>COMPLETADAS</b></ion-label>
       </ion-tab-button>
     </ion-tab-bar>
-  </ion-tabs> -->
-
-
-  <div *ngIf="!cargando">
-    <app-tareas id="1" [tareas]="tareas"></app-tareas>
-  </div>
+  </ion-tabs>
 </ion-content>

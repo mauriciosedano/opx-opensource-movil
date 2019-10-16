@@ -3,5 +3,13 @@ ion-tab-button {
   --background-focused: #ff8138;
   --color: var(--ion-color-light-shade) !important;
   --color-selected: var(--ion-color-light) !important;
-  /*--ripple-color: #1e1e1e; */
+  ion-label {
+    display: none;
+  }
+}
+
+ion-tab-button.tab-selected {
+  ion-label {
+    display: block;
+  }
 }
