@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NetworkService, ConnectionStatus } from '../services/network.service';
-import { OfflineManagerService } from '../services/offline-manager.service';
+import { NetworkService, ConnectionStatus } from '../servicios/network.service';
+import { OfflineManagerService } from '../servicios/offline-manager.service';
 import { Platform } from '@ionic/angular';
 
 @Component({

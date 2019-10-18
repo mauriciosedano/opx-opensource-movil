@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ProyectosService } from 'src/app/services/proyectos.service';
+import { ProyectosService } from 'src/app/servicios/proyectos.service';
 import { NavController, IonSearchbar } from '@ionic/angular';
 
 @Component({

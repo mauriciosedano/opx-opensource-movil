@@ -17,8 +17,25 @@
           <h1> {{proyecto.proynombre}}</h1>
         </ion-text>
         <ion-item lines="none">
-            <div slot="start" class="circle">AM</div>
-          <ion-label><b class="ion-padding-end">{{proyecto.proyectista}} </b> {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}}
+          <div slot="start" class="circle">AM</div>
+          <ion-label>
+            <ion-text>
+              <ion-grid class="ion-no-padding">
+                <ion-row>
+                  <ion-col size="7">
+                    <p>
+                      <b>Nombre de prueba</b>
+                    </p>
+                  </ion-col>
+                  <ion-col size="5">
+                    <p>
+                      <ion-text class="ion-padding-start" color="medium">
+                        {{proyecto.proyfechacreacion | date: 'yyyy/MM/d'}} </ion-text>
+                    </p>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-text>
           </ion-label>
         </ion-item>
         <ion-text color="medium">

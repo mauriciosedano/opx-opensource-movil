@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Tarea } from 'src/app/interfaces/tarea';
-import { TareasService } from 'src/app/services/tareas.service';
+import { TareasService } from 'src/app/servicios/tareas.service';
 
 @Component({
   selector: 'app-pendientes',

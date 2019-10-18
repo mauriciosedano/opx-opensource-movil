@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from 'src/app/servicios/auth.service';
 import { NavController, LoadingController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
-import { UiService } from 'src/app/services/ui.service';
+import { UiService } from 'src/app/servicios/ui.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @Component({

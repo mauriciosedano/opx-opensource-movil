@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
-import { ProyectosService } from 'src/app/services/proyectos.service';
+import { ProyectosService } from 'src/app/servicios/proyectos.service';
 
 @Component({
   selector: 'app-proyecto',
@@ -27,6 +27,8 @@ export class ProyectoPage implements OnInit {
   detalleProyecto(proyid: string) {
     this.proyectosService.detalleProyecto(proyid)
       .subscribe(resp => {
+        console.log('resp', resp);
+
         this.proyecto = resp.proyecto.fields;
         this.tareas = resp.tareas.map(t => t.fields);
       });

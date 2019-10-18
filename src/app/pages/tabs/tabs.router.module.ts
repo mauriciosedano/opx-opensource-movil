@@ -47,15 +47,24 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'explorar',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../explorar/explorar.module').then(m => m.ExplorarPageModule)
+          }
+        ]
+      }, {
         path: '',
-        redirectTo: '/tabs/proyectos',
+        redirectTo: '/tabs/explorar',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/proyectos',
+    redirectTo: '/tabs/explorar',
     pathMatch: 'full'
   }
 ];

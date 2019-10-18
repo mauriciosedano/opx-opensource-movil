@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { ErrorService } from './error.service';
 
 const URL = environment.API_URL + '/proyectos';
 
@@ -16,7 +16,8 @@ export class ProyectosService {
 
   constructor(
     private http: HttpClient,
-    public authService: AuthService
+    public authService: AuthService,
+    private errorService: ErrorService
   ) { }
 
   listadoProyectos(search?: string, pull: boolean = false) {
@@ -31,7 +32,7 @@ export class ProyectosService {
     return this.http.get(url, { headers })
       .pipe(map((resp: any) => {
         return resp;
-      }), catchError(e => this.handleError(e)));
+      }), catchError(e => this.errorService.handleError(e)));
   }
 
   detalleProyecto(proyid: string) {
@@ -39,26 +40,6 @@ export class ProyectosService {
     return this.http.get(`${URL}/detail/${proyid}`, { headers })
       .pipe(map((resp: any) => {
         return resp.detail;
-      }), catchError(this.handleError));
-  }
-
-  /**
-   * Handles error
-   * @param error type `HttpErrorResponse`
-   * @returns throwError
-   */
-  private handleError(error: HttpErrorResponse) {
-    // The backend returned an unsuccessful response code.
-    // The response body may contain clues as to what went wrong,
-    console.log(
-      `Backend returned code ${error.status}, ` +
-      `body was: ${error.error.message}`);
-    console.log(error);
-
-    if (error.status === 401) {
-      this.authService.logout();
-    }
-    // return an observable with a user-facing error message
-    return throwError(error.error);
+      }), catchError(this.errorService.handleError));
   }
 }

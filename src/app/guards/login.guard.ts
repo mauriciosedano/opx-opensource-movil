@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanLoad } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../servicios/auth.service';
 import { Observable } from 'rxjs';
 
 @Injectable({
