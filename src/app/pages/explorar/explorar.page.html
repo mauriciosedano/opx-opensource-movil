@@ -1,3 +1,11 @@
 <ion-content>
   <div id="mapId"></div>
+
+  <!-- Botón flotante que actualiza la ubicación actual -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="light" (click)="actualizaUbicacion()">
+      <ion-icon color="primary" name="locate"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

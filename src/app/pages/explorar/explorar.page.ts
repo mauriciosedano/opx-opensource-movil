@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Map, latLng, tileLayer, Layer, marker } from 'leaflet';
+import { Map, latLng, tileLayer, Layer, divIcon, marker } from 'leaflet';
 
 import { ContextosService } from 'src/app/servicios/contextos.service';
+import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 
 @Component({
   selector: 'app-explorar',
@@ -13,20 +14,22 @@ export class ExplorarPage implements OnInit {
   map: Map;
   contextos = [];
 
+  marker: marker;
+
   constructor(
-    private contextosService: ContextosService
+    private contextosService: ContextosService,
+    private ubicacionService: UbicacionService
   ) { }
 
   ngOnInit() {
-    // this.listarContextos();
   }
 
   ionViewDidEnter() {
+    this.listarContextos();
     this.leafletMap();
   }
 
-  leafletMap() {
-    // In setView add latLng and zoom
+  async leafletMap() {
     this.map = new Map('mapId').setView([3.4376309, -76.5429797], 13);
 
     tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
@@ -40,10 +43,25 @@ export class ExplorarPage implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
+    await this.actualizaUbicacion();
+  }
 
-    marker([3.4376309, -76.5429797]).addTo(this.map)
-      .bindPopup('Popup de ejemplo.')
-      .openPopup();
+  actualizaUbicacion() {
+    return this.ubicacionService.obtenerUbicacionActual()
+      .then(() => {
+        if (this.marker) {
+          const latlng = latLng(
+            this.ubicacionService.ubicacionActual.latitude,
+            this.ubicacionService.ubicacionActual.longitude);
+          this.marker.setLatLng(latlng);
+        } else {
+          this.marker = marker([
+            this.ubicacionService.ubicacionActual.latitude,
+            this.ubicacionService.ubicacionActual.longitude])
+            .addTo(this.map)
+            .bindPopup('Ubicación actual.').openPopup();
+        }
+      });
   }
 
   listarContextos() {
@@ -53,8 +71,7 @@ export class ExplorarPage implements OnInit {
         this.contextos.forEach(c => {
           c.datos.forEach(d => {
             marker([d.latitud, d.longitud]).addTo(this.map)
-              .bindPopup(d.descripcion)
-              .openPopup();
+              .bindPopup(d.descripcion);
           });
         });
       });

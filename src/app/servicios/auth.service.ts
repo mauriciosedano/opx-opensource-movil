@@ -40,6 +40,7 @@ export class AuthService {
     return this.http.post(URL + '/login/', querystring, { headers })
       .pipe(map(async (resp: any) => {
         await this.saveToken(resp.token);
+        resp.user.password = password;
         await this.saveUser(resp.user);
       }), catchError(this.handleError));
   }
