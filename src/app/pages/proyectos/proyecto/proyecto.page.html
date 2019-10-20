@@ -17,7 +17,7 @@
           <h1> {{proyecto.proynombre}}</h1>
         </ion-text>
         <ion-item lines="none">
-          <div slot="start" class="circle">AM</div>
+          <div slot="start" class="circle">{{'Juan Diego' | iniciales}}</div>
           <ion-label>
             <ion-text>
               <ion-grid class="ion-no-padding">
@@ -39,9 +39,7 @@
           </ion-label>
         </ion-item>
         <ion-text color="medium">
-          <p>{{proyecto.proydescripcion}}. Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda, illum?
-            Quisquam similique maiores ducimus aspernatur soluta? Eius, a repellat placeat laborum quam sit cum officiis
-            perferendis reiciendis aliquid id maxime.</p>
+          <p>{{proyecto.proydescripcion}}</p>
         </ion-text>
       </ion-col>
     </ion-row>

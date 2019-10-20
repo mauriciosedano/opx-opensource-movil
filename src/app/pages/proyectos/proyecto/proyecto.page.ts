@@ -27,8 +27,6 @@ export class ProyectoPage implements OnInit {
   detalleProyecto(proyid: string) {
     this.proyectosService.detalleProyecto(proyid)
       .subscribe(resp => {
-        console.log('resp', resp);
-
         this.proyecto = resp.proyecto.fields;
         this.tareas = resp.tareas.map(t => t.fields);
       });

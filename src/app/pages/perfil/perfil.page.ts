@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/servicios/auth.service';
 })
 export class PerfilPage implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(public authService: AuthService) { }
 
   ngOnInit() {
   }

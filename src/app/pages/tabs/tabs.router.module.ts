@@ -28,7 +28,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'ajustes',
+        path: 'perfil',
         children: [
           {
             path: '',

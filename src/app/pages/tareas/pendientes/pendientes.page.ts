@@ -34,12 +34,12 @@ export class PendientesPage implements OnInit {
   incoming(event?, pull: boolean = false) {
     this.tareasService.listadoTareas(this.search, pull)
       .subscribe(resp => {
-        this.tareas.push(...resp);
+        this.tareas.push(...resp.tareas);
         this.cargando = false;
 
-        /* if (resp.paginator.currentPage === resp.paginator.lastPage) {
+        if (resp.paginator.currentPage === resp.paginator.lastPage) {
           this.enabled = false;
-        } */
+        }
 
         if (event) {
           event.target.complete();

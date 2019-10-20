@@ -1,16 +1,59 @@
-<ion-header no-border>
-  <ion-toolbar>
-    <ion-title>Ajustes</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
 
-  <ion-tabs>
-    <ion-tab-bar slot="bottom">
-      <ion-tab-button (click)="cerrarSesion()">
-        <ion-label><b>Cerrar sesión</b></ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
+  <ion-item lines="none" class="ion-padding-top">
+    <div class="circulo">{{authService.user.name | iniciales}}</div>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label>
+      <ion-text class="ion-text-center" color="dark">
+        <h1>{{authService.user.name}}</h1>
+      </ion-text>
+      <ion-text class="ion-text-center" color="medium">
+        <h3><b>{{authService.user.rol | uppercase }}</b></h3>
+      </ion-text>
+    </ion-label>
+  </ion-item>
+
+  <ion-list>
+    <ion-item-divider>
+      <ion-label> CUENTA </ion-label>
+    </ion-item-divider>
+
+    <ion-item>
+      <ion-icon slot="start" name="mail"></ion-icon>
+      <ion-label>Correo Electrónico</ion-label>
+      <ion-input slot="end" type="email" readonly name="email" [(ngModel)]="authService.user.email"></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-icon slot="start" name="lock"></ion-icon>
+      <ion-label>Contraseña</ion-label>
+      <ion-input slot="end" type="password" readonly name="password" [(ngModel)]="authService.user.password">
+      </ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-icon slot="start" name="phone-portrait"></ion-icon>
+      <ion-label>Telefono</ion-label>
+    </ion-item>
+    <ion-item lines="full" (click)="cerrarSesion()" detail>
+      <ion-icon slot="start" name="log-out"></ion-icon>
+      <ion-label>Cerrar Sesión</ion-label>
+    </ion-item>
+
+    <ion-item-divider>
+      <ion-label> ACERCA DE </ion-label>
+    </ion-item-divider>
+
+    <ion-item lines="full">
+      <ion-icon slot="start" name="help-circle-outline"></ion-icon>
+      <ion-label>Ayuda</ion-label>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-icon slot="start" name="lock"></ion-icon>
+      <ion-label>Privacidad</ion-label>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-icon slot="start" name="copy"></ion-icon>
+      <ion-label>Condiciones Del Servicio</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

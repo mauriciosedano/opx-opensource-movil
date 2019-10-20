@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProyectosService } from 'src/app/servicios/proyectos.service';
-import { NavController, IonSearchbar } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-proyectos',
@@ -49,32 +49,16 @@ export class ProyectosPage implements OnInit {
 
         this.proyectosTotales = resp.paginator.total;
 
-        resp.proyectos.forEach(p => {
-          const str = p.proyectista.split(' ');
-          if (str.length >= 2) {
-            let text = '';
-            for (let i = 0; i < 2; i++) {
-              text += str[i].charAt(0);
-            }
-            p.iniciales = text;
-          } else {
-            p.iniciales = p.proyectista.charAt(0);
-          }
-
-        });
-
-        this.cargando = false;
-
         if (resp.paginator.currentPage === resp.paginator.lastPage) {
           this.enabled = false;
         }
 
+        this.cargando = false;
+
         if (event) {
           event.target.complete();
         }
-      }, (e => {
-        this.cargando = false;
-      }));
+      }, (() => this.cargando = false));
   }
 
   irProyecto(proyid: string) {
