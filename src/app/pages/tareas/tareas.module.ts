@@ -7,21 +7,15 @@ import { RoundProgressModule } from 'angular-svg-round-progressbar';
 import { IonicModule } from '@ionic/angular';
 
 import { TareasPage } from './tareas.page';
+import { ComponentesModule } from 'src/app/componentes/componentes.module';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'pendientes'
+    component: TareasPage
   }, {
-    path: '',
-    component: TareasPage,
-    children: [{
-      path: 'pendientes',
-      loadChildren: () => import('./pendientes/pendientes.module').then(m => m.PendientesPageModule)
-    }, {
-      path: 'completadas',
-      loadChildren: () => import('./completadas/completadas.module').then(m => m.CompletadasPageModule)
-    }]
+    path: 't',
+    loadChildren: () => import('./tarea/tarea.module').then(m => m.TareaPageModule)
   }
 ];
 
@@ -31,7 +25,9 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    RoundProgressModule],
+    RoundProgressModule,
+    ComponentesModule
+  ],
   declarations: [TareasPage]
 })
 export class TareasPageModule { }

@@ -7,14 +7,14 @@
     <ion-item lines="full">
       <ion-label color="primary" position="floating">Nombre completo</ion-label>
       <ion-icon color="primary" slot="start" name="mail"></ion-icon>
-      <ion-input type="text" clearInput name="userfullname" (ngModel)="userfullname" required>
+      <ion-input type="text" clearInput name="userfullname" ngModel required>
       </ion-input>
     </ion-item>
 
     <ion-item lines="full">
       <ion-label color="primary" position="floating">E-mail</ion-label>
       <ion-icon color="primary" slot="start" name="mail"></ion-icon>
-      <ion-input type="email" clearInput name="useremail" (ngModel)="useremail"
+      <ion-input type="email" clearInput name="useremail" ngModel
         pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" required>
       </ion-input>
     </ion-item>
@@ -22,7 +22,7 @@
     <ion-item lines="full">
       <ion-label color="primary" position="floating">Contraseña</ion-label>
       <ion-icon color="primary" slot="start" name="lock"></ion-icon>
-      <ion-input type="password" clearInput name="userpassword" (ngModel)="userpassword" required>
+      <ion-input type="password" clearInput name="userpassword" ngModel required>
       </ion-input>
     </ion-item>
 

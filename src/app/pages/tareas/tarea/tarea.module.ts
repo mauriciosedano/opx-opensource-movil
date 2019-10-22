@@ -5,24 +5,24 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CompletadasPage } from './completadas.page';
-import { ComponentesModule } from 'src/app/componentes/componentes.module';
+import { TareaPage } from './tarea.page';
+import { EncuestaComponent } from './encuesta/encuesta.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: CompletadasPage
+    component: TareaPage
   }
 ];
 
 @NgModule({
+  entryComponents: [EncuestaComponent],
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes),
-    ComponentesModule
+    RouterModule.forChild(routes)
   ],
-  declarations: [CompletadasPage]
+  declarations: [TareaPage, EncuestaComponent]
 })
-export class CompletadasPageModule { }
+export class TareaPageModule { }

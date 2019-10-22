@@ -17,7 +17,7 @@ const ROLID = 'e52ec910-0f33-4f94-879f-2e83258dde0b';
 export class AuthService {
 
   token: string = null;
-  private user: User;
+  public user: User;
 
   constructor(
     private http: HttpClient,

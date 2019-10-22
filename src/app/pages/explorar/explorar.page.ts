@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Map, latLng, tileLayer, Layer, divIcon, marker } from 'leaflet';
+import { Map, latLng, tileLayer, Layer, divIcon, icon, marker } from 'leaflet';
 
 import { ContextosService } from 'src/app/servicios/contextos.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-explorar',
@@ -18,7 +19,8 @@ export class ExplorarPage implements OnInit {
 
   constructor(
     private contextosService: ContextosService,
-    private ubicacionService: UbicacionService
+    private ubicacionService: UbicacionService,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() {
@@ -49,17 +51,22 @@ export class ExplorarPage implements OnInit {
   actualizaUbicacion() {
     return this.ubicacionService.obtenerUbicacionActual()
       .then(() => {
+
+        const lat = this.ubicacionService.ubicacionActual.latitude;
+        const long = this.ubicacionService.ubicacionActual.longitude;
+
         if (this.marker) {
-          const latlng = latLng(
-            this.ubicacionService.ubicacionActual.latitude,
-            this.ubicacionService.ubicacionActual.longitude);
-          this.marker.setLatLng(latlng);
-        } else {
-          this.marker = marker([
-            this.ubicacionService.ubicacionActual.latitude,
-            this.ubicacionService.ubicacionActual.longitude])
+          this.map.removeLayer(this.marker);
+          const latlng = latLng(lat, long);
+          this.marker.setLatLng(latlng)
             .addTo(this.map)
             .bindPopup('Ubicación actual.').openPopup();
+          this.map.setView([lat, long]);
+        } else {
+          this.marker = marker([lat, long])
+            .addTo(this.map)
+            .bindPopup('Ubicación actual.').openPopup();
+          this.map.setView([lat, long]);
         }
       });
   }
@@ -69,9 +76,13 @@ export class ExplorarPage implements OnInit {
       .subscribe(resp => {
         this.contextos = resp;
         this.contextos.forEach(c => {
+
+          const customMarkerIcon = icon({ iconUrl: 'assets/icon/tarea.png', iconSize: [32, 32] });
+
           c.datos.forEach(d => {
-            marker([d.latitud, d.longitud]).addTo(this.map)
-              .bindPopup(d.descripcion);
+            marker([d.latitud, d.longitud], { icon: customMarkerIcon }).addTo(this.map)
+              .bindPopup(`<b>${d.descripcion}</b>`, { autoClose: false })
+              .on('click', () => this.navCtrl.navigateForward('/tabs/tareas/t', { animated: true }));
           });
         });
       });

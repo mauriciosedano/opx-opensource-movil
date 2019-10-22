@@ -1,0 +1,21 @@
+ion-content {
+  --background: var(--ion-color-light) !important;
+}
+
+ion-list-header,
+ion-item {
+  --background: var(--ion-color-light) !important;
+}
+
+ion-radio-group {
+  ion-item {
+    --color: var(--ion-color-medium) !important;
+  }
+}
+
+.mainSlide {
+  height: 92%;
+  ion-slide {
+    height: 40%;
+  }
+}

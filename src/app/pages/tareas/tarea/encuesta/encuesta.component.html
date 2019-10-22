@@ -1,0 +1,78 @@
+<ion-header no-border>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="regresar()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item lines="none">
+    <ion-label>
+      <ion-text color="medium">
+        <h2><b>Encuesta</b></h2>
+      </ion-text>
+    </ion-label>
+    <ion-label slot="end">
+      <ion-text class="ion-text-end" color="medium">
+        <h2><b>{{slideActiveIndex + 1}}/{{slideLength}}</b></h2>
+      </ion-text>
+    </ion-label>
+  </ion-item>
+
+  <ion-slides class="ion-no-padding" scrollbar="md" class="mainSlide" #slidePrincipal>
+    <ion-slide *ngFor="let item of [1,1,1,1]">
+      <form (ngSubmit)="encuenta( fEncuesta )" #fEncuesta="ngForm">
+
+        <ion-list class="ion-no-padding">
+          <ion-radio-group>
+            <ion-list-header>
+              <ion-text class="ion-text-start">
+                <h1>¿Lorem ipsum, dolor sit amet consectetur adipisicing elit?</h1>
+              </ion-text>
+
+            </ion-list-header>
+
+            <ion-item lines="none">
+              <ion-label>Biff</ion-label>
+              <ion-radio slot="start" value="biff" checked></ion-radio>
+            </ion-item>
+
+            <ion-item lines="none">
+              <ion-label>Griff</ion-label>
+              <ion-radio slot="start" value="griff"></ion-radio>
+            </ion-item>
+
+            <ion-item lines="none">
+              <ion-label>Buford</ion-label>
+              <ion-radio slot="start" value="buford"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-list>
+      </form>
+    </ion-slide>
+  </ion-slides>
+
+</ion-content>
+
+<ion-footer no-border>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col>
+        <ion-button [disabled]="0 === slideActiveIndex" expand="full" color="primary" (click)="anterior()">
+          Anterior
+        </ion-button>
+      </ion-col>
+
+      <ion-col>
+        <ion-button [disabled]="slideLength === slideActiveIndex + 1" expand="full" color="primary"
+          (click)="siguiente()">
+          Siguiente
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

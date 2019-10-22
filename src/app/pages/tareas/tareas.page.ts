@@ -9,8 +9,46 @@ import { TareasService } from 'src/app/servicios/tareas.service';
 })
 export class TareasPage implements OnInit {
 
+  cargando = true;
+  enabled = true;
+  search: string;
+
+  tareas: Tarea[] = [];
+
   constructor(private tareasService: TareasService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.incoming(null, true);
+  }
+
+  buscar(event) {
+    this.cargando = true;
+    this.search = event.detail.value;
+    this.tareasService.listadoTareas(this.search, true)
+      .subscribe((resp: any) => {
+        this.tareas = resp.tareas;
+        this.cargando = false;
+      });
+  }
+
+  incoming(event?, pull: boolean = false) {
+    this.tareasService.listadoTareas(this.search, pull)
+      .subscribe(resp => {
+        this.tareas.push(...resp.tareas);
+        this.cargando = false;
+
+        if (resp.paginator.currentPage === resp.paginator.lastPage) {
+          this.enabled = false;
+        }
+
+        if (event) {
+          event.target.complete();
+        }
+      }, (e => {
+        this.cargando = false;
+      }));
+  }
+
+  
 
 }

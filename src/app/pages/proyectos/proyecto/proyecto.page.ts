@@ -10,7 +10,7 @@ import { ProyectosService } from 'src/app/servicios/proyectos.service';
 })
 export class ProyectoPage implements OnInit {
 
-  proyecto = {};
+  proyecto: any = {};
   tareas: [];
 
   constructor(
