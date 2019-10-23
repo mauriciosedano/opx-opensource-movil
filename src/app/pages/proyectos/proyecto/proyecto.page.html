@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="proyecto">
 
   <!-- Descripción general del proyecto -->
   <ion-grid class="proyecto" *ngIf="!cargando">

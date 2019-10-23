@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProyectosService } from 'src/app/servicios/proyectos.service';
 import { NavController } from '@ionic/angular';
+import { Proyecto } from 'src/app/interfaces/proyecto';
 
 @Component({
   selector: 'app-proyectos',
@@ -13,7 +14,7 @@ export class ProyectosPage implements OnInit {
   enabled = true;
   search: string;
 
-  proyectos = [];
+  proyectos: Proyecto[] = [];
   proyectosTotales = 0;
 
   constructor(

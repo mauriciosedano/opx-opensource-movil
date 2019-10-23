@@ -27,26 +27,44 @@ export class ProyectosService {
     private dataLocalService: DataLocalService
   ) { }
 
+  /**
+   * Carga la lista de proyectos.
+   * Se está Online consulta en el servidor remoto, de lo contario hace una consulta local
+   * @param search palabra clave
+   * @param pull bandera para traer nueva página. Es usada solo en modo Online
+   */
   listadoProyectos(search?: string, pull: boolean = false) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    if (pull) {
-      this.pageProyectos = 0;
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.listarProyectos(search));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      if (pull) {
+        this.pageProyectos = 0;
+      }
+      this.pageProyectos++;
+
+      const url = search ? URL + `/list/?search=${search}` : URL + `/list/?page=${this.pageProyectos}`;
+
+      return this.http.get(url, { headers })
+        .pipe(map((resp: any) => {
+          if (!search) {
+            this.dataLocalService.guardarProyectos(resp.proyectos, pull, search);
+          }
+          return resp;
+        }), catchError(e => this.errorService.handleError(e)));
     }
-    this.pageProyectos++;
-
-    const url = search ? URL + `/list/?search=${search}` : URL + `/list/?page=${this.pageProyectos}`;
-
-    return this.http.get(url, { headers })
-      .pipe(map((resp: any) => {
-        return resp;
-      }), catchError(e => this.errorService.handleError(e)));
   }
 
   detalleProyecto(proyid: string) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/detail/${proyid}`, { headers })
-      .pipe(map((resp: any) => {
-        return resp.detail;
-      }), catchError(this.errorService.handleError));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.detalleProyecto(proyid));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      return this.http.get(`${URL}/detail/${proyid}`, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarDetalleProyecto(resp.detail);
+          return resp.detail;
+        }), catchError(this.errorService.handleError));
+    }
   }
 }

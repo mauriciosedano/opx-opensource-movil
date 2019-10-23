@@ -52,7 +52,7 @@ export class NetworkService {
       message: `Estas ${connection}`,
       duration: 3000,
       position: 'bottom',
-      color: ConnectionStatus.Offline ? 'danger' : 'success'
+      color: status === ConnectionStatus.Offline ? 'danger' : 'success'
     });
     toast.then(t => t.present());
   }

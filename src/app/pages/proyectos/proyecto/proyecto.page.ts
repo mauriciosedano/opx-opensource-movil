@@ -29,8 +29,13 @@ export class ProyectoPage implements OnInit {
   detalleProyecto(proyid: string) {
     this.proyectosService.detalleProyecto(proyid)
       .subscribe(resp => {
-        this.proyecto = resp.proyecto.fields;
-        this.tareas = resp.tareas.map(t => t.fields);
+        if (resp) {
+          this.proyecto = resp.proyecto.fields;
+          this.tareas = resp.tareas.map(t => t.fields);
+        } else {
+          this.proyecto = undefined;
+          this.navCtrl.back();
+        }
         this.cargando = false;
       });
   }
