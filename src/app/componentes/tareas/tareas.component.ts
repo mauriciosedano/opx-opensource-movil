@@ -8,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class TareasComponent implements OnInit {
 
   @Input() tareas: [] = [];
+  @Input() cargando = true;
 
   constructor() { }
 

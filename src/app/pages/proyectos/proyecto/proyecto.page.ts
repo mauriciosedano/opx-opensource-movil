@@ -13,6 +13,8 @@ export class ProyectoPage implements OnInit {
   proyecto: any = {};
   tareas: [];
 
+  cargando = true;
+
   constructor(
     private proyectosService: ProyectosService,
     private activatedRoute: ActivatedRoute,
@@ -29,6 +31,7 @@ export class ProyectoPage implements OnInit {
       .subscribe(resp => {
         this.proyecto = resp.proyecto.fields;
         this.tareas = resp.tareas.map(t => t.fields);
+        this.cargando = false;
       });
   }
 

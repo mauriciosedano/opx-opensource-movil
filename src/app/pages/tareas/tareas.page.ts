@@ -48,7 +48,4 @@ export class TareasPage implements OnInit {
         this.cargando = false;
       }));
   }
-
-  
-
 }
