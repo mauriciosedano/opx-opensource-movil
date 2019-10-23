@@ -44,7 +44,7 @@ export class OfflineManagerService {
             })
           );
         } else {
-          console.log('no local events to sync');
+          console.log('No local events to sync');
           return of(false);
         }
       })

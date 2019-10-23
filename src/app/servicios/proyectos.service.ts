@@ -4,6 +4,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { catchError, map } from 'rxjs/operators';
 import { ErrorService } from './error.service';
+import { OfflineManagerService } from './offline-manager.service';
+import { NetworkService, ConnectionStatus } from './network.service';
+import { DataLocalService } from './data-local.service';
+import { from } from 'rxjs';
 
 const URL = environment.API_URL + '/proyectos';
 
@@ -17,7 +21,10 @@ export class ProyectosService {
   constructor(
     private http: HttpClient,
     public authService: AuthService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private offlineManager: OfflineManagerService,
+    private networkService: NetworkService,
+    private dataLocalService: DataLocalService
   ) { }
 
   listadoProyectos(search?: string, pull: boolean = false) {
