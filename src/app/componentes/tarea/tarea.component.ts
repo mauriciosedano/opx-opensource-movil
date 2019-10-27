@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import { Tarea } from 'src/app/interfaces/tarea';
 
 @Component({
   selector: 'app-tarea',
@@ -8,14 +9,14 @@ import { NavController } from '@ionic/angular';
 })
 export class TareaComponent implements OnInit {
 
-  @Input() tarea: any = {};
+  @Input() tarea: Tarea;
 
   constructor(private navCtrl: NavController) { }
 
   ngOnInit() { }
 
   click() {
-    this.navCtrl.navigateForward('/tabs/tareas/t', { animated: true });
+    this.navCtrl.navigateForward(`/tabs/tareas/t/${this.tarea.tareid}`, { animated: true });
   }
 
 }

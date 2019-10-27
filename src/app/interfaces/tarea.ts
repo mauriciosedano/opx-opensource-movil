@@ -2,9 +2,16 @@ export interface Tarea {
     tareid: string;
     tarenombre: string;
     taretipo: number;
+    tarerestricgeo: any;
     tarerestriccant: number;
+    tarerestrictime: any;
     instrid: string;
-    instrnombre: string;
     proyid: string;
-    proynombre: string;
+    instrnombre: string;
+    dimensionid: string;
+    geojson_subconjunto: string;
+    geoJS_subconjunto: Object;
+    tarefechacreacion: Date;
+    tarefechaejecucion: Date;
+    taredescripcion: string;
 }

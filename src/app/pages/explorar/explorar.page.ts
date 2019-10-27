@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Map, latLng, tileLayer, Layer, divIcon, icon, marker } from 'leaflet';
+import { Map, latLng, tileLayer, Layer, divIcon, icon, marker, geoJSON } from 'leaflet';
 
-import { ContextosService } from 'src/app/servicios/contextos.service';
+import { TareasService } from 'src/app/servicios/tareas.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { NavController } from '@ionic/angular';
 
@@ -13,12 +13,12 @@ import { NavController } from '@ionic/angular';
 export class ExplorarPage implements OnInit {
 
   map: Map;
-  contextos = [];
+  areasMedicion = [];
 
   marker: marker;
 
   constructor(
-    private contextosService: ContextosService,
+    private tareasService: TareasService,
     private ubicacionService: UbicacionService,
     private navCtrl: NavController
   ) { }
@@ -72,20 +72,25 @@ export class ExplorarPage implements OnInit {
   }
 
   listarContextos() {
-    this.contextosService.listadoContextos()
-      .subscribe(resp => {
-        this.contextos = resp;
-        this.contextos.forEach(c => {
-
-          const customMarkerIcon = icon({ iconUrl: 'assets/icon/tarea.png', iconSize: [32, 32] });
-
-          c.datos.forEach(d => {
-            marker([d.latitud, d.longitud], { icon: customMarkerIcon }).addTo(this.map)
-              .bindPopup(`<b>${d.descripcion}</b>`, { autoClose: false })
-              .on('click', () => this.navCtrl.navigateForward('/tabs/tareas/t', { animated: true }));
+    this.tareasService.listarDatosGeoespaciales()
+      .subscribe((resp) => {
+        this.areasMedicion = resp;
+        resp.forEach(a => {
+          geoJSON(a.areaMedicion.geoJS, { style: this.colorAleatorio() })
+            .addTo(this.map)
+            .bindPopup(a.areaMedicion.nombre);
+          a.tareas.forEach(t => {
+            geoJSON(JSON.parse(t.geojson_subconjunto), { style: this.colorAleatorio() }).addTo(this.map)
+              .bindPopup(t.tarenombre)
+              .on('click', () => this.navCtrl.navigateForward(`/tabs/tareas/t/${t.tareid}`, { animated: true }));
           });
         });
       });
+  }
+
+  colorAleatorio() {
+    // tslint:disable-next-line: no-bitwise
+    return { color: '#' + (Math.random() * 0xffbdbd << 0).toString(16) };
   }
 
   ionViewWillLeave() {
