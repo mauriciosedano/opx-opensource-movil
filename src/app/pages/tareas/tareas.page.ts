@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Tarea } from 'src/app/interfaces/tarea';
 import { TareasService } from 'src/app/servicios/tareas.service';
+import { AuthService } from 'src/app/servicios/auth.service';
 
 @Component({
   selector: 'app-tareas-tab',
@@ -15,7 +16,10 @@ export class TareasPage implements OnInit {
 
   tareas: Tarea[] = [];
 
-  constructor(private tareasService: TareasService) { }
+  constructor(
+    private tareasService: TareasService,
+    public authService: AuthService
+  ) { }
 
   ngOnInit() {
     this.incoming(null, true);

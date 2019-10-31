@@ -1,29 +1,29 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController, LoadingController } from '@ionic/angular';
 import { AuthService } from 'src/app/servicios/auth.service';
-import { NavController, LoadingController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { UiService } from 'src/app/servicios/ui.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { ModalRegistroComponent } from '../modal-registro/modal-registro.component';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-modal-login',
+  templateUrl: './modal-login.component.html',
+  styleUrls: ['./modal-login.component.scss'],
 })
-export class LoginPage implements OnInit {
+export class ModalLoginComponent implements OnInit {
 
   loading;
 
   constructor(
+    private modalCtrl: ModalController,
     public loadingController: LoadingController,
     private authService: AuthService,
-    private navCtrl: NavController,
     private uiService: UiService,
     private iab: InAppBrowser
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   async login(form: NgForm) {
     if (form.invalid) {
@@ -34,7 +34,8 @@ export class LoginPage implements OnInit {
     this.authService.login(form.value.email, form.value.password)
       .subscribe(() => {
         this.loading.dismiss();
-        this.navCtrl.navigateRoot('', { animated: true });
+        // this.navCtrl.navigateRoot('', { animated: true });
+        this.cerrar();
       }, (error: any) => {
         this.loading.dismiss();
         if (error.code === 404) {
@@ -54,6 +55,18 @@ export class LoginPage implements OnInit {
       message
     });
     return this.loading.present();
+  }
+
+  cerrar() {
+    this.modalCtrl.dismiss();
+  }
+
+  async mostrarModalRegistro() {
+    this.cerrar();
+    const modalR = await this.modalCtrl.create({
+      component: ModalRegistroComponent
+    });
+    modalR.present();
   }
 
 }

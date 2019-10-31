@@ -21,8 +21,7 @@ export class ErrorService {
     // The backend returned an unsuccessful response code.
     // The response body may contain clues as to what went wrong,
     console.log(
-      `Backend returned code ${error.status}, ` +
-      `body was: ${error.error.message}`);
+      `Backend returned code ${error.status}, `);
     console.log(error);
 
     if (error.status === 401) {

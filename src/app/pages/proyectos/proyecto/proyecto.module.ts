@@ -8,6 +8,8 @@ import { IonicModule } from '@ionic/angular';
 import { ProyectoPage } from './proyecto.page';
 import { ComponentesModule } from 'src/app/componentes/componentes.module';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { ModalLoginComponent } from 'src/app/componentes/auth/modal-login/modal-login.component';
+import { ModalRegistroComponent } from 'src/app/componentes/auth/modal-registro/modal-registro.component';
 
 const routes: Routes = [
   {
@@ -25,6 +27,7 @@ const routes: Routes = [
     ComponentesModule,
     PipesModule
   ],
+  entryComponents: [ModalRegistroComponent, ModalLoginComponent],
   declarations: [ProyectoPage]
 })
 export class ProyectoPageModule { }

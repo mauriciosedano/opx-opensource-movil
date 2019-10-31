@@ -19,8 +19,8 @@ export class ContextosService {
   ) { }
 
   listadoContextos() {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/list/`, { headers })
+    // const headers = new HttpHeaders({ Authorization: this.authService.token });
+    return this.http.get(`${URL}/list/`)
       .pipe(map((resp: any) => {
         return resp.contextos;
       }), catchError(e => this.errorService.handleError(e)));

@@ -35,3 +35,10 @@
   text-align: center;
   background: var(--ion-color-primary) !important;
 }
+
+.my--modal-css .modal-wrapper {
+  //height: 20%;
+  top: 15%;
+  position: absolute;
+  display: block;
+}

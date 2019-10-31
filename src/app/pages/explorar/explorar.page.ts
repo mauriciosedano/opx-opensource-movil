@@ -4,6 +4,7 @@ import { Map, latLng, tileLayer, Layer, divIcon, icon, marker, geoJSON } from 'l
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { NavController } from '@ionic/angular';
+import { ContextosService } from 'src/app/servicios/contextos.service';
 
 @Component({
   selector: 'app-explorar',
@@ -20,7 +21,8 @@ export class ExplorarPage implements OnInit {
   constructor(
     private tareasService: TareasService,
     private ubicacionService: UbicacionService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private contextoService: ContextosService
   ) { }
 
   ngOnInit() {
@@ -72,19 +74,30 @@ export class ExplorarPage implements OnInit {
   }
 
   listarContextos() {
-    this.tareasService.listarDatosGeoespaciales()
+    this.contextoService.listadoContextos()
       .subscribe((resp) => {
+      //  console.log(resp);
+
         this.areasMedicion = resp;
-        resp.forEach(a => {
-          geoJSON(a.areaMedicion.geoJS, { style: this.colorAleatorio() })
-            .addTo(this.map)
-            .bindPopup(a.areaMedicion.nombre);
-          a.tareas.forEach(t => {
-            geoJSON(JSON.parse(t.geojson_subconjunto), { style: this.colorAleatorio() }).addTo(this.map)
-              .bindPopup(t.tarenombre)
-              .on('click', () => this.navCtrl.navigateForward(`/tabs/tareas/t/${t.tareid}`, { animated: true }));
+
+        this.areasMedicion.forEach(a => {
+          a.datos.forEach(d => {
+            geoJSON(JSON.parse(d.geojson), { style: this.colorAleatorio() }).addTo(this.map)
+              .bindPopup(d.hdxtag + ': ' + d.descripcion);
           });
+
         });
+
+        /*  resp.forEach(a => {
+           geoJSON(a.areaMedicion.geoJS, { style: this.colorAleatorio() })
+             .addTo(this.map)
+             .bindPopup(a.areaMedicion.nombre);
+           a.tareas.forEach(t => {
+             geoJSON(JSON.parse(t.geojson_subconjunto), { style: this.colorAleatorio() }).addTo(this.map)
+               .bindPopup(t.tarenombre)
+               .on('click', () => this.navCtrl.navigateForward(`/tabs/tareas/t/${t.tareid}`, { animated: true }));
+           });
+         }); */
       });
   }
 

@@ -8,6 +8,8 @@ import { IonicModule } from '@ionic/angular';
 
 import { TareasPage } from './tareas.page';
 import { ComponentesModule } from 'src/app/componentes/componentes.module';
+import { ModalLoginComponent } from 'src/app/componentes/auth/modal-login/modal-login.component';
+import { ModalRegistroComponent } from 'src/app/componentes/auth/modal-registro/modal-registro.component';
 
 const routes: Routes = [
   {
@@ -28,6 +30,7 @@ const routes: Routes = [
     RoundProgressModule,
     ComponentesModule
   ],
+  entryComponents: [ModalRegistroComponent, ModalLoginComponent],
   declarations: [TareasPage]
 })
 export class TareasPageModule { }

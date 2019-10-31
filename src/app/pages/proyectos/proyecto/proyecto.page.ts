@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { ProyectosService } from 'src/app/servicios/proyectos.service';
+import { AuthService } from 'src/app/servicios/auth.service';
 
 @Component({
   selector: 'app-proyecto',
@@ -18,7 +19,8 @@ export class ProyectoPage implements OnInit {
   constructor(
     private proyectosService: ProyectosService,
     private activatedRoute: ActivatedRoute,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    public authService: AuthService
   ) {
     activatedRoute.params.subscribe(params => this.detalleProyecto(params.id));
   }
@@ -31,8 +33,6 @@ export class ProyectoPage implements OnInit {
       .subscribe(resp => {
         if (resp !== undefined) {
           this.proyecto = resp.proyecto;
-          // console.log(resp.tareas);
-
           this.tareas = resp.tareas.map(t => t.fields);
         } else {
           this.proyecto = undefined;

@@ -1,11 +1,11 @@
-<ion-header no-border>
+<ion-header no-border *ngIf="authService.token">
   <ion-toolbar color="light">
     <ion-searchbar no-border (ionChange)="buscar($event)" showCancelButton="focus" debounce="300" animated
       placeholder="Buscar tareas"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="authService.token">
 
   <ion-grid class="ion-padding-top" *ngIf="!cargando">
     <ion-row>
@@ -50,4 +50,8 @@
 
   <app-tareas [cargando]="cargando" [tareas]="tareas"></app-tareas>
 
+</ion-content>
+
+<ion-content *ngIf="!authService.token">
+  <app-peticion-login pantalla="tareas" mensaje="Para ver tu historia de tareas inicia sesión." *ngIf="!cargando"></app-peticion-login>
 </ion-content>

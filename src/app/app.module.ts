@@ -13,16 +13,21 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Network } from '@ionic-native/network/ngx';
+import { ModalAuthComponent } from './componentes/auth/modal-auth/modal-auth.component';
+import { ComponentesModule } from './componentes/componentes.module';
+import { ModalLoginComponent } from './componentes/auth/modal-login/modal-login.component';
+import { ModalRegistroComponent } from './componentes/auth/modal-registro/modal-registro.component';
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
+  entryComponents: [ModalAuthComponent, ModalLoginComponent, ModalRegistroComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    ComponentesModule
   ],
   providers: [
     StatusBar,

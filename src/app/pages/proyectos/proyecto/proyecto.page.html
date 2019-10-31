@@ -13,16 +13,13 @@
   <ion-grid class="proyecto" *ngIf="!cargando">
     <ion-row>
       <ion-col size="12">
-        <ion-text color="dark">
-          <h1> {{proyecto.proynombre}}</h1>
-        </ion-text>
-        <ion-item lines="none">
+        <ion-item class="ion-no-padding" lines="none">
           <div slot="start" class="circle">{{'Juan Diego' | iniciales}}</div>
           <ion-label>
             <ion-text>
-              <ion-grid class="ion-no-padding">
+              <ion-grid>
                 <ion-row>
-                  <ion-col size="7">
+                  <ion-col size="5">
                     <p>
                       <b>Nombre de prueba</b>
                     </p>
@@ -38,6 +35,9 @@
             </ion-text>
           </ion-label>
         </ion-item>
+        <ion-text color="dark">
+          <h1><b>{{proyecto.proynombre}}</b></h1>
+        </ion-text>
         <ion-text color="medium">
           <p>{{proyecto.proydescripcion}}</p>
         </ion-text>
@@ -82,15 +82,20 @@
   </ion-grid>
   <!-- FIn Skeleton -->
 
-  <ion-item class="tareas" color="light" lines="none">
-    <ion-icon mode="md" name="clipboard" slot="start"></ion-icon>
-    <ion-label>
-      <ion-text>
-        <h1><b>Tareas</b></h1>
-      </ion-text>
-    </ion-label>
-  </ion-item>
+  <ion-toolbar *ngIf="!cargando">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-label color="primary"><b>TAREAS</b></ion-label>
+      </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-label color="medium"><b>VALIDAR</b></ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
 
-  <app-tareas [cargando]="cargando" [tareas]="tareas"></app-tareas>
+  <app-peticion-login mensaje="Para contribuir a este proyecto debes iniciar sesión."
+    *ngIf="!authService.token && !cargando"></app-peticion-login>
+
+  <app-tareas *ngIf="authService.token" [cargando]="cargando" [tareas]="tareas"></app-tareas>
 
 </ion-content>

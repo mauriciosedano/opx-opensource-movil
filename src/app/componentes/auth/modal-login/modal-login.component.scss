@@ -8,6 +8,9 @@ form {
   margin-top: 46px;
   ion-item {
     margin-bottom: 20px !important;
+    border-radius: 2px;
+    border-style: solid;
+    border-color: var(--ion-color-primary) !important;
   }
   //lowercase
 }
