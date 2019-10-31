@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content *ngIf="authService.token">
 
   <ion-item lines="none" class="ion-padding-top">
     <div class="circulo">{{authService.user.name | iniciales}}</div>

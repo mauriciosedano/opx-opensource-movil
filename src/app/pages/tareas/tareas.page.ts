@@ -22,7 +22,11 @@ export class TareasPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.incoming(null, true);
+    if (this.authService.token) {
+      this.incoming(null, true);
+      console.log(this.authService.user.rol);
+
+    }
   }
 
   buscar(event) {

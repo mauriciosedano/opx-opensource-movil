@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, LoadingController } from '@ionic/angular';
+import { ModalController, LoadingController, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/servicios/auth.service';
 import { NgForm } from '@angular/forms';
 import { UiService } from 'src/app/servicios/ui.service';
@@ -20,7 +20,8 @@ export class ModalLoginComponent implements OnInit {
     public loadingController: LoadingController,
     private authService: AuthService,
     private uiService: UiService,
-    private iab: InAppBrowser
+    private iab: InAppBrowser,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() { }
@@ -58,6 +59,7 @@ export class ModalLoginComponent implements OnInit {
   }
 
   cerrar() {
+    this.navCtrl.navigateForward('/', { animated: true });
     this.modalCtrl.dismiss();
   }
 

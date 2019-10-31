@@ -16,7 +16,7 @@ export class ModalAuthComponent implements OnInit {
   }
 
   async mostrarModal(component: string) {
-    // this.cerrar();
+    this.cerrar();
     switch (component) {
       case 'login':
         const modal = await this.modalCtrl.create({

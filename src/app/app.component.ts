@@ -28,9 +28,10 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      this.authService.loadToken();
       timer(3000).subscribe(async () => {
         this.showSplash = false;
         if (!this.authService.token) {

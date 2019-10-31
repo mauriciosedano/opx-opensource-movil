@@ -14,24 +14,21 @@
           [animation]="'easeInOutQuart'" [animationDelay]="0">
         </round-progress>
         <ion-label class="card-title ion-text-center">
-          <ion-text>
+          <ion-text color="success">
             <h1><b>50%</b></h1>
           </ion-text>
           <ion-text color="medium">
-            <p>COMPLETADO</p>
+            <p><b>Pts.</b></p>
           </ion-text>
         </ion-label>
       </ion-col>
       <ion-col size="6" style="padding-top: 32px; padding-left: 16px;">
         <ion-icon color="medium" size="large" name="stats"></ion-icon>
         <ion-text color="medium">
-          <h4 class="ion-no-margin"><b>Resumen</b></h4>
+          <p class="ion-no-margin"><b>TU RANKING ES</b></p>
         </ion-text>
         <ion-text>
-          <h2 class="ion-no-margin"><b>3/6 Tareas</b></h2>
-        </ion-text>
-        <ion-text>
-          <p class="ion-no-margin"><b>3 Puntos acumulados</b></p>
+          <h4 class="ion-no-margin ion-text-uppercase"><b>Voluntario</b></h4>
         </ion-text>
       </ion-col>
     </ion-row>
@@ -53,5 +50,6 @@
 </ion-content>
 
 <ion-content *ngIf="!authService.token">
-  <app-peticion-login pantalla="tareas" mensaje="Para ver tu historia de tareas inicia sesión." *ngIf="!cargando"></app-peticion-login>
+  <app-peticion-login pantalla="tareas" mensaje="Para ver tu historia de tareas inicia sesión." *ngIf="!cargando">
+  </app-peticion-login>
 </ion-content>

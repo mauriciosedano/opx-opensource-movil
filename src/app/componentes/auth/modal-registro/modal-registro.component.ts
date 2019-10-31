@@ -3,6 +3,7 @@ import { ModalController, IonSlides, LoadingController } from '@ionic/angular';
 import { ModalLoginComponent } from '../modal-login/modal-login.component';
 import { UiService } from 'src/app/servicios/ui.service';
 import { AuthService } from 'src/app/servicios/auth.service';
+import { UtilidadesService } from 'src/app/servicios/utilidades.service';
 
 @Component({
   selector: 'app-modal-registro',
@@ -13,6 +14,9 @@ export class ModalRegistroComponent implements OnInit {
 
   slideActiveIndex = 0;
 
+  generos: any = [];
+  nivelesEducativos: any = [];
+
   nuevoUsuario: any = {};
 
   @ViewChild('slidePrincipal', { static: true }) slides: IonSlides;
@@ -21,10 +25,25 @@ export class ModalRegistroComponent implements OnInit {
     private modalCtrl: ModalController,
     public loadingController: LoadingController,
     private authService: AuthService,
-    private uiService: UiService
+    private uiService: UiService,
+    private utilidadesService: UtilidadesService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.cargarUtilidades();
+  }
+
+  cargarUtilidades() {
+    this.utilidadesService.listaGeneros()
+      .subscribe(r => {
+        this.generos = r;
+      });
+
+    this.utilidadesService.listaNivelesEducativos()
+      .subscribe(r => {
+        this.nivelesEducativos = r;
+      });
+  }
 
   async ionViewDidEnter() {
     this.slides.lockSwipes(true);
