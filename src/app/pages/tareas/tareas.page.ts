@@ -24,8 +24,8 @@ export class TareasPage implements OnInit {
   ngOnInit() {
     if (this.authService.token) {
       this.incoming(null, true);
-      console.log(this.authService.user.rol);
-
+    } else {
+      this.cargando = false;
     }
   }
 

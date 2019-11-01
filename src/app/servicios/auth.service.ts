@@ -6,10 +6,9 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { User } from '../interfaces/user';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { ErrorService } from './error.service';
 
 const URL = environment.API_URL;
-// ID para el rol del invitado
-const ROLID = 'e52ec910-0f33-4f94-879f-2e83258dde0b';
 
 @Injectable({
   providedIn: 'root'
@@ -45,10 +44,10 @@ export class AuthService {
       }), catchError(this.handleError));
   }
 
-  registro(userfullname: string, useremail: string, userpassword: string) {
+  registro(form: any) {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-    const querystring = this.querystring({ userfullname, useremail, userpassword, rolid: ROLID });
+    const querystring = this.querystring(form);
 
     return this.http.post(URL + '/usuarios/store/', querystring, { headers })
       .pipe(catchError(this.handleError));
@@ -93,7 +92,6 @@ export class AuthService {
       return Promise.resolve(false);
     }
     return Promise.resolve(true);
-
   }
 
 

@@ -35,7 +35,6 @@ export class ModalLoginComponent implements OnInit {
     this.authService.login(form.value.email, form.value.password)
       .subscribe(() => {
         this.loading.dismiss();
-        // this.navCtrl.navigateRoot('', { animated: true });
         this.cerrar();
       }, (error: any) => {
         this.loading.dismiss();
