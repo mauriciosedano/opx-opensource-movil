@@ -5,6 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { Tarea } from 'src/app/interfaces/tarea';
 
+
+import { Map, latLng, tileLayer, Layer, L, divIcon, icon, marker, coordsToLatLng, geoJSON } from 'leaflet';
+
 @Component({
   selector: 'app-tarea',
   templateUrl: './tarea.page.html',
@@ -17,15 +20,35 @@ export class TareaPage implements OnInit {
 
   cargando = true;
 
+  map: Map;
+
   constructor(
     private modalCtrl: ModalController,
     private activatedRoute: ActivatedRoute,
     private tareasService: TareasService
-  ) {
-    activatedRoute.params.subscribe(params => this.detalleTarea(params.id));
-  }
+  ) { }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  ionViewDidEnter() {
+    if (!this.map) {
+      this.map = new Map('mapp').setView([3.4376309, -76.5429797], 12);
+
+      tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'edupala.com © ionic LeafLet',
+      }).addTo(this.map);
+
+      tileLayer.wms('http://ws-idesc.cali.gov.co:8081/geoserver/wms?service=WMS', {
+        layers: 'idesc:mc_barrios',
+        format: 'image/png',
+        transparent: !0,
+        version: '1.1.0'
+      }).addTo(this.map);
+    }
+
+
+    this.activatedRoute.params.subscribe(params => this.detalleTarea(params.id));
+
   }
 
   detalleTarea(id: string) {
@@ -33,6 +56,8 @@ export class TareaPage implements OnInit {
       .subscribe(resp => {
         this.cargando = false;
         this.tarea = resp;
+        geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
+        this.map.setView(JSON.parse(this.tarea.geojson_subconjunto).geometry.coordinates[0][0].reverse(), 14);
       });
   }
 

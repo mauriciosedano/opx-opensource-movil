@@ -21,13 +21,19 @@ export class UtilidadesService {
       .pipe(map((resp: any) => {
         return resp.generos;
       }), catchError(e => this.errorService.handleError(e)));
-
   }
 
   listaNivelesEducativos() {
     return this.http.get(URL + '/niveles-educativos/list/')
       .pipe(map((resp: any) => {
         return resp.nivelesEducativos;
+      }), catchError(e => this.errorService.handleError(e)));
+  }
+
+  listaBarrios() {
+    return this.http.get(URL + '/barrios/list/')
+      .pipe(map((resp: any) => {
+        return resp.barrios;
       }), catchError(e => this.errorService.handleError(e)));
   }
 }

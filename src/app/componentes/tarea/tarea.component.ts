@@ -11,6 +11,8 @@ export class TareaComponent implements OnInit {
 
   @Input() tarea: Tarea;
 
+
+
   constructor(private navCtrl: NavController) { }
 
   ngOnInit() { }

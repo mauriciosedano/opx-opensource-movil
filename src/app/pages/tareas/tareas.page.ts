@@ -14,6 +14,9 @@ export class TareasPage implements OnInit {
   enabled = true;
   search: string;
 
+  segmentoPendientes = true;
+  segmentoCompletadas = false;
+
   tareas: Tarea[] = [];
 
   constructor(
@@ -55,5 +58,10 @@ export class TareasPage implements OnInit {
       }, (e => {
         this.cargando = false;
       }));
+  }
+
+  segmentChanged() {
+    this.segmentoCompletadas = !this.segmentoCompletadas;
+    this.segmentoPendientes = !this.segmentoPendientes;
   }
 }

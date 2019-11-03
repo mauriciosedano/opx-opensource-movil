@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Map, latLng, tileLayer, Layer, divIcon, icon, marker, geoJSON } from 'leaflet';
+import { Map, latLng, tileLayer, Layer, L, divIcon, icon, marker, geoJSON } from 'leaflet';
+
+// import { leafletPip, pointInLayer } from '@mapbox/leaflet-pip';
+import * as leafletPip from '@mapbox/leaflet-pip';
 
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
@@ -34,7 +37,7 @@ export class ExplorarPage implements OnInit {
   }
 
   async leafletMap() {
-    this.map = new Map('mapId').setView([3.4376309, -76.5429797], 13);
+    this.map = new Map('mapId').setView([3.4376309, -76.5429797], 16);
 
     tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'edupala.com © ionic LeafLet',
@@ -76,9 +79,10 @@ export class ExplorarPage implements OnInit {
   listarContextos() {
     this.contextoService.listadoContextos()
       .subscribe((resp) => {
-      //  console.log(resp);
+        //  console.log(resp);
 
         this.areasMedicion = resp;
+        let gjLayer: any;
 
         this.areasMedicion.forEach(a => {
           a.datos.forEach(d => {
@@ -87,6 +91,10 @@ export class ExplorarPage implements OnInit {
           });
 
         });
+
+        /* var results = leafletPip.pointInLayer([-76.511594, 3.477951], gjLayer);
+        console.log(results); */
+
 
         /*  resp.forEach(a => {
            geoJSON(a.areaMedicion.geoJS, { style: this.colorAleatorio() })

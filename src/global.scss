@@ -36,6 +36,21 @@
   background: var(--ion-color-primary) !important;
 }
 
+ion-segment {
+  --background: white !important;
+
+  ion-segment-button {
+    color: var(--ion-color-medium) !important;
+    padding-top: 1px;
+    margin-top: 1px;
+  }
+
+  ion-segment-button.segment-button-checked {
+    --background-checked: white !important;
+    color: var(--ion-color-primary) !important;
+  }
+}
+
 .my--modal-css .modal-wrapper {
   //height: 20%;
   top: 15%;

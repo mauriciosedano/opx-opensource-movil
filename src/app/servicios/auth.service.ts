@@ -6,7 +6,6 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { User } from '../interfaces/user';
 import { throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { ErrorService } from './error.service';
 
 const URL = environment.API_URL;
 
@@ -62,7 +61,7 @@ export class AuthService {
   }
 
   getUser() {
-    if (!this.user.id) {
+    if (!this.user.userid) {
       this.checkToken();
     }
     return { ...this.user };

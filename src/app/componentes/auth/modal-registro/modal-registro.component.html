@@ -146,8 +146,8 @@
             <ion-col size="12">
               <ion-item lines="full">
                 <ion-select placeholder="Barrio" name="barrio" [(ngModel)]="nuevoUsuario.barrio" required>
-                  <ion-select-option value="sf">San Fernando</ion-select-option>
-                  <ion-select-option value="ep">El peñon</ion-select-option>
+                  <ion-select-option *ngFor="let barrio of barrios" [value]="barrio.barrioid">{{barrio.nombre}}
+                  </ion-select-option>
                 </ion-select>
               </ion-item>
             </ion-col>

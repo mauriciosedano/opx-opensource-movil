@@ -5,8 +5,8 @@ import { UiService } from 'src/app/servicios/ui.service';
 import { AuthService } from 'src/app/servicios/auth.service';
 import { UtilidadesService } from 'src/app/servicios/utilidades.service';
 
-// ID para el rol del invitado
-const ROLID = 'e52ec910-0f33-4f94-879f-2e83258dde0b';
+// ID para el rol del voluntario
+const ROLID = '0be58d4e-6735-481a-8740-739a73c3be86';
 
 @Component({
   selector: 'app-modal-registro',
@@ -24,6 +24,7 @@ export class ModalRegistroComponent implements OnInit {
 
   generos: any = [];
   nivelesEducativos: any = [];
+  barrios: any = [];
 
   nuevoUsuario: any = {};
 
@@ -51,6 +52,11 @@ export class ModalRegistroComponent implements OnInit {
     this.utilidadesService.listaNivelesEducativos()
       .subscribe(r => {
         this.nivelesEducativos = r;
+      });
+
+    this.utilidadesService.listaBarrios()
+      .subscribe(r => {
+        this.barrios = r;
       });
   }
 

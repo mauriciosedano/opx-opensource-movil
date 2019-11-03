@@ -14,6 +14,9 @@ export class ProyectoPage implements OnInit {
   proyecto: any = {};
   tareas: [];
 
+  segmentoTareas = true;
+  segmentoValidar = false;
+
   cargando = true;
 
   constructor(
@@ -40,6 +43,11 @@ export class ProyectoPage implements OnInit {
         }
         this.cargando = false;
       });
+  }
+
+  segmentChanged() {
+    this.segmentoTareas = !this.segmentoTareas;
+    this.segmentoValidar = !this.segmentoValidar;
   }
 
 }

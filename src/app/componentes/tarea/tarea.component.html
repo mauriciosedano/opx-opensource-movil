@@ -1,12 +1,34 @@
 <ion-card (click)="click()">
   <ion-card-header>
-    <ion-card-title>{{tarea.tarenombre}}</ion-card-title>
-    <ion-card-subtitle>{{tarea.tarefechacreacion | date: 'yyyy/MM/d'}}</ion-card-subtitle>
+    <ion-text>
+      <h5>
+        <ion-text color="dark" class="ion-padding-end">
+          <b>Encuesta*</b>
+        </ion-text> {{tarea.tarefechacreacion | date: 'yyyy/MM/d'}}
+      </h5>
+    </ion-text>
+    <ion-text color="dark">
+      <h3><b>{{tarea.tarenombre}}</b></h3>
+    </ion-text>
   </ion-card-header>
+
   <ion-card-content>
     <ion-text>
       <p>{{tarea.taredescripcion}}</p>
     </ion-text>
     <ion-progress-bar class="ion-margin-top" color="primary" value="0.5"></ion-progress-bar>
+    <ion-item class="ion-no-padding" lines="none">
+      <ion-label slot="start">
+        <ion-text color="primary"><b>50%</b></ion-text>
+        <ion-text color="medium">
+          <b> Progreso</b>
+        </ion-text>
+      </ion-label>
+      <ion-label slot="end">
+        <ion-text color="medium">
+          <b>50/100*</b>
+        </ion-text>
+      </ion-label>
+    </ion-item>
   </ion-card-content>
 </ion-card>

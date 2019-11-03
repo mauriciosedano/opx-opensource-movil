@@ -15,7 +15,7 @@ import { ModalAuthComponent } from './componentes/auth/modal-auth/modal-auth.com
 })
 export class AppComponent {
 
-  showSplash = true;
+  showSplash = false;
 
   constructor(
     private platform: Platform,
@@ -31,7 +31,7 @@ export class AppComponent {
     this.platform.ready().then(async () => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      this.authService.loadToken();
+      await this.authService.loadToken();
       timer(3000).subscribe(async () => {
         this.showSplash = false;
         if (!this.authService.token) {
