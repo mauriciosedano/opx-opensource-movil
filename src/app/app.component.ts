@@ -31,7 +31,7 @@ export class AppComponent {
     this.platform.ready().then(async () => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      await this.authService.loadToken();
+      this.authService.loadToken();
       timer(3000).subscribe(async () => {
         this.showSplash = false;
         if (!this.authService.token) {

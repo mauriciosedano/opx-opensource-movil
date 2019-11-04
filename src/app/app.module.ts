@@ -13,6 +13,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Network } from '@ionic-native/network/ngx';
+import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { ModalAuthComponent } from './componentes/auth/modal-auth/modal-auth.component';
 import { ComponentesModule } from './componentes/componentes.module';
 import { ModalLoginComponent } from './componentes/auth/modal-login/modal-login.component';
@@ -35,6 +36,7 @@ import { ModalRegistroComponent } from './componentes/auth/modal-registro/modal-
     Geolocation,
     InAppBrowser,
     Network,
+    TextToSpeech,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

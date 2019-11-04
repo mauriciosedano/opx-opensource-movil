@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Map, latLng, tileLayer, Layer, L, divIcon, icon, marker, geoJSON } from 'leaflet';
+import { NavController } from '@ionic/angular';
 
-// import { leafletPip, pointInLayer } from '@mapbox/leaflet-pip';
+import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
 import * as leafletPip from '@mapbox/leaflet-pip';
 
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
-import { NavController } from '@ionic/angular';
 import { ContextosService } from 'src/app/servicios/contextos.service';
+import { TextoVozService } from 'src/app/servicios/texto-voz.service';
 
 @Component({
   selector: 'app-explorar',
@@ -17,7 +17,9 @@ import { ContextosService } from 'src/app/servicios/contextos.service';
 export class ExplorarPage implements OnInit {
 
   map: Map;
+
   areasMedicion = [];
+  geoJS: any;
 
   marker: marker;
 
@@ -25,10 +27,12 @@ export class ExplorarPage implements OnInit {
     private tareasService: TareasService,
     private ubicacionService: UbicacionService,
     private navCtrl: NavController,
-    private contextoService: ContextosService
+    private contextoService: ContextosService,
+    private textoVozService: TextoVozService
   ) { }
 
   ngOnInit() {
+    this.ubicacionService.obtenerUbicacionActual();
   }
 
   ionViewDidEnter() {
@@ -55,7 +59,7 @@ export class ExplorarPage implements OnInit {
 
   actualizaUbicacion() {
     return this.ubicacionService.obtenerUbicacionActual()
-      .then(() => {
+      .then(async () => {
 
         const lat = this.ubicacionService.ubicacionActual.latitude;
         const long = this.ubicacionService.ubicacionActual.longitude;
@@ -73,40 +77,40 @@ export class ExplorarPage implements OnInit {
             .bindPopup('Ubicación actual.').openPopup();
           this.map.setView([lat, long]);
         }
+
+        if (this.geoJS) {
+          const res = this.obtenerPoligono([long, lat]);
+          if (res.length) {
+            const properties = res[0].feature.properties;
+            const txt = `${properties.datatipe}, ${properties.descripcion}`;
+            await this.textoVozService.interpretar(txt);
+          }
+        }
       });
   }
 
   listarContextos() {
     this.contextoService.listadoContextos()
       .subscribe((resp) => {
-        //  console.log(resp);
-
         this.areasMedicion = resp;
-        let gjLayer: any;
-
+        const gjLayer = [];
         this.areasMedicion.forEach(a => {
           a.datos.forEach(d => {
-            geoJSON(JSON.parse(d.geojson), { style: this.colorAleatorio() }).addTo(this.map)
-              .bindPopup(d.hdxtag + ': ' + d.descripcion);
+            let geoJS = JSON.parse(d.geojson);
+            delete d.geojson;
+            geoJS.features[0].properties = d;
+            gjLayer.push(geoJS, { style: this.colorAleatorio() });
+            /* .addTo(this.map)
+            .bindPopup(d.hdxtag + ': ' + d.descripcion); */
           });
-
         });
 
-        /* var results = leafletPip.pointInLayer([-76.511594, 3.477951], gjLayer);
-        console.log(results); */
-
-
-        /*  resp.forEach(a => {
-           geoJSON(a.areaMedicion.geoJS, { style: this.colorAleatorio() })
-             .addTo(this.map)
-             .bindPopup(a.areaMedicion.nombre);
-           a.tareas.forEach(t => {
-             geoJSON(JSON.parse(t.geojson_subconjunto), { style: this.colorAleatorio() }).addTo(this.map)
-               .bindPopup(t.tarenombre)
-               .on('click', () => this.navCtrl.navigateForward(`/tabs/tareas/t/${t.tareid}`, { animated: true }));
-           });
-         }); */
+        this.geoJS = geoJSON(gjLayer).addTo(this.map);
       });
+  }
+
+  obtenerPoligono(ubicacion) {
+    return leafletPip.pointInLayer(ubicacion, this.geoJS);
   }
 
   colorAleatorio() {

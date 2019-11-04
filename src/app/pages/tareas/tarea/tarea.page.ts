@@ -5,8 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { Tarea } from 'src/app/interfaces/tarea';
 
-
-import { Map, latLng, tileLayer, Layer, L, divIcon, icon, marker, coordsToLatLng, geoJSON } from 'leaflet';
+import { Map, tileLayer, geoJSON } from 'leaflet';
 
 @Component({
   selector: 'app-tarea',
@@ -45,10 +44,7 @@ export class TareaPage implements OnInit {
         version: '1.1.0'
       }).addTo(this.map);
     }
-
-
     this.activatedRoute.params.subscribe(params => this.detalleTarea(params.id));
-
   }
 
   detalleTarea(id: string) {
@@ -56,7 +52,10 @@ export class TareaPage implements OnInit {
       .subscribe(resp => {
         this.cargando = false;
         this.tarea = resp;
-        geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
+
+        const gjLayer = geoJSON(JSON.parse(this.tarea.geojson_subconjunto));
+        gjLayer.addTo(this.map);
+
         this.map.setView(JSON.parse(this.tarea.geojson_subconjunto).geometry.coordinates[0][0].reverse(), 14);
       });
   }
@@ -69,9 +68,7 @@ export class TareaPage implements OnInit {
         id
       }
     });
-
     modal.present();
-
   }
 
 }

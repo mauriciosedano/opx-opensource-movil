@@ -36,7 +36,7 @@ export class ProyectoPage implements OnInit {
       .subscribe(resp => {
         if (resp !== undefined) {
           this.proyecto = resp.proyecto;
-          this.tareas = resp.tareas.map(t => t.fields);
+          this.tareas = resp.tareas;
         } else {
           this.proyecto = undefined;
           this.navCtrl.back();
