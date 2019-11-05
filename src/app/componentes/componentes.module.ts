@@ -8,6 +8,7 @@ import { ModalRegistroComponent } from './auth/modal-registro/modal-registro.com
 import { ModalLoginComponent } from './auth/modal-login/modal-login.component';
 import { FormsModule } from '@angular/forms';
 import { ModalAuthComponent } from './auth/modal-auth/modal-auth.component';
+import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ModalAuthComponent } from './auth/modal-auth/modal-auth.component';
   imports: [
     CommonModule,
     IonicModule,
-    FormsModule
+    FormsModule,
+    PipesModule
   ],
   exports: [
     TareasComponent,

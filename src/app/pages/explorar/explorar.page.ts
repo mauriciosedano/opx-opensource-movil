@@ -96,16 +96,22 @@ export class ExplorarPage implements OnInit {
         const gjLayer = [];
         this.areasMedicion.forEach(a => {
           a.datos.forEach(d => {
-            let geoJS = JSON.parse(d.geojson);
+            const geoJS = JSON.parse(d.geojson);
             delete d.geojson;
             geoJS.features[0].properties = d;
             gjLayer.push(geoJS, { style: this.colorAleatorio() });
-            /* .addTo(this.map)
-            .bindPopup(d.hdxtag + ': ' + d.descripcion); */
           });
         });
 
-        this.geoJS = geoJSON(gjLayer).addTo(this.map);
+        this.geoJS = geoJSON(gjLayer, {
+          onEachFeature: (feature, layer) => {
+            feature.style = this.colorAleatorio();
+            if (feature.properties && feature.properties.descripcion) {
+              layer.bindPopup(feature.properties.descripcion);
+            }
+          }
+        }).addTo(this.map);
+
       });
   }
 

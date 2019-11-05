@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { TareaPage } from './tarea.page';
 import { EncuestaComponent } from './encuesta/encuesta.component';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 const routes: Routes = [
   {
@@ -21,7 +22,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    PipesModule
   ],
   declarations: [TareaPage, EncuestaComponent]
 })

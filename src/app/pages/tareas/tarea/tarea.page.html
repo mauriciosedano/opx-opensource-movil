@@ -18,7 +18,7 @@
         <ion-text>
           <h5>
             <ion-text color="dark" class="ion-padding-end">
-              <b>Encuesta*</b>
+              <b>{{tarea.taretipo | tipoTarea}}</b>
             </ion-text> {{tarea.tarefechacreacion | date: 'yyyy/MM/d'}}
           </h5>
         </ion-text>
@@ -43,7 +43,8 @@
           </ion-label>
         </ion-item>
 
-        <ion-button class="ion-text-uppercase" color="primary" expand="block" (click)="encuesta('id')">
+        <ion-button *ngIf=" tarea.taretipo === 1" class="ion-text-uppercase" color="primary" expand="block"
+          (click)="encuesta('id')">
           Realizar encuesta
         </ion-button>
       </ion-col>

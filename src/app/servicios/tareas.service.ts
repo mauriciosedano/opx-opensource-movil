@@ -37,7 +37,8 @@ export class TareasService {
       .pipe(map((resp: any) => {
         return resp.tarea;
         // this.dataLocalService.guardarDetalleProyecto(resp.tarea);
-      }), catchError(this.errorService.handleError));
+      }), catchError(e => this.errorService.handleError(e)));
+
     /* } */
   }
 

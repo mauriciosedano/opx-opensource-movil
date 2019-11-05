@@ -15,7 +15,7 @@ import { ModalAuthComponent } from './componentes/auth/modal-auth/modal-auth.com
 })
 export class AppComponent {
 
-  showSplash = false;
+  showSplash = true;
 
   constructor(
     private platform: Platform,
