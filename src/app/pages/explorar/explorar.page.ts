@@ -18,6 +18,7 @@ export class ExplorarPage implements OnInit {
 
   map: Map;
 
+  poligonoSeleccionado: any;
   areasMedicion = [];
   geoJS: any;
 
@@ -82,11 +83,18 @@ export class ExplorarPage implements OnInit {
           const res = this.obtenerPoligono([long, lat]);
           if (res.length) {
             const properties = res[0].feature.properties;
-            const txt = `${properties.datatipe}, ${properties.descripcion}`;
-            await this.textoVozService.interpretar(txt);
+            this.poligonoSeleccionado = properties;
+          } else {
+            this.poligonoSeleccionado = undefined;
           }
+          console.log(this.poligonoSeleccionado);
         }
       });
+  }
+
+  async reproducir() {
+    const txt = `${this.poligonoSeleccionado.datatipe}, ${this.poligonoSeleccionado.descripcion}`;
+    await this.textoVozService.interpretar(txt);
   }
 
   listarContextos() {

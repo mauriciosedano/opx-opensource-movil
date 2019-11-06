@@ -12,15 +12,19 @@
 
 </ion-content>
 
-<!-- <ion-footer>
+<ion-footer *ngIf="poligonoSeleccionado">
   <ion-toolbar>
-
-    <ion-title>Footer</ion-title>
-
-    <ion-buttons slot="primary">
-      <ion-button>
-        <ion-icon slot="icon-only" name="volume-low"></ion-icon>
+    <ion-text>
+      <p class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>{{poligonoSeleccionado.descripcion}}</b></p>
+      <ion-item lines="none">
+        <ion-icon color="success" name="radio-button-on" style="padding-right: 5px;"></ion-icon>
+        <ion-label color="medium"><b>INDICADOR DE PAZ</b></ion-label>
+      </ion-item>
+    </ion-text>
+    <ion-buttons slot="end" class="ion-padding-end">
+      <ion-button fill="solid" color="primary" (click)="reproducir()">
+        <ion-icon name="volume-high"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-</ion-footer> -->
+</ion-footer>

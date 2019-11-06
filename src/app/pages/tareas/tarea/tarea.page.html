@@ -43,7 +43,7 @@
           </ion-label>
         </ion-item>
 
-        <ion-button *ngIf=" tarea.taretipo === 1" class="ion-text-uppercase" color="primary" expand="block"
+        <ion-button *ngIf="implementado && tarea.taretipo === 1" class="ion-text-uppercase" color="primary" expand="block"
           (click)="encuesta('id')">
           Realizar encuesta
         </ion-button>

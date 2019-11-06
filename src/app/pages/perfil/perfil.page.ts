@@ -89,21 +89,27 @@ export class PerfilPage implements OnInit {
 
   }
 
-  guardarUsuario() {
+  async guardarUsuario() {
+
+    await this.presentLoading('Guardando');
+
+    const date = new Date(this.usuario.fecha_nacimiento);
+    const year = date.getFullYear().toString();
+    const month = (date.getMonth() + 1).toString();
+    const day = date.getDate().toString();
 
     const usuario = {
       useremail: this.usuario.useremail,
       password: this.authService.user.password,
       rolid: this.usuario.rolid,
       userfullname: this.usuario.userfullname,
-      fecha_nacimiento: this.usuario.fecha_nacimiento,
+      fecha_nacimiento: `${year}-${month}-${day}`,
       generoid: this.usuario.generoid,
       barrioid: this.usuario.barrioid,
       telefono: this.usuario.telefono,
       nivel_educativo_id: this.usuario.nivel_educativo_id
     };
 
-    this.presentLoading('Guardando');
     this.usuarioService.editarUsuario(usuario)
       .subscribe(r => {
         this.uiService.presentToastSucess('Actualizado correctamente.');

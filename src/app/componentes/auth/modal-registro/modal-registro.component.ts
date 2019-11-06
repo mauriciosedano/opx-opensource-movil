@@ -71,13 +71,13 @@ export class ModalRegistroComponent implements OnInit {
 
     const form = {
       useremail: this.nuevoUsuario.useremail,
-      userpassword: this.nuevoUsuario.userpassword,
+      password: this.nuevoUsuario.userpassword,
       rolid: ROLID,
-      fechanacimiento: `${this.nuevoUsuario.anio}-${this.nuevoUsuario.mes}-${this.nuevoUsuario.dia}`,
-      genero: this.nuevoUsuario.genero,
+      fecha_nacimiento: `${this.nuevoUsuario.anio}-${this.nuevoUsuario.mes}-${this.nuevoUsuario.dia}`,
+      generoid: this.nuevoUsuario.genero,
       userfullname: `${this.nuevoUsuario.nombre} ${this.nuevoUsuario.apellido}`,
-      barrio: this.nuevoUsuario.barrio,
-      niveleducativo: this.nuevoUsuario.niveleducativo,
+      barrioid: this.nuevoUsuario.barrio,
+      nivel_educativo_id: this.nuevoUsuario.niveleducativo,
       telefono: this.nuevoUsuario.telefono
     };
 

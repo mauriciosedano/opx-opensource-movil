@@ -6,6 +6,7 @@ import { TareasService } from 'src/app/servicios/tareas.service';
 import { Tarea } from 'src/app/interfaces/tarea';
 
 import { Map, tileLayer, geoJSON } from 'leaflet';
+import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
 
 @Component({
   selector: 'app-tarea',
@@ -18,57 +19,66 @@ export class TareaPage implements OnInit {
   tarea: Tarea;
 
   cargando = true;
+  implementado = false;
 
   map: Map;
 
   constructor(
     private modalCtrl: ModalController,
     private activatedRoute: ActivatedRoute,
-    private tareasService: TareasService
+    private tareasService: TareasService,
+    private instrumentosServices: InstrumentosService
   ) { }
 
   ngOnInit() { }
 
-  ionViewDidEnter() {
-    if (!this.map) {
-      this.map = new Map('mapp').setView([3.4376309, -76.5429797], 12);
+  async ionViewDidEnter() {
 
-      tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'edupala.com © ionic LeafLet',
-      }).addTo(this.map);
+    this.map = new Map('mapp').setView([3.4376309, -76.5429797], 12);
 
-      tileLayer.wms('http://ws-idesc.cali.gov.co:8081/geoserver/wms?service=WMS', {
-        layers: 'idesc:mc_barrios',
-        format: 'image/png',
-        transparent: !0,
-        version: '1.1.0'
-      }).addTo(this.map);
-    }
+    tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'edupala.com © ionic LeafLet',
+    }).addTo(this.map);
+
+    tileLayer.wms('http://ws-idesc.cali.gov.co:8081/geoserver/wms?service=WMS', {
+      layers: 'idesc:mc_barrios',
+      format: 'image/png',
+      transparent: !0,
+      version: '1.1.0'
+    }).addTo(this.map);
+
     this.activatedRoute.params.subscribe(params => this.detalleTarea(params.id));
   }
 
   detalleTarea(id: string) {
     this.tareasService.detalleTarea(id)
-      .subscribe(resp => {
+      .subscribe(async resp => {
         this.cargando = false;
         this.tarea = resp;
 
+        if (this.tarea.taretipo === 1) {
+          const res = await this.instrumentosServices.verificarImplementacion(this.tarea.instrid);
+          this.implementado = res;
+        }
+
         const gjLayer = geoJSON(JSON.parse(this.tarea.geojson_subconjunto));
         gjLayer.addTo(this.map);
-
         this.map.setView(JSON.parse(this.tarea.geojson_subconjunto).geometry.coordinates[0][0].reverse(), 14);
       });
   }
 
   async encuesta(id: string) {
-
     const modal = await this.modalCtrl.create({
       component: EncuestaComponent,
       componentProps: {
-        id
+        id: this.tarea.instrid
       }
     });
     modal.present();
+  }
+
+  ionViewWillLeave() {
+    this.map.remove();
   }
 
 }
