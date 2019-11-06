@@ -1,21 +1,18 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { ApiRestService } from './services/api-rest.service';
+import { LoginGuard } from './guards/login.guard';
 
 const routes: Routes = [
-  { path: '', loadChildren: './login/login.module#LoginPageModule'},
-  {path: 'login', redirectTo: '', pathMatch: 'full'},
-  { path: 'proyectos', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
-  { path: 'proyecto/:id', loadChildren: './detalle-proyecto/detalle-proyecto.module#DetalleProyectoPageModule' },
-  { path: 'tareas', loadChildren: './tareas/tareas.module#TareasPageModule' },
-  { path: 'perfil', loadChildren: './perfil/perfil.module#PerfilPageModule' }
+  {
+    path: '',
+    loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule),
+    //  canLoad: [LoginGuard]
+  }
 ];
-
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
-  exports: [RouterModule],
-  providers: [ApiRestService]
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

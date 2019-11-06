@@ -1,1 +1,25 @@
+.splash {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ion-color-primary);
+}
+.spinner {
+  ion-img {
+    width: 190px;
+    -webkit-animation: rotation 2s infinite linear;
+  }
 
+  @-webkit-keyframes rotation {
+    from {
+      -webkit-transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(359deg);
+    }
+  }
+}
