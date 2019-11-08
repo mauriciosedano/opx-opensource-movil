@@ -37,6 +37,9 @@
               },
               {
                 "input": "src/global.scss"
+              },
+              {
+                "input": "node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css"
               }
             ],
             "scripts": []

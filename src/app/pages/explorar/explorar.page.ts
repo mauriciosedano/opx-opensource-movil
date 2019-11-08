@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 
 import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
 import * as leafletPip from '@mapbox/leaflet-pip';
 
-import { TareasService } from 'src/app/servicios/tareas.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { ContextosService } from 'src/app/servicios/contextos.service';
 import { TextoVozService } from 'src/app/servicios/texto-voz.service';
+import { ModalAuthComponent } from 'src/app/componentes/auth/modal-auth/modal-auth.component';
+import { InfoContextoComponent } from 'src/app/componentes/info-contexto/info-contexto.component';
 
 @Component({
   selector: 'app-explorar',
@@ -25,7 +26,7 @@ export class ExplorarPage implements OnInit {
   marker: marker;
 
   constructor(
-    private tareasService: TareasService,
+    private modalController: ModalController,
     private ubicacionService: UbicacionService,
     private navCtrl: NavController,
     private contextoService: ContextosService,
@@ -58,6 +59,18 @@ export class ExplorarPage implements OnInit {
     await this.actualizaUbicacion();
   }
 
+  async openMyModal() {
+    const myModal = await this.modalController.create({
+      component: InfoContextoComponent,
+      cssClass: 'my-custom-modal-css',
+      animated: true,
+      componentProps: {
+        poligonoSeleccionado: this.poligonoSeleccionado
+      }
+    });
+    return await myModal.present();
+  }
+
   actualizaUbicacion() {
     return this.ubicacionService.obtenerUbicacionActual()
       .then(async () => {
@@ -87,7 +100,7 @@ export class ExplorarPage implements OnInit {
           } else {
             this.poligonoSeleccionado = undefined;
           }
-          console.log(this.poligonoSeleccionado);
+          // console.log(this.poligonoSeleccionado);
         }
       });
   }

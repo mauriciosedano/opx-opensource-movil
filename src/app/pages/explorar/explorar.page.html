@@ -13,7 +13,7 @@
 </ion-content>
 
 <ion-footer *ngIf="poligonoSeleccionado">
-  <ion-toolbar>
+  <ion-toolbar (click)="openMyModal()">
     <ion-text>
       <p class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>{{poligonoSeleccionado.descripcion}}</b></p>
       <ion-item lines="none">

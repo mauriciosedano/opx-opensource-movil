@@ -51,9 +51,9 @@ ion-segment {
   }
 }
 
-.my--modal-css .modal-wrapper {
-  //height: 20%;
-  top: 15%;
+.my-custom-modal-css .modal-wrapper {
+  top: 25%;
+  height: 75%;
   position: absolute;
-  display: block;
+  --border-radius: 5px;
 }

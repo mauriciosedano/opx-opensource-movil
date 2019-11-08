@@ -1,0 +1,67 @@
+<ion-header no-border>
+  <ion-toolbar>
+    <ion-text>
+      <p class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>{{poligonoSeleccionado.descripcion}}</b></p>
+      <ion-item lines="none">
+        <ion-icon color="success" name="radio-button-on" style="padding-right: 5px;"></ion-icon>
+        <ion-label color="medium"><b>INDICADOR DE PAZ</b></ion-label>
+      </ion-item>
+    </ion-text>
+    <ion-buttons slot="end" class="ion-padding-end">
+      <ion-button fill="solid" color="primary" (click)="reproducir()">
+        <ion-icon name="volume-high"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-segment (ionChange)="segmentChanged($event)" class="ion-padding-bottom">
+    <ion-segment-button value="dia" checked>
+      <ion-label>DÍA</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="semana">
+      <ion-label>SEMANA</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="mes">
+      <ion-label>MES</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="todo">
+      <ion-label>TODO</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <canvas #barCanvas></canvas>
+
+  <div class="ion-padding-top">
+    <jqxBulletChart [width]='bulletChart.width' [height]='bulletChart.height' [barSize]='"40%"' [labelsFormat]='"c"'
+      [showTooltip]='true' [title]='title' [description]='description' [ranges]='ranges' [pointer]='pointer'
+      [target]='target' [ticks]='ticks'>
+    </jqxBulletChart>
+    <jqxBulletChart [width]='bulletChart.width' [height]='bulletChart.height' [barSize]='"40%"' [labelsFormat]='"c"'
+      [showTooltip]='true' [title]='title' [description]='description' [ranges]='ranges' [pointer]='pointer'
+      [target]='target' [ticks]='ticks'>
+    </jqxBulletChart>
+    <jqxBulletChart [width]='bulletChart.width' [height]='bulletChart.height' [barSize]='"40%"' [labelsFormat]='"c"'
+      [showTooltip]='true' [title]='title' [description]='description' [ranges]='ranges' [pointer]='pointer'
+      [target]='target' [ticks]='ticks'>
+    </jqxBulletChart>
+    <jqxBulletChart [width]='bulletChart.width' [height]='bulletChart.height' [barSize]='"40%"' [labelsFormat]='"c"'
+      [showTooltip]='true' [title]='title' [description]='description' [ranges]='ranges' [pointer]='pointer'
+      [target]='target' [ticks]='ticks'>
+    </jqxBulletChart>
+  </div>
+
+
+  <ion-grid class="ion-padding-top">
+    <ion-row>
+      <ion-col size="12">
+        {{poligonoSeleccionado.datatipe}}
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus at iusto ullam error odio alias debitis
+        vitae enim praesentium illo vero quidem nisi aspernatur, perferendis voluptatum quasi maiores soluta quibusdam?
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
