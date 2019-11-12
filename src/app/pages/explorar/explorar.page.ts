@@ -17,6 +17,8 @@ import { InfoContextoComponent } from 'src/app/componentes/info-contexto/info-co
 })
 export class ExplorarPage implements OnInit {
 
+  loading = true;
+
   map: Map;
 
   poligonoSeleccionado: any;
@@ -45,9 +47,7 @@ export class ExplorarPage implements OnInit {
   async leafletMap() {
     this.map = new Map('mapId').setView([3.4376309, -76.5429797], 16);
 
-    tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'edupala.com © ionic LeafLet',
-    }).addTo(this.map);
+    tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}').addTo(this.map);
 
     tileLayer.wms('http://ws-idesc.cali.gov.co:8081/geoserver/wms?service=WMS', {
       layers: 'idesc:mc_barrios',
@@ -132,7 +132,7 @@ export class ExplorarPage implements OnInit {
             }
           }
         }).addTo(this.map);
-
+        this.loading = false;
       });
   }
 

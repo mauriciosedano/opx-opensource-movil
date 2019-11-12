@@ -40,6 +40,9 @@
               },
               {
                 "input": "node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css"
+              },
+              {
+                "input": "node_modules/leaflet-draw/dist/leaflet.draw.css"
               }
             ],
             "scripts": []

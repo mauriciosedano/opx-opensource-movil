@@ -8,23 +8,27 @@ import { IonicModule } from '@ionic/angular';
 import { TareaPage } from './tarea.page';
 import { EncuestaComponent } from './encuesta/encuesta.component';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { MapeoComponent } from './mapeo/mapeo.component';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: TareaPage
-  }
-];
+import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+
+const routes: Routes = [{
+  path: '',
+  component: TareaPage
+}];
 
 @NgModule({
-  entryComponents: [EncuestaComponent],
+  entryComponents: [EncuestaComponent, MapeoComponent],
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    PipesModule
+    PipesModule,
+    LeafletModule,
+    LeafletDrawModule
   ],
-  declarations: [TareaPage, EncuestaComponent]
+  declarations: [TareaPage, EncuestaComponent, MapeoComponent]
 })
 export class TareaPageModule { }

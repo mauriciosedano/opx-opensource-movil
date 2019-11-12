@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { EncuestaComponent } from './encuesta/encuesta.component';
 import { ActivatedRoute } from '@angular/router';
@@ -7,6 +7,7 @@ import { Tarea } from 'src/app/interfaces/tarea';
 
 import { Map, tileLayer, geoJSON } from 'leaflet';
 import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
+import { MapeoComponent } from './mapeo/mapeo.component';
 
 @Component({
   selector: 'app-tarea',
@@ -16,6 +17,7 @@ import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
 export class TareaPage implements OnInit {
 
   @Input() id;
+  @ViewChild('mapa', { static: true }) mapa;
   tarea: Tarea;
 
   cargando = true;
@@ -34,11 +36,9 @@ export class TareaPage implements OnInit {
 
   async ionViewDidEnter() {
 
-    this.map = new Map('mapp').setView([3.4376309, -76.5429797], 12);
+    this.map = new Map(this.mapa.nativeElement).setView([3.4376309, -76.5429797], 12);
 
-    tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'edupala.com © ionic LeafLet',
-    }).addTo(this.map);
+    tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}').addTo(this.map);
 
     tileLayer.wms('http://ws-idesc.cali.gov.co:8081/geoserver/wms?service=WMS', {
       layers: 'idesc:mc_barrios',
@@ -67,9 +67,19 @@ export class TareaPage implements OnInit {
       });
   }
 
-  async encuesta(id: string) {
+  async encuesta() {
     const modal = await this.modalCtrl.create({
       component: EncuestaComponent,
+      componentProps: {
+        id: this.tarea.instrid
+      }
+    });
+    modal.present();
+  }
+
+  async mapeo() {
+    const modal = await this.modalCtrl.create({
+      component: MapeoComponent,
       componentProps: {
         id: this.tarea.instrid
       }

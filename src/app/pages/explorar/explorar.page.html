@@ -1,4 +1,10 @@
 <ion-content>
+  <div *ngIf="loading" class="splash">
+    <div class="spinner">
+      <ion-img src="assets/icon/logo-splash.png"></ion-img>
+    </div>
+  </div>
+
   <div id="mapId"></div>
 
   <!-- Botón flotante que actualiza la ubicación actual -->
