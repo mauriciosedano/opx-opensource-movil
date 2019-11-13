@@ -61,9 +61,8 @@ export class TareaPage implements OnInit {
           this.implementado = res;
         }
 
-        const gjLayer = geoJSON(JSON.parse(this.tarea.geojson_subconjunto));
-        gjLayer.addTo(this.map);
-        this.map.setView(JSON.parse(this.tarea.geojson_subconjunto).geometry.coordinates[0][0].reverse(), 14);
+        const gjLayer = geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
+        this.map.fitBounds(gjLayer.getBounds());
       });
   }
 
@@ -81,7 +80,7 @@ export class TareaPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: MapeoComponent,
       componentProps: {
-        id: this.tarea.instrid
+        tarea: this.tarea
       }
     });
     modal.present();

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Tarea } from 'src/app/interfaces/tarea';
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { AuthService } from 'src/app/servicios/auth.service';
@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/servicios/auth.service';
   templateUrl: './tareas.page.html',
   styleUrls: ['./tareas.page.scss']
 })
-export class TareasPage implements OnInit {
+export class TareasPage {
 
   cargando = true;
   enabled = true;
@@ -24,7 +24,8 @@ export class TareasPage implements OnInit {
     public authService: AuthService
   ) { }
 
-  ngOnInit() {
+  ionViewDidEnter() {
+    this.tareas = [];
     if (this.authService.token) {
       this.incoming(null, true);
     } else {

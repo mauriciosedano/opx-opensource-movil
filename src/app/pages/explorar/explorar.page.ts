@@ -7,7 +7,6 @@ import * as leafletPip from '@mapbox/leaflet-pip';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { ContextosService } from 'src/app/servicios/contextos.service';
 import { TextoVozService } from 'src/app/servicios/texto-voz.service';
-import { ModalAuthComponent } from 'src/app/componentes/auth/modal-auth/modal-auth.component';
 import { InfoContextoComponent } from 'src/app/componentes/info-contexto/info-contexto.component';
 
 @Component({
@@ -30,7 +29,6 @@ export class ExplorarPage implements OnInit {
   constructor(
     private modalController: ModalController,
     private ubicacionService: UbicacionService,
-    private navCtrl: NavController,
     private contextoService: ContextosService,
     private textoVozService: TextoVozService
   ) { }
@@ -100,7 +98,6 @@ export class ExplorarPage implements OnInit {
           } else {
             this.poligonoSeleccionado = undefined;
           }
-          // console.log(this.poligonoSeleccionado);
         }
       });
   }

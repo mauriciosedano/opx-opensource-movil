@@ -1,9 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ModalController, ActionSheetController } from '@ionic/angular';
-import { Map, tileLayer, FeatureGroup, latLng, icon } from 'leaflet';
+import { Map, tileLayer, FeatureGroup, geoJSON } from 'leaflet';
 import { UtilidadesService } from 'src/app/servicios/utilidades.service';
-import * as L from 'leaflet';
 import { ElementoOSM } from 'src/app/interfaces/elemento-osm';
+import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
+import { Tarea } from 'src/app/interfaces/tarea';
+import { UiService } from 'src/app/servicios/ui.service';
+import * as L from 'leaflet';
+import * as leafletPip from '@mapbox/leaflet-pip';
 
 @Component({
   selector: 'app-mapeo',
@@ -12,6 +16,7 @@ import { ElementoOSM } from 'src/app/interfaces/elemento-osm';
 })
 export class MapeoComponent implements OnInit {
 
+  @Input() tarea: Tarea;
   @ViewChild('mapa', { static: true }) mapa;
 
   elementosOSM: ElementoOSM[] = [];
@@ -19,11 +24,14 @@ export class MapeoComponent implements OnInit {
   cargando = true;
 
   map: Map;
+  geoJS: any;
 
   constructor(
     private modalCtrl: ModalController,
     private utilidadesService: UtilidadesService,
-    public actionSheetController: ActionSheetController
+    private instrumentosService: InstrumentosService,
+    public actionSheetController: ActionSheetController,
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
@@ -42,7 +50,13 @@ export class MapeoComponent implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
+    this.geoJS = geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
+    this.map.fitBounds(this.geoJS.getBounds());
 
+    this.inicializarHerramientasDibujo();
+  }
+
+  inicializarHerramientasDibujo() {
     // Initialise the FeatureGroup to store editable layers
     var editableLayers = new FeatureGroup();
     this.map.addLayer(editableLayers);
@@ -76,23 +90,36 @@ export class MapeoComponent implements OnInit {
     var drawControl = new L.Control.Draw(drawPluginOptions);
     this.map.addControl(drawControl);
 
-    var editableLayers = new FeatureGroup();
-    this.map.addLayer(editableLayers);
-
     this.map.on('draw:created', async (e) => {
       const type = e.layerType, layer = e.layer;
 
       let closed = [];
 
       if (type === 'marker') {
+        if (!this.obtenerPoligono(layer.getLatLng()).length) {
+          this.uiService.presentToastError('Marcador fuera del polígono');
+          return;
+        }
         closed = this.elementosOSM.filter(ele => ele.closed_way === 1);
-        await this.presentActionSheet(closed);
-      } else if (type === 'polygon') {
-        closed = this.elementosOSM.filter(ele => ele.closed_way === 0);
-        await this.presentActionSheet(closed);
-      }
+        await this.presentActionSheet(closed, layer, [layer.getLatLng()]);
 
-      editableLayers.addLayer(layer);
+      } else if (type === 'polygon') {
+        let fuera = false;
+        for (const element of layer.getLatLngs()[0]) {
+          if (!this.obtenerPoligono(element).length) {
+            this.uiService.presentToastError('Marcadores fuera del polígono');
+            fuera = true;
+            break;
+          }
+        }
+
+        if (fuera) {
+          return;
+        }
+
+        closed = this.elementosOSM.filter(ele => ele.closed_way === 0);
+        await this.presentActionSheet(closed, layer, layer.getLatLngs()[0]);
+      }
     });
   }
 
@@ -103,13 +130,32 @@ export class MapeoComponent implements OnInit {
       });
   }
 
-  async presentActionSheet(elementosOSM: ElementoOSM[]) {
+  obtenerPoligono(ubicacion) {
+    return leafletPip.pointInLayer(ubicacion, this.geoJS);
+  }
+
+  async presentActionSheet(elementosOSM: ElementoOSM[], layer, coordenadas: any[]) {
+    var editableLayers = new FeatureGroup();
+    this.map.addLayer(editableLayers);
+
+    const coor = [];
+    coordenadas.forEach(c => {
+      coor.push({ lat: c.lat, lng: c.lng });
+    });
+
     const buttons = [];
     elementosOSM.forEach(e => {
       buttons.push({
         text: e.nombre,
         handler: () => {
-          console.log(e);
+          this.instrumentosService.mapeoOSM(this.tarea.instrid, e.elemosmid, coor)
+            .subscribe(r => {
+              console.log(r);
+              editableLayers.addLayer(layer);
+              this.uiService.presentToastSucess('Agregado correctamente');
+            }, (err) => {
+              console.log(err);
+            });
         }
       });
     });
