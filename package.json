@@ -43,7 +43,8 @@
     "core-js": "^2.5.4",
     "jqwidgets-ng": "^8.3.2",
     "leaflet": "^1.5.1",
-    "leaflet-draw": "^1.0.3",
+    "leaflet-draw": "^0.3.2",
+    "leaflet-draw-locales": "^1.1.1",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"

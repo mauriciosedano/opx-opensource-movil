@@ -12,6 +12,7 @@ import { MapeoComponent } from './mapeo/mapeo.component';
 
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { ValidarComponent } from './validar/validar.component';
 
 const routes: Routes = [{
   path: '',
@@ -19,7 +20,7 @@ const routes: Routes = [{
 }];
 
 @NgModule({
-  entryComponents: [EncuestaComponent, MapeoComponent],
+  entryComponents: [EncuestaComponent, MapeoComponent, ValidarComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -29,6 +30,6 @@ const routes: Routes = [{
     LeafletModule,
     LeafletDrawModule
   ],
-  declarations: [TareaPage, EncuestaComponent, MapeoComponent]
+  declarations: [TareaPage, EncuestaComponent, MapeoComponent, ValidarComponent]
 })
 export class TareaPageModule { }

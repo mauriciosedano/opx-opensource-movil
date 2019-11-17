@@ -1,0 +1,61 @@
+<ion-header no-border>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="regresar()">
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item lines="none">
+    <ion-label>
+      <ion-text color="medium">
+        <h1>Validar</h1>
+      </ion-text>
+    </ion-label>
+    <ion-label slot="end" color="success">
+      <ion-text class="ion-text-end">
+        <h2><b>{{slideActiveIndex + 1}}/{{slideLength}}</b></h2>
+      </ion-text>
+    </ion-label>
+  </ion-item>
+
+  <ion-slides class="ion-no-padding" class="mainSlide" #slidePrincipal>
+    <ion-slide *ngFor="let encuesta of encuestas">
+      <ion-list>
+
+        <ion-item lines="none" *ngFor="let item of encuesta.formulario">
+          <ion-label>
+            <b>{{item.label}}</b>
+            <ion-text>
+              <p>{{item.respuesta }}</p>
+            </ion-text>
+          </ion-label>
+
+        </ion-item>
+      </ion-list>
+    </ion-slide>
+  </ion-slides>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" color="primary" (click)="invalidar()">
+          INVÁLIDO
+        </ion-button>
+      </ion-col>
+
+      <ion-col>
+        <ion-button expand="full" color="primary" (click)="validar()">
+          VÁLIDO
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

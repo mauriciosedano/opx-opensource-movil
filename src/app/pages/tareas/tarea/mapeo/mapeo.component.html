@@ -10,5 +10,10 @@
 </ion-header>
 
 <ion-content>
+  <div *ngIf="cargando" class="splash">
+    <div class="spinner">
+      <ion-img src="assets/icon/logo-splash.png"></ion-img>
+    </div>
+  </div>
   <div id="map" #mapa></div>
 </ion-content>

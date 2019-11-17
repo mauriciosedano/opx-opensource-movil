@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { ModalController, ActionSheetController } from '@ionic/angular';
+import { ModalController, ActionSheetController, AlertController, LoadingController } from '@ionic/angular';
 import { Map, tileLayer, FeatureGroup, geoJSON } from 'leaflet';
 import { UtilidadesService } from 'src/app/servicios/utilidades.service';
 import { ElementoOSM } from 'src/app/interfaces/elemento-osm';
@@ -8,6 +8,7 @@ import { Tarea } from 'src/app/interfaces/tarea';
 import { UiService } from 'src/app/servicios/ui.service';
 import * as L from 'leaflet';
 import * as leafletPip from '@mapbox/leaflet-pip';
+import drawLocales from 'leaflet-draw-locales';
 
 @Component({
   selector: 'app-mapeo',
@@ -21,6 +22,7 @@ export class MapeoComponent implements OnInit {
 
   elementosOSM: ElementoOSM[] = [];
 
+  loading: any;
   cargando = true;
 
   map: Map;
@@ -31,11 +33,20 @@ export class MapeoComponent implements OnInit {
     private utilidadesService: UtilidadesService,
     private instrumentosService: InstrumentosService,
     public actionSheetController: ActionSheetController,
+    public alertController: AlertController,
+    public loadingController: LoadingController,
     private uiService: UiService
   ) { }
 
   ngOnInit() {
     this.listarElementosOSM();
+  }
+
+  listarElementosOSM() {
+    this.utilidadesService.listaElementosOSM()
+      .subscribe((e: ElementoOSM[]) => {
+        this.elementosOSM = e;
+      });
   }
 
   ionViewDidEnter() {
@@ -50,6 +61,26 @@ export class MapeoComponent implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
+    this.instrumentosService.detalleMapeo(this.tarea.instrid)
+      .subscribe(r => {
+        const layers: any[] = geoJSON(JSON.parse(r), {
+          onEachFeature: (feature, layer) => {
+            if (feature.properties && feature.properties.tipo) {
+              layer.bindPopup(feature.properties.tipo);
+            }
+          }
+        }).addTo(this.map);
+
+
+        this.map.on('popupopen', (ev) => {
+          this.presentAlertConfirm(ev.popup._source);
+
+
+        });
+        this.cargando = false;
+      });
+
+
     this.geoJS = geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
     this.map.fitBounds(this.geoJS.getBounds());
 
@@ -57,7 +88,7 @@ export class MapeoComponent implements OnInit {
   }
 
   inicializarHerramientasDibujo() {
-    // Initialise the FeatureGroup to store editable layers
+    drawLocales('es');
     var editableLayers = new FeatureGroup();
     this.map.addLayer(editableLayers);
 
@@ -72,40 +103,27 @@ export class MapeoComponent implements OnInit {
           },
           shapeOptions: {
             color: '#97009c'
-          }
+          },
+          showLength: false
         },
-        polyline: false,
+        polyline: true,
         circle: false,
         circlemarker: false,
         rectangle: false,
-        marker: true,
-      },
-      edit: {
-        featureGroup: editableLayers,
-        remove: false
+        marker: false
       }
     };
 
-    // Initialise the draw control and pass it the FeatureGroup of editable layers
     var drawControl = new L.Control.Draw(drawPluginOptions);
     this.map.addControl(drawControl);
 
     this.map.on('draw:created', async (e) => {
       const type = e.layerType, layer = e.layer;
+      let closed = [], fuera = false;
 
-      let closed = [];
+      if (type === 'polyline') {
 
-      if (type === 'marker') {
-        if (!this.obtenerPoligono(layer.getLatLng()).length) {
-          this.uiService.presentToastError('Marcador fuera del polígono');
-          return;
-        }
-        closed = this.elementosOSM.filter(ele => ele.closed_way === 1);
-        await this.presentActionSheet(closed, layer, [layer.getLatLng()]);
-
-      } else if (type === 'polygon') {
-        let fuera = false;
-        for (const element of layer.getLatLngs()[0]) {
+        for (const element of layer.getLatLngs()) {
           if (!this.obtenerPoligono(element).length) {
             this.uiService.presentToastError('Marcadores fuera del polígono');
             fuera = true;
@@ -118,20 +136,51 @@ export class MapeoComponent implements OnInit {
         }
 
         closed = this.elementosOSM.filter(ele => ele.closed_way === 0);
+        await this.presentActionSheet(closed, layer, layer.getLatLngs());
+
+      } else if (type === 'polygon') {
+
+        for (const element of layer.getLatLngs()[0]) {
+          if (!this.obtenerPoligono(element).length) {
+            this.uiService.presentToastError('Marcadores fuera del polígono');
+            fuera = true;
+            break;
+          }
+        }
+
+        if (fuera) {
+          return;
+        }
+
+        closed = this.elementosOSM.filter(ele => ele.closed_way === 1);
         await this.presentActionSheet(closed, layer, layer.getLatLngs()[0]);
       }
     });
   }
 
-  listarElementosOSM() {
-    this.utilidadesService.listaElementosOSM()
-      .subscribe((e: ElementoOSM[]) => {
-        this.elementosOSM = e;
-      });
+
+  /**
+   * Devuelve un arreglo de polígonos que contienen un punto.
+   */
+  obtenerPoligono(punto) {
+    return leafletPip.pointInLayer(punto, this.geoJS);
   }
 
-  obtenerPoligono(ubicacion) {
-    return leafletPip.pointInLayer(ubicacion, this.geoJS);
+  /**
+   * Elimina una cartografía del api y del mapa.
+   */
+  async eliminarCartografia(layer) {
+    await this.presentLoading('Eliminando cartografía.');
+    this.instrumentosService.eliminarCartografia(layer.feature.properties.id)
+      .subscribe(async () => {
+        await this.loading.dismiss();
+        this.uiService.presentToastSucess('Eliminada correctamente.');
+        this.map.removeLayer(layer);
+      }, async (err) => {
+        await this.loading.dismiss();
+        this.uiService.presentToastError('Error al eliminar.');
+        console.log(err);
+      });
   }
 
   async presentActionSheet(elementosOSM: ElementoOSM[], layer, coordenadas: any[]) {
@@ -147,13 +196,16 @@ export class MapeoComponent implements OnInit {
     elementosOSM.forEach(e => {
       buttons.push({
         text: e.nombre,
-        handler: () => {
+        handler: async () => {
+          await this.presentLoading('Agregando cartografía.');
           this.instrumentosService.mapeoOSM(this.tarea.instrid, e.elemosmid, coor)
-            .subscribe(r => {
-              console.log(r);
+            .subscribe(async () => {
+              await this.loading.dismiss();
               editableLayers.addLayer(layer);
-              this.uiService.presentToastSucess('Agregado correctamente');
-            }, (err) => {
+              this.uiService.presentToastSucess('Agregada correctamente.');
+            }, async (err) => {
+              await this.loading.dismiss();
+              this.uiService.presentToastError('Error al agregar.');
               console.log(err);
             });
         }
@@ -174,6 +226,32 @@ export class MapeoComponent implements OnInit {
       buttons
     });
     await actionSheet.present();
+  }
+
+  async presentAlertConfirm(layer) {
+    const alert = await this.alertController.create({
+      header: '¿Desea eliminar cartografría?',
+      buttons: [{
+        text: 'Cancelar',
+        role: 'cancel',
+      }, {
+        text: 'Eliminar',
+        handler: () => {
+          this.eliminarCartografia(layer);
+        }
+      }]
+    });
+
+    await alert.present();
+  }
+
+  async presentLoading(message: string) {
+    this.loading = await this.loadingController.create({
+      message,
+      animated: true,
+      translucent: true
+    });
+    await this.loading.present();
   }
 
   regresar() {

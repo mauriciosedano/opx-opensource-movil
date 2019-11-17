@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Chart } from 'chart.js';
+import { TextoVozService } from 'src/app/servicios/texto-voz.service';
 
 @Component({
   selector: 'app-info-contexto',
@@ -29,11 +30,18 @@ export class InfoContextoComponent implements OnInit {
   target: any = { value: 260, label: 'Revenue 2018 YTD', size: 4, color: 'Black' };
   ticks: any = { position: 'none' };
 
-  constructor() { }
+  constructor(
+    private textoVozService: TextoVozService
+  ) { }
 
   ngOnInit() {
     this.cargarGraficaLinea('dia');
 
+  }
+
+  async reproducir() {
+    const txt = `${this.poligonoSeleccionado.datatipe}, ${this.poligonoSeleccionado.descripcion}`;
+    await this.textoVozService.interpretar(txt);
   }
 
   cargarGraficaLinea(type: string) {
