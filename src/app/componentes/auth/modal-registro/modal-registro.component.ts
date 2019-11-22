@@ -84,7 +84,7 @@ export class ModalRegistroComponent implements OnInit {
     this.authService.registro(form)
       .subscribe(async () => {
 
-        this.loading.dismiss();
+        await this.loading.dismiss();
         this.uiService.presentToastSucess('Registrado correctamente.');
 
         this.cerrar();
@@ -93,8 +93,8 @@ export class ModalRegistroComponent implements OnInit {
         });
         modal.present();
 
-      }, (error: any) => {
-        this.loading.dismiss();
+      }, async (error: any) => {
+        await this.loading.dismiss();
         if (error.code === 400) {
           this.uiService.presentToastError('Verifique su correo.');
 

@@ -26,14 +26,11 @@ export class ValidarComponent implements OnInit {
     private uiService: UiService
   ) { }
 
-  ngOnInit() {
-    console.log(this.encuestas);
-
-  }
+  ngOnInit() { }
 
   async ionViewDidEnter() {
     this.slideLength = await this.slides.length();
-    this.slides.lockSwipes(true);
+    // this.slides.lockSwipes(true);
   }
 
   async validar() {
@@ -44,6 +41,7 @@ export class ValidarComponent implements OnInit {
 
     this.instrumentosServices.revisionEncuesta(encuesta.encuestaid, 2)
       .subscribe(async () => {
+        this.encuestas[from].estado = 2;
         await this.loading.dismiss();
         await this.uiService.presentToastSucess('Validada correctamente.');
         await this.siguiente();
@@ -56,13 +54,11 @@ export class ValidarComponent implements OnInit {
   }
 
   async invalidar() {
-    const from = await this.slides.getActiveIndex();
-    const encuesta = this.encuestas[from];
-    await this.presentAlertPrompt(encuesta);
+    await this.presentAlertPrompt();
   }
 
   async anterior() {
-    this.slides.lockSwipes(false);
+    // this.slides.lockSwipes(false);
     const from = await this.slides.getActiveIndex();
 
     if (from === 0) {
@@ -72,11 +68,11 @@ export class ValidarComponent implements OnInit {
     }
 
     this.slideActiveIndex = await this.slides.getActiveIndex();
-    this.slides.lockSwipes(true);
+    // this.slides.lockSwipes(true);
   }
 
   async siguiente() {
-    this.slides.lockSwipes(false);
+    // this.slides.lockSwipes(false);
     const from = await this.slides.getActiveIndex();
     const total = (await this.slides.length() - 1);
 
@@ -84,10 +80,10 @@ export class ValidarComponent implements OnInit {
       this.slides.slideTo(from + 1);
     }
     this.slideActiveIndex = await this.slides.getActiveIndex();
-    this.slides.lockSwipes(true);
+    //  this.slides.lockSwipes(true);
   }
 
-  async presentAlertPrompt(encuesta) {
+  async presentAlertPrompt() {
     const alert = await this.alertController.create({
       header: 'Observación',
       inputs: [
@@ -108,12 +104,15 @@ export class ValidarComponent implements OnInit {
         }, {
           text: 'Aceptar',
           handler: async (e) => {
-            console.log(e.obs);
+            const from = await this.slides.getActiveIndex();
+            const encuesta = this.encuestas[from];
 
             await this.presentLoading();
 
             this.instrumentosServices.revisionEncuesta(encuesta.encuestaid, 1, e.obs)
               .subscribe(async () => {
+                this.encuestas[from].estado = 1;
+                this.encuestas[from].observacion = e.obs;
                 await this.loading.dismiss();
                 await this.uiService.presentToastSucess('Invalidada correctamente.');
                 await this.siguiente();
@@ -136,6 +135,20 @@ export class ValidarComponent implements OnInit {
       translucent: true
     });
     await this.loading.present();
+  }
+
+  async slideChange(e) {
+    this.slideActiveIndex = await this.slides.getActiveIndex();
+  }
+
+  getColor(estado: number) {
+    if (estado === 0) {
+      return 'medium';
+    } else if (estado === 2) {
+      return 'success';
+    } else if (estado === 1) {
+      return 'danger';
+    }
   }
 
   regresar() {

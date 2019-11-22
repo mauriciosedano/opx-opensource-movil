@@ -8,7 +8,8 @@ import { Tarea } from 'src/app/interfaces/tarea';
 import { Map, tileLayer, geoJSON } from 'leaflet';
 import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
 import { MapeoComponent } from './mapeo/mapeo.component';
-import { ValidarComponent } from './validar/validar.component';
+import { ValidarComponent } from './encuesta/validar/validar.component';
+import { AuthService } from 'src/app/servicios/auth.service';
 
 @Component({
   selector: 'app-tarea',
@@ -31,7 +32,8 @@ export class TareaPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private tareasService: TareasService,
     private instrumentosServices: InstrumentosService,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    public authService: AuthService
   ) { }
 
   ngOnInit() { }
@@ -58,8 +60,6 @@ export class TareaPage implements OnInit {
         this.cargando = false;
         this.tarea = resp;
         this.tarea.tareid = id;
-        console.log(this.tarea);
-
 
         if (this.tarea.taretipo === 1) {
           const res = await this.instrumentosServices.verificarImplementacion(this.tarea.instrid);
@@ -95,49 +95,53 @@ export class TareaPage implements OnInit {
     this.instrumentosServices.informacionInstrumento(this.tarea.instrid)
       .subscribe(async r => {
 
-        const filter = [];
-        r.campos.filter(c => c.type !== 'start' && c.type !== 'end')
-          .forEach(element => {
-            filter.push({
-              item: element.$autoname,
-              label: element.label[0]
+        if (this.tarea.taretipo === 1) {
+          const filter = [];
+          r.campos.filter(c => c.type !== 'start' && c.type !== 'end')
+            .forEach(element => {
+              filter.push({
+                item: element.$autoname,
+                label: element.label[0]
+              });
             });
+
+          const encuestas = [];
+          r.info.forEach(data => {
+            const tmp = {
+              encuestaid: data.encuestaid,
+              estado: data.estado,
+              observacion: data.observacion,
+              formulario: []
+            };
+
+            filter.forEach(pregunta => {
+              tmp.formulario.push({
+                label: pregunta.label,
+                respuesta: data[pregunta.item]
+              });
+            });
+
+            encuestas.push(tmp);
           });
 
-        const encuestas = [];
-
-        r.info.forEach(data => {
-          const tmp = {
-            encuestaid: data.encuestaid,
-            estado: data.estado,
-            observacion: data.observacion,
-            formulario: []
-          };
-
-          filter.forEach(pregunta => {
-            tmp.formulario.push({
-              label: pregunta.label,
-              respuesta: data[pregunta.item]
-            });
+          const modal = await this.modalCtrl.create({
+            component: ValidarComponent,
+            componentProps: {
+              encuestas
+            }
           });
-
-          encuestas.push(tmp);
-        });
-
-
-        const modal = await this.modalCtrl.create({
-          component: ValidarComponent,
-          componentProps: {
-            encuestas
-          }
-        });
-        modal.present();
-
-
+          await modal.present();
+        } else if (this.tarea.taretipo === 2) {
+          const modal = await this.modalCtrl.create({
+            component: MapeoComponent,
+            componentProps: {
+              validar: true,
+              tarea: this.tarea
+            }
+          });
+          await modal.present();
+        }
       });
-
-
-
   }
 
   ionViewWillLeave() {

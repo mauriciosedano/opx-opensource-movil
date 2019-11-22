@@ -50,7 +50,7 @@
     <ion-segment-button value="completadas">
       <ion-label style="margin-bottom: 0px;">
         <ion-text>
-          <h2><b>0</b></h2>
+          <h2><b>{{tareasCompletadas.length}}</b></h2>
         </ion-text>
       </ion-label>
       <ion-label style="margin-top: 0px;">
@@ -75,7 +75,7 @@
   <!-- Skeleton -->
 
   <app-tareas *ngIf="segmentoPendientes" [cargando]="cargando" [tareas]="tareas"></app-tareas>
-  <app-tareas *ngIf="segmentoCompletadas" [cargando]="cargando" [tareas]="[]"></app-tareas>
+  <app-tareas *ngIf="segmentoCompletadas" [cargando]="cargando" [tareas]="tareasCompletadas"></app-tareas>
 
 </ion-content>
 

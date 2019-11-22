@@ -12,7 +12,7 @@ import { MapeoComponent } from './mapeo/mapeo.component';
 
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { ValidarComponent } from './validar/validar.component';
+import { ValidarComponent } from './encuesta/validar/validar.component';
 
 const routes: Routes = [{
   path: '',

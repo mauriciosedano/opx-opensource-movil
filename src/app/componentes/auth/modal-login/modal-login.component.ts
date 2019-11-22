@@ -33,11 +33,11 @@ export class ModalLoginComponent implements OnInit {
 
     await this.presentLoading('Ingresando...');
     this.authService.login(form.value.email, form.value.password)
-      .subscribe(() => {
-        this.loading.dismiss();
+      .subscribe(async () => {
+        await this.loading.dismiss();
         this.cerrar();
-      }, (error: any) => {
-        this.loading.dismiss();
+      }, async (error: any) => {
+        await this.loading.dismiss();
         if (error.code === 404) {
           this.uiService.presentToastError(error.message);
         } else {

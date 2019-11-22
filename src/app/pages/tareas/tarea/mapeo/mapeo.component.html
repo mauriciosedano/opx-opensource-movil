@@ -4,7 +4,8 @@
       <ion-button (click)="regresar()">
         <ion-icon slot="start" name="close"></ion-icon>
       </ion-button>
-      <ion-title>Mapeo</ion-title>
+      <ion-title *ngIf="!validar">Mapeo</ion-title>
+      <ion-title *ngIf="validar">Validar</ion-title>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -16,4 +17,31 @@
     </div>
   </div>
   <div id="map" #mapa></div>
+
+  <!-- Botón flotante que actualiza la ubicación actual -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="light" (click)="actualizaUbicacion()">
+      <ion-icon color="primary" name="locate"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>
+
+<ion-footer *ngIf="validar">
+  <ion-toolbar>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" color="primary" (click)="invalidarCartografia()">
+          INVÁLIDO
+        </ion-button>
+      </ion-col>
+
+      <ion-col>
+        <ion-button expand="full" color="primary" (click)="validarCartografia()">
+          VÁLIDO
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

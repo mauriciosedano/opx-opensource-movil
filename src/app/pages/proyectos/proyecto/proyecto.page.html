@@ -105,8 +105,10 @@
     <app-tareas *ngIf="authService.token" [cargando]="cargando" [tareas]="tareas"></app-tareas>
   </div>
 
-  <div *ngIf="segmentoValidar" class="ion-padding">
-    <ion-text class="ion-text-center ion-padding-horizontal">
+  <div *ngIf="segmentoValidar">
+    <app-tareas *ngIf="authService.token && authService.user.rol === 'Validador'" [cargando]="cargando"
+      [tareas]="tareasCompletadas"></app-tareas>
+    <ion-text *ngIf="authService.user.rol !== 'Validador'" class="ion-text-center ion-padding-horizontal">
       <h3>No tienes el ranking suficiente para realizar validaciones</h3>
     </ion-text>
   </div>

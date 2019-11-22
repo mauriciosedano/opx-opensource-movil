@@ -28,7 +28,8 @@
         <ion-text color="medium">
           <p>{{tarea.taredescripcion}}</p>
         </ion-text>
-        <ion-progress-bar class="ion-margin-top" color="warning" [value]="(tarea.progreso || 0)/tarea.tarerestriccant"></ion-progress-bar>
+        <ion-progress-bar class="ion-margin-top" color="warning" [value]="(tarea.progreso || 0)/100">
+        </ion-progress-bar>
         <ion-item class="ion-no-padding" lines="none">
           <ion-label slot="start">
             <ion-text color="primary"><b>{{tarea.progreso || 0 | number: '1.0'}}%</b></ion-text>
@@ -38,7 +39,7 @@
           </ion-label>
           <ion-label slot="end">
             <ion-text color="medium">
-              <b>{{tarea.progreso || 0 | number: '1.0'}}/{{tarea.tarerestriccant | number: '1.0'}}</b>
+              <b>{{tarea.progreso || 0 | number: '1.0'}}/100</b>
             </ion-text>
           </ion-label>
         </ion-item>
@@ -53,7 +54,8 @@
           Realizar mapeo
         </ion-button>
 
-        <ion-button class="ion-text-uppercase" color="primary" expand="block" (click)="validar()">
+        <ion-button *ngIf="authService.user.rol === 'Validador'" class="ion-text-uppercase"
+          color="primary" expand="block" (click)="validar()">
           Validar
         </ion-button>
       </ion-col>

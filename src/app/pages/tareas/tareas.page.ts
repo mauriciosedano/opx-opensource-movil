@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/servicios/auth.service';
 export class TareasPage {
 
   cargando = true;
+  buscando = false;
   enabled = true;
   search: string;
 
@@ -18,6 +19,7 @@ export class TareasPage {
   segmentoCompletadas = false;
 
   tareas: Tarea[] = [];
+  tareasCompletadas: Tarea[] = [];
 
   constructor(
     private tareasService: TareasService,
@@ -26,6 +28,7 @@ export class TareasPage {
 
   ionViewDidEnter() {
     this.tareas = [];
+    this.tareasCompletadas = [];
     if (this.authService.token) {
       this.incoming(null, true);
     } else {
@@ -34,19 +37,21 @@ export class TareasPage {
   }
 
   buscar(event) {
-    this.cargando = true;
+    this.buscando = true;
     this.search = event.detail.value;
     this.tareasService.listadoTareas(this.search, true)
       .subscribe((resp: any) => {
-        this.tareas = resp.tareas;
-        this.cargando = false;
+        this.tareas = resp.tareas.filter(t => t.progreso !== 100);
+        this.tareasCompletadas = resp.tareas.filter(t => t.progreso === 100);
+        this.buscando = false;
       });
   }
 
   incoming(event?, pull: boolean = false) {
     this.tareasService.listadoTareas(this.search, pull)
       .subscribe(resp => {
-        this.tareas.push(...resp.tareas);
+        this.tareas.push(...resp.tareas.filter(t => t.progreso !== 100));
+        this.tareasCompletadas.push(...resp.tareas.filter(t => t.progreso === 100));
         this.cargando = false;
 
         if (resp.paginator.currentPage === resp.paginator.lastPage) {
