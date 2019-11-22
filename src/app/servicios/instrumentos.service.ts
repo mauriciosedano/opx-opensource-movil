@@ -18,6 +18,10 @@ export class InstrumentosService {
     private errorService: ErrorService
   ) { }
 
+  /**
+   * Verifica si una encuesta se encuentra habilitada para ser llenada
+   * @param id Identificación del instrumento de tipo encuesta.
+   */
   verificarImplementacion(id: string): any {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
     return new Promise((resolve) => {
@@ -30,6 +34,10 @@ export class InstrumentosService {
     });
   }
 
+  /**
+   * Enlace usado en iFrame para visualizar la encuesta y poder ser llenada.
+   * @param id id Identificación del instrumento de tipo encuesta.
+   */
   enlaceFormularioKoboToolbox(id: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
     return this.http.get(`${URL}/enlace-formulario/${id}`, { headers })
@@ -38,6 +46,12 @@ export class InstrumentosService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Envía al servicio un nuevo mapeo en la cartografia.
+   * @param instrId id Identificación del instrumento de tipo mapa.
+   * @param osmelement Tipo de elemento (casa, calle).
+   * @param coordinates Coordenadas de mapeo realizado.
+   */
   mapeoOSM(instrId: string, osmelement: string, coordinates) {
     const data = JSON.stringify({ osmelement, coordinates });
     const headers = new HttpHeaders({
@@ -50,6 +64,10 @@ export class InstrumentosService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Carga los elementos que ya fueron mapeados en un instrumento de tipo cartografía
+   * @param instrId id Identificación del instrumento de tipo cartografia.
+   */
   detalleMapeo(instrId: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
     return this.http.get(`${URL}/detalle-cartografia/${instrId}`, { headers })

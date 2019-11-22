@@ -12,12 +12,18 @@ const URL = environment.API_URL;
 })
 export class UtilidadesService {
 
+  /**
+   * Servicio que carga utilidades que son comunes en la aplicación móvil.
+   */
   constructor(
     private errorService: ErrorService,
     private http: HttpClient,
     private authService: AuthService
   ) { }
 
+  /**
+   * Obtiene la lista de generos
+   */
   listaGeneros() {
     return this.http.get(URL + '/generos/list/')
       .pipe(map((resp: any) => {
@@ -25,6 +31,9 @@ export class UtilidadesService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Carga los niveles educativos.
+   */
   listaNivelesEducativos() {
     return this.http.get(URL + '/niveles-educativos/list/')
       .pipe(map((resp: any) => {
@@ -32,6 +41,9 @@ export class UtilidadesService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Barrios disponibles en la plataforma.
+   */
   listaBarrios() {
     return this.http.get(URL + '/barrios/list/')
       .pipe(map((resp: any) => {
@@ -39,6 +51,9 @@ export class UtilidadesService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Elementos disponibles para realizar el mapeo.
+   */
   listaElementosOSM() {
     const headers = new HttpHeaders({
       Authorization: this.authService.token,

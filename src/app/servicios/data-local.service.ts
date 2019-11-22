@@ -13,11 +13,17 @@ export class DataLocalService {
   proyectosDetalle: ProyectoBackend[] = [];
   tareas: Tarea[] = [];
 
+  /**
+   * Clase encargada de almacenar los recursos necesarios para ejecutar la aplicación cuando no haya conexión a internet.
+   */
   constructor(
     private storage: Storage,
     public uiService: UiService
   ) { }
 
+  /**
+   * Función que guarda localmente los proyectos que se consultaron cuando había conexión a internet.
+   */
   async guardarProyectos(proyectos: Proyecto[], pull: boolean = false, search?: string) {
     if (pull) {
       this.proyectos = proyectos;
@@ -27,6 +33,9 @@ export class DataLocalService {
     await this.storage.set('proyectos', this.proyectos);
   }
 
+  /**
+   * Función que guarda localmente los proyectos en detalle que se consultaron cuando había conexión a internet.
+   */
   async guardarDetalleProyecto(resp: ProyectoBackend) {
     this.proyectosDetalle = await this.storage.get('proyectosDetalle') || [];
     const proyectosDetalle = await this.proyectosDetalle;
@@ -41,11 +50,19 @@ export class DataLocalService {
     await this.storage.set('proyectosDetalle', proyectosDetalle);
   }
 
+  /**
+   * Carga del almacenamiento local un proyecto en detalle
+   * @param proyid proyecto por cargar.
+   */
   async detalleProyecto(proyid: string) {
     this.proyectosDetalle = await this.storage.get('proyectosDetalle');
     return this.proyectosDetalle.find(p => p.proyecto.pk === proyid);
   }
 
+  /**
+   * Carga la lista de proyectos del almacenamiento local
+   * @param search opcional que permite filtrar la lista
+   */
   async listarProyectos(search?: string) {
     this.proyectos = await this.storage.get('proyectos');
     let proyectos = await this.proyectos;
@@ -66,11 +83,17 @@ export class DataLocalService {
     };
   }
 
+  /**
+   * Guarda tareas en el almacenamiento local
+   */
   async guardarTareas(tareas: Tarea[]) {
     this.tareas = tareas;
     await this.storage.set('tareas', this.tareas);
   }
 
+  /**
+   * Carga tareas del almacenamiento local
+   */
   async listarTareas() {
     this.tareas = await this.storage.get('tareas');
     return await this.tareas;

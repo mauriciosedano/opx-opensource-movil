@@ -17,12 +17,18 @@ export class AuthService {
   token: string = null;
   public user: User;
 
+  /**
+   * Servicio que representa el registro, login de la aplicación movil.
+   */
   constructor(
     private http: HttpClient,
     private storage: Storage,
     private navCtrl: NavController
   ) { }
 
+  /**
+   * Requerido para enviar objetos en el body de una petición HTTP
+   */
   querystring(obj: object): string {
     return Object.keys(obj)
       .map(key => {
@@ -30,6 +36,11 @@ export class AuthService {
       }).join('&');
   }
 
+  /**
+   * Autenticación de la plataforma
+   * @param email correo del usuario
+   * @param password contraseña del usuario
+   */
   login(email: string, password: string) {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
@@ -43,6 +54,10 @@ export class AuthService {
       }), catchError(this.handleError));
   }
 
+  /**
+   * Registro de usuarios en la plataforma
+   * Por defecto los usuarios registrados tienen el rol de Voluntario
+   */
   registro(form: any) {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
@@ -53,6 +68,10 @@ export class AuthService {
 
   }
 
+  /**
+   * Cierra sesión en la aplicación móvil.
+   * Se eliminan toda la información almaceneda en la memorial local y/o nativa.
+   */
   logout() {
     this.token = null;
     this.user = null;
@@ -60,6 +79,10 @@ export class AuthService {
     this.navCtrl.navigateRoot('/', { animated: true });
   }
 
+  /**
+   * Obtiene el usuario actual
+   * En caso de no tenerlo, se redirige a la página principal
+   */
   getUser() {
     if (!this.user.userid) {
       this.checkToken();
@@ -67,23 +90,36 @@ export class AuthService {
     return { ...this.user };
   }
 
+  /**
+   * Guarda el token en el almacenamiento local del dispositivo móvil.
+   */
   async saveToken(token: string) {
     this.token = 'Bearer ' + token;
     await this.storage.set('token', this.token);
     await this.checkToken();
   }
 
+  /**
+   * Guarda usuario en el almacenamiento local del dispositivo móvil.
+   */
   async saveUser(user: User) {
     this.user = user;
     await this.storage.set('user', user);
     await this.checkToken();
   }
 
+  /**
+   * Carga el token del almacenamiento local del dispositivo móvil.
+   * En caso de no tener, retorna null.
+   */
   async loadToken() {
     this.token = await this.storage.get('token') || null;
     this.user = await this.storage.get('user') || null;
   }
 
+  /**
+   * Verifica que el token exista en el almacenamiento local del dispositivo móvil.
+   */
   async checkToken(): Promise<boolean> {
     await this.loadToken();
     if (!this.token) {

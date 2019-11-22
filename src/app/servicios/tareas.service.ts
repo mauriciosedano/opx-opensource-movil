@@ -4,7 +4,6 @@ import { AuthService } from './auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { ErrorService } from './error.service';
-import { AreaMedicionBack } from '../interfaces/area-medicion';
 import { from } from 'rxjs';
 import { ConnectionStatus, NetworkService } from './network.service';
 import { DataLocalService } from './data-local.service';
@@ -19,6 +18,9 @@ export class TareasService {
 
   pageTareas = 0;
 
+  /**
+   * Servicio que se encarga de gestionar las tareas
+   */
   constructor(
     private http: HttpClient,
     public authService: AuthService,
@@ -28,6 +30,9 @@ export class TareasService {
     private dataLocalService: DataLocalService
   ) { }
 
+  /**
+   * Obtiene una tarea en detalle
+   */
   detalleTarea(tareid: string) {
     /*  if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
        return from(this.dataLocalService.detalleProyecto(tareid));
@@ -42,6 +47,10 @@ export class TareasService {
     /* } */
   }
 
+  /**
+   * Carga la lista de tareas disponibles
+   * @param search parametro de búsqueda
+   */
   listadoTareas(search?: string, pull: boolean = false) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
 
@@ -55,21 +64,6 @@ export class TareasService {
     return this.http.get(url, { headers })
       .pipe(map((resp: any) => {
         return resp;
-      }), catchError(e => this.errorService.handleError(e)));
-
-  }
-
-  /**
-   * Obtiene la lista global de los datos Geoespaciales
-   */
-  listarDatosGeoespaciales() {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/datos-geoespaciales/`, { headers })
-      .pipe(map((resp: AreaMedicionBack) => {
-        for (const a of resp.areasMedicion) {
-          a.areaMedicion.geoJS = JSON.parse(a.areaMedicion.geojson);
-        }
-        return resp.areasMedicion;
       }), catchError(e => this.errorService.handleError(e)));
   }
 

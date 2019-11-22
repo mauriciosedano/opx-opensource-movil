@@ -12,14 +12,19 @@ const URL = environment.API_URL + '/datos-contexto';
 })
 export class ContextosService {
 
+  /**
+   * Servicio que representa los contextos del sistema.
+   */
   constructor(
     private http: HttpClient,
     public authService: AuthService,
     private errorService: ErrorService
   ) { }
 
+  /**
+   * Obtiene del backend, todos los contextos almacenados en el sistema.
+   */
   listadoContextos() {
-    // const headers = new HttpHeaders({ Authorization: this.authService.token });
     return this.http.get(`${URL}/list/`)
       .pipe(map((resp: any) => {
         return resp.contextos;

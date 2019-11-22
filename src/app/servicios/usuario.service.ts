@@ -13,12 +13,19 @@ const URL = environment.API_URL + '/usuarios';
 })
 export class UsuarioService {
 
+  /**
+   * Servicio relacionado con la gestión del usuario logueado
+   */
   constructor(
     private http: HttpClient,
     public authService: AuthService,
     private errorService: ErrorService
   ) { }
 
+  /**
+   * Obtiene información detallada de un usuario
+   * @param id identificación de un usuario
+   */
   detalleUsuario(id: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
     return this.http.get(`${URL}/detail/${id}`, { headers })
@@ -27,6 +34,9 @@ export class UsuarioService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Actualiza la información de un usuario
+   */
   editarUsuario(usuario: User) {
     const headers = new HttpHeaders({
       Authorization: this.authService.token,
@@ -39,7 +49,5 @@ export class UsuarioService {
         user.userfullname = resp.usuario.fields.userfullname;
         this.authService.saveUser(user);
       }), catchError(e => this.errorService.handleError(e)));
-
-
   }
 }
