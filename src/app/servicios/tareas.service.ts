@@ -8,6 +8,7 @@ import { from } from 'rxjs';
 import { ConnectionStatus, NetworkService } from './network.service';
 import { DataLocalService } from './data-local.service';
 import { OfflineManagerService } from './offline-manager.service';
+import { Tarea } from '../interfaces/tarea';
 
 const URL = environment.API_URL + '/tareas';
 
@@ -29,6 +30,25 @@ export class TareasService {
     private networkService: NetworkService,
     private dataLocalService: DataLocalService
   ) { }
+
+
+  /**
+   * Guarda los cambios de una tarea.
+   */
+  editarTarea(tarea: Tarea) {
+    const headers = new HttpHeaders({
+      Authorization: this.authService.token,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    const querystring = this.authService.querystring(tarea);
+
+    return this.http.post(`${URL}/${tarea.tareid}`, querystring, { headers })
+      .pipe(map((resp: any) => {
+        return resp.tarea;
+        // this.dataLocalService.guardarDetalleProyecto(resp.tarea);
+      }), catchError(e => this.errorService.handleError(e)));
+
+  }
 
   /**
    * Obtiene una tarea en detalle

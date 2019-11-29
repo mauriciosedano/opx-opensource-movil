@@ -8,6 +8,7 @@ import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { ContextosService } from 'src/app/servicios/contextos.service';
 import { TextoVozService } from 'src/app/servicios/texto-voz.service';
 import { InfoContextoComponent } from 'src/app/componentes/info-contexto/info-contexto.component';
+import { AuthService } from 'src/app/servicios/auth.service';
 
 @Component({
   selector: 'app-explorar',
@@ -30,7 +31,9 @@ export class ExplorarPage implements OnInit {
     private modalController: ModalController,
     private ubicacionService: UbicacionService,
     private contextoService: ContextosService,
-    private textoVozService: TextoVozService
+    private textoVozService: TextoVozService,
+    public authService: AuthService,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() {
@@ -67,6 +70,10 @@ export class ExplorarPage implements OnInit {
       }
     });
     return await myModal.present();
+  }
+
+  irDecision(decision) {
+    this.navCtrl.navigateForward(`/tabs/explorar/decision/${decision}`, { animated: true });
   }
 
   actualizaUbicacion() {

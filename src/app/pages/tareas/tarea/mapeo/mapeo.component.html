@@ -7,6 +7,21 @@
       <ion-title *ngIf="!validar">Mapeo</ion-title>
       <ion-title *ngIf="validar">Validar</ion-title>
     </ion-buttons>
+    <ion-buttons *ngIf="this.tarea.tareestado === 1 && validar" slot="secondary">
+      <ion-button>
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="this.tarea.tareestado === 0 && validar" slot="secondary">
+      <ion-button>
+        <ion-icon name="construct" mode="ios"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons *ngIf="this.tarea.tareestado === 2 && validar" slot="secondary">
+      <ion-button>
+        <ion-icon color="success" name="checkmark-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -31,13 +46,15 @@
   <ion-toolbar>
     <ion-row>
       <ion-col>
-        <ion-button expand="full" color="primary" (click)="invalidarCartografia()">
+        <ion-button expand="full" [disabled]="this.tarea.tareestado === 2 && cargando" color="primary"
+          (click)="invalidarCartografia()">
           INVÁLIDO
         </ion-button>
       </ion-col>
 
       <ion-col>
-        <ion-button expand="full" color="primary" (click)="validarCartografia()">
+        <ion-button expand="full" [disabled]="this.tarea.tareestado === 2 && cargando" color="primary"
+          (click)="validarCartografia()">
           VÁLIDO
         </ion-button>
       </ion-col>

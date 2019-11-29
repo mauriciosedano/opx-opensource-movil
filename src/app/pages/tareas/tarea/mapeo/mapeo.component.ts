@@ -237,12 +237,24 @@ export class MapeoComponent implements OnInit {
       });
   }
 
-  validarCartografia() {
-
+  async validarCartografia() {
+    await this.presentLoading('Validando');
+    const estadoPrevio = this.tarea.tareestado;
+    this.tarea.tareestado = 2;
+    this.tareasService.editarTarea(this.tarea)
+      .subscribe(async () => {
+        await this.loading.dismiss();
+        await this.uiService.presentToastSucess('Validada correctamente.');
+      }, async (err) => {
+        this.tarea.tareestado = estadoPrevio;
+        await this.loading.dismiss();
+        this.uiService.presentToastError('Error al validar.');
+        console.log(err);
+      });
   }
 
-  invalidarCartografia() {
-
+  async invalidarCartografia() {
+    await this.presentAlertPrompt();
   }
 
 
@@ -316,6 +328,52 @@ export class MapeoComponent implements OnInit {
       translucent: true
     });
     await this.loading.present();
+  }
+
+  async presentAlertPrompt() {
+    const alert = await this.alertController.create({
+      header: 'Observación',
+      inputs: [
+        {
+          name: 'obs',
+          type: 'text',
+          placeholder: 'Escribe aquí'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Aceptar',
+          handler: async (e) => {
+            await this.presentLoading('Invalidando');
+            console.log(e.obs);
+
+            this.tarea.observaciones = e.obs;
+            const estadoPrevio = this.tarea.tareestado;
+            this.tarea.tareestado = 0;
+            this.tareasService.editarTarea(this.tarea)
+              .subscribe(async () => {
+                await this.loading.dismiss();
+                await this.uiService.presentToastSucess('Invalidada correctamente.');
+              }, async (err) => {
+                this.tarea.observaciones = '';
+                this.tarea.tareestado = estadoPrevio;
+                await this.loading.dismiss();
+                this.uiService.presentToastError('Error al invalidar.');
+                console.log(err);
+              });
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   colorAleatorio() {
