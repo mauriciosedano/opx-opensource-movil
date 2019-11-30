@@ -30,4 +30,43 @@ export class ContextosService {
         return resp.contextos;
       }), catchError(e => this.errorService.handleError(e)));
   }
+
+  categorizacion(
+    barrioUbicacion: string = '1603',
+    barrioSeleccion: string = '206',
+    año: number = 2010
+  ) {
+    const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
+
+    const url = `${environment.API_URL}/contextualizacion/categorizacion/` +
+      `?barrioUbicacion=${barrioUbicacion}&barrioSeleccion=${barrioSeleccion}&year=${año}`;
+
+    return this.http.get(url, { headers })
+      .pipe(map((resp: any) => {
+        return resp.data;
+      }), catchError(e => this.errorService.handleError(e)));
+  }
+
+  /**
+   * Datos de contextualización
+   */
+  datosContextualización(
+    labelX: string = 'todo',
+    barrioUbicacion: string = '1603',
+    barrioSeleccion: string = '206',
+    año: number = 2010
+  ) {
+    const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
+
+    let url = `${environment.API_URL}/contextualizacion/${labelX}/?barrioUbicacion=${barrioUbicacion}&barrioSeleccion=${barrioSeleccion}`;
+
+    if (labelX !== 'todo') {
+      url += `&year=${año}`;
+    }
+
+    return this.http.get(url, { headers })
+      .pipe(map((resp: any) => {
+        return resp.data;
+      }), catchError(e => this.errorService.handleError(e)));
+  }
 }

@@ -1,7 +1,8 @@
 <ion-header no-border>
   <ion-toolbar>
     <ion-text>
-      <p class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>{{poligonoSeleccionado.descripcion}}</b></p>
+      <h3 class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>Barrio
+          {{barrioSeleccionado ? barrioSeleccionado.barrio : barrioUbicacion.barrio}}</b></h3>
       <ion-item lines="none">
         <ion-icon color="success" name="radio-button-on" style="padding-right: 5px;"></ion-icon>
         <ion-label color="medium"><b>INDICADOR DE PAZ</b></ion-label>
@@ -18,7 +19,7 @@
 <ion-content>
 
   <ion-segment (ionChange)="segmentChanged($event)" class="ion-padding-bottom">
-    <ion-segment-button value="dia" checked>
+    <ion-segment-button value="dia">
       <ion-label>DÍA</ion-label>
     </ion-segment-button>
     <ion-segment-button value="semana">
@@ -27,41 +28,77 @@
     <ion-segment-button value="mes">
       <ion-label>MES</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="todo">
+    <ion-segment-button value="todo" checked>
       <ion-label>TODO</ion-label>
     </ion-segment-button>
   </ion-segment>
 
-  <canvas #barCanvas></canvas>
+  <ion-item *ngIf="segmentoActual !== 'todo'">
+    <ion-label color="primary" position="fixed">Año <ion-text color="danger">*</ion-text>
+    </ion-label>
+    <ion-datetime (ionChange)="ionChange(defaultDate)" [min]="minDate" [max]="maxDate" displayFormat="YYYY"
+      name="defaultDate" [(ngModel)]="defaultDate" required>
+    </ion-datetime>
+  </ion-item>
 
-  <div class="ion-padding-top">
-    <jqxBulletChart [width]='bulletChart.width' [height]='bulletChart.height' [barSize]='"40%"' [labelsFormat]='"c"'
-      [showTooltip]='true' [title]='title' [description]='description' [ranges]='ranges' [pointer]='pointer'
-      [target]='target' [ticks]='ticks'>
-    </jqxBulletChart>
-    <jqxBulletChart [width]='bulletChart.width' [height]='bulletChart.height' [barSize]='"40%"' [labelsFormat]='"c"'
-      [showTooltip]='true' [title]='title' [description]='description' [ranges]='ranges' [pointer]='pointer'
-      [target]='target' [ticks]='ticks'>
-    </jqxBulletChart>
-    <jqxBulletChart [width]='bulletChart.width' [height]='bulletChart.height' [barSize]='"40%"' [labelsFormat]='"c"'
-      [showTooltip]='true' [title]='title' [description]='description' [ranges]='ranges' [pointer]='pointer'
-      [target]='target' [ticks]='ticks'>
-    </jqxBulletChart>
-    <jqxBulletChart [width]='bulletChart.width' [height]='bulletChart.height' [barSize]='"40%"' [labelsFormat]='"c"'
-      [showTooltip]='true' [title]='title' [description]='description' [ranges]='ranges' [pointer]='pointer'
-      [target]='target' [ticks]='ticks'>
-    </jqxBulletChart>
+  <canvas [hidden]="cargandoBar" #barCanvas></canvas>
+
+  <ion-grid *ngIf="cargandoBar" style="padding: 20%;">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-spinner name="crescent"></ion-spinner>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div *ngIf="!loadingBullets" class="ion-padding-vertical">
+    <div *ngFor="let bullet of bulletCharts">
+      <ion-label>{{bullet.title}}</ion-label>
+      <jqxBulletChart width='95%' height='70px' barSize='50%' [showTooltip]='true' [title]='title'
+        [description]='description' [ranges]='bullet.ranges' [pointer]='bullet.pointer' [target]='bullet.target'
+        [ticks]='ticks'>
+      </jqxBulletChart>
+    </div>
+
+    <ion-chip outline>
+      <ion-icon name="water" mode="ios" style="opacity: 0.2;" color="medium"></ion-icon>
+      <ion-label>Ciudad</ion-label>
+    </ion-chip>
+    <ion-chip outline>
+      <ion-icon name="water" mode="ios" style="opacity: 0.7;" color="medium"></ion-icon>
+      <ion-label>Ubicación</ion-label>
+    </ion-chip>
+    <ion-chip outline>
+      <ion-icon name="water" mode="ios" style="opacity: 0.2;" color="primary"></ion-icon>
+      <ion-label>Selección</ion-label>
+    </ion-chip>
+    <ion-chip outline>
+      <ion-icon name="water" mode="ios" color="dark"></ion-icon>
+      <ion-label>Promedio</ion-label>
+    </ion-chip>
+    <ion-chip outline>
+      <ion-icon name="water" mode="ios" color="primary"></ion-icon>
+      <ion-label>Perfil</ion-label>
+    </ion-chip>
+
   </div>
 
+  <ion-grid *ngIf="loadingBullets" style="padding-top: 20%;">
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-spinner name="crescent"></ion-spinner>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-  <ion-grid class="ion-padding-top">
+  <!-- <ion-grid class="ion-padding-top">
     <ion-row>
       <ion-col size="12">
-        {{poligonoSeleccionado.datatipe}}
+
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus at iusto ullam error odio alias debitis
         vitae enim praesentium illo vero quidem nisi aspernatur, perferendis voluptatum quasi maiores soluta quibusdam?
       </ion-col>
     </ion-row>
-  </ion-grid>
+  </ion-grid> -->
 
 </ion-content>

@@ -3,6 +3,7 @@ import { NavController, ModalController } from '@ionic/angular';
 
 import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
 import * as leafletPip from '@mapbox/leaflet-pip';
+import barrios from 'src/assets/json/idescmc_barrios.json';
 
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { ContextosService } from 'src/app/servicios/contextos.service';
@@ -21,9 +22,11 @@ export class ExplorarPage implements OnInit {
 
   map: Map;
 
-  poligonoSeleccionado: any;
-  areasMedicion = [];
+  barrioSeleccionado: any;
+  barrioUbicacion: any;
+
   geoJS: any;
+  geoJSBarrios: any;
 
   marker: marker;
 
@@ -37,6 +40,7 @@ export class ExplorarPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.geoJSBarrios = geoJSON(barrios);
     this.ubicacionService.obtenerUbicacionActual();
   }
 
@@ -57,16 +61,37 @@ export class ExplorarPage implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
+    this.map.on('click', async e => {
+
+      const res = this.obtenerPoligono([e.latlng.lng, e.latlng.lat]);
+      if (res.length) {
+        const properties = res[0].feature.properties;
+        this.barrioSeleccionado = properties;
+        await this.openMyModal();
+        this.barrioSeleccionado = undefined;
+      } else {
+        this.barrioSeleccionado = undefined;
+      }
+    });
+
     await this.actualizaUbicacion();
   }
 
   async openMyModal() {
+    if (!this.barrioUbicacion) {
+      return;
+    }
+
+    if (this.barrioSeleccionado === this.barrioUbicacion) {
+      this.barrioSeleccionado = undefined;
+    }
     const myModal = await this.modalController.create({
       component: InfoContextoComponent,
       cssClass: 'my-custom-modal-css',
       animated: true,
       componentProps: {
-        poligonoSeleccionado: this.poligonoSeleccionado
+        barrioUbicacion: this.barrioUbicacion,
+        barrioSeleccionado: this.barrioSeleccionado
       }
     });
     return await myModal.present();
@@ -80,8 +105,11 @@ export class ExplorarPage implements OnInit {
     return this.ubicacionService.obtenerUbicacionActual()
       .then(async () => {
 
-        const lat = this.ubicacionService.ubicacionActual.latitude;
-        const long = this.ubicacionService.ubicacionActual.longitude;
+        /* const lat = this.ubicacionService.ubicacionActual.latitude;
+        const long = this.ubicacionService.ubicacionActual.longitude; */
+
+        const lat = 3.477951;
+        const long = -76.511594;
 
         if (this.marker) {
           this.map.removeLayer(this.marker);
@@ -97,29 +125,30 @@ export class ExplorarPage implements OnInit {
           this.map.setView([lat, long]);
         }
 
-        if (this.geoJS) {
-          const res = this.obtenerPoligono([long, lat]);
-          if (res.length) {
-            const properties = res[0].feature.properties;
-            this.poligonoSeleccionado = properties;
-          } else {
-            this.poligonoSeleccionado = undefined;
-          }
+        const res = this.obtenerPoligono([long, lat]);
+        if (res.length) {
+          const properties = res[0].feature.properties;
+          this.barrioUbicacion = properties;
+        } else {
+          this.barrioUbicacion = undefined;
         }
+
       });
   }
 
   async reproducir() {
-    const txt = `${this.poligonoSeleccionado.datatipe}, ${this.poligonoSeleccionado.descripcion}`;
+    let txt = 'El indicador de paz para el barrio, ';
+    txt += `${this.barrioSeleccionado ? this.barrioSeleccionado.barrio : this.barrioUbicacion.barrio} `;
+    txt += `es, `;
     await this.textoVozService.interpretar(txt);
   }
 
   listarContextos() {
     this.contextoService.listadoContextos()
       .subscribe((resp) => {
-        this.areasMedicion = resp;
+        const areasMedicion = resp;
         const gjLayer = [];
-        this.areasMedicion.forEach(a => {
+        areasMedicion.forEach(a => {
           a.datos.forEach(d => {
             const geoJS = JSON.parse(d.geojson);
             delete d.geojson;
@@ -141,7 +170,7 @@ export class ExplorarPage implements OnInit {
   }
 
   obtenerPoligono(ubicacion) {
-    return leafletPip.pointInLayer(ubicacion, this.geoJS);
+    return leafletPip.pointInLayer(ubicacion, this.geoJSBarrios);
   }
 
   colorAleatorio() {

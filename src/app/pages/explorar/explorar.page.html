@@ -8,7 +8,7 @@
   <div id="mapId"></div>
 
   <!-- Botón flotante del proyectista -->
-  <ion-fab *ngIf="authService.user.rol === 'Proyectista'" vertical="bottom" horizontal="start" slot="fixed">
+  <ion-fab *ngIf="authService.user &&  authService.user.rol === 'Proyectista'" vertical="bottom" horizontal="start" slot="fixed">
     <ion-fab-button color="light" (click)="actualizaUbicacion()">
       <ion-icon color="primary" name="add"></ion-icon>
     </ion-fab-button>
@@ -36,10 +36,10 @@
 
 </ion-content>
 
-<ion-footer *ngIf="poligonoSeleccionado">
+<ion-footer *ngIf="!loading && barrioUbicacion">
   <ion-toolbar (click)="openMyModal()">
     <ion-text>
-      <p class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>{{poligonoSeleccionado.descripcion}}</b></p>
+      <h3 class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>Barrio {{barrioUbicacion.barrio}}</b></h3>
       <ion-item lines="none">
         <ion-icon color="success" name="radio-button-on" style="padding-right: 5px;"></ion-icon>
         <ion-label color="medium"><b>INDICADOR DE PAZ</b></ion-label>
