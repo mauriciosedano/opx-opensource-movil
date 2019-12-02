@@ -7,7 +7,6 @@ import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
 import { Tarea } from 'src/app/interfaces/tarea';
 import { UiService } from 'src/app/servicios/ui.service';
 import * as L from 'leaflet';
-import * as leafletPip from '@mapbox/leaflet-pip';
 import drawLocales from 'leaflet-draw-locales';
 import { AuthService } from 'src/app/servicios/auth.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
@@ -49,8 +48,6 @@ export class MapeoComponent implements OnInit {
   ngOnInit() {
     this.ubicacionService.obtenerUbicacionActual();
     this.listarElementosOSM();
-    console.log(this.tarea);
-
   }
 
   listarElementosOSM() {
@@ -137,7 +134,7 @@ export class MapeoComponent implements OnInit {
       if (type === 'polyline') {
 
         for (const element of layer.getLatLngs()) {
-          if (!this.obtenerPoligono(element).length) {
+          if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
             this.uiService.presentToastError('Marcadores fuera del polígono');
             fuera = true;
             break;
@@ -154,7 +151,7 @@ export class MapeoComponent implements OnInit {
       } else if (type === 'polygon') {
 
         for (const element of layer.getLatLngs()[0]) {
-          if (!this.obtenerPoligono(element).length) {
+          if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
             this.uiService.presentToastError('Marcadores fuera del polígono');
             fuera = true;
             break;
@@ -201,7 +198,7 @@ export class MapeoComponent implements OnInit {
         }
 
         if (this.geoJS) {
-          const res = this.obtenerPoligono([long, lat]);
+          const res = this.ubicacionService.obtenerPoligono(this.geoJS);
           if (res.length) {
             const properties = res[0].feature.properties;
             // this.poligonoSeleccionado = properties;
@@ -210,14 +207,6 @@ export class MapeoComponent implements OnInit {
           }
         }
       });
-  }
-
-
-  /**
-   * Devuelve un arreglo de polígonos que contienen un punto.
-   */
-  obtenerPoligono(punto) {
-    return leafletPip.pointInLayer(punto, this.geoJS);
   }
 
   /**

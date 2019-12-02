@@ -1,15 +1,16 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
+import { ModalController, NavController, AlertController } from '@ionic/angular';
 import { EncuestaComponent } from './encuesta/encuesta.component';
 import { ActivatedRoute } from '@angular/router';
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { Tarea } from 'src/app/interfaces/tarea';
 
-import { Map, tileLayer, geoJSON } from 'leaflet';
+import { Map, tileLayer, geoJSON, marker, latLng } from 'leaflet';
 import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
 import { MapeoComponent } from './mapeo/mapeo.component';
 import { ValidarComponent } from './encuesta/validar/validar.component';
 import { AuthService } from 'src/app/servicios/auth.service';
+import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 
 @Component({
   selector: 'app-tarea',
@@ -26,6 +27,8 @@ export class TareaPage implements OnInit {
   implementado = false;
 
   map: Map;
+  geoJS: any;
+  marker: marker;
 
   constructor(
     private modalCtrl: ModalController,
@@ -33,10 +36,14 @@ export class TareaPage implements OnInit {
     private tareasService: TareasService,
     private instrumentosServices: InstrumentosService,
     public navCtrl: NavController,
-    public authService: AuthService
+    public authService: AuthService,
+    private ubicacionService: UbicacionService,
+    public alertController: AlertController
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.ubicacionService.obtenerUbicacionActual();
+  }
 
   async ionViewDidEnter() {
 
@@ -52,6 +59,7 @@ export class TareaPage implements OnInit {
     }).addTo(this.map);
 
     this.activatedRoute.params.subscribe(params => this.detalleTarea(params.id));
+    this.actualizaUbicacion();
   }
 
   detalleTarea(id: string) {
@@ -66,12 +74,48 @@ export class TareaPage implements OnInit {
           this.implementado = res;
         }
 
-        const gjLayer = geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
-        this.map.fitBounds(gjLayer.getBounds());
+        this.geoJS = geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
+        this.map.fitBounds(this.geoJS.getBounds());
+      });
+  }
+
+  actualizaUbicacion() {
+    return this.ubicacionService.obtenerUbicacionActual()
+      .then(async () => {
+
+        const lat = this.ubicacionService.ubicacionActual.latitude;
+        const long = this.ubicacionService.ubicacionActual.longitude;
+
+        if (this.marker) {
+          this.map.removeLayer(this.marker);
+          const latlng = latLng(lat, long);
+          this.marker.setLatLng(latlng)
+            .addTo(this.map)
+            .bindPopup('Ubicación actual.');
+        } else {
+          this.marker = marker([lat, long])
+            .addTo(this.map)
+            .bindPopup('Ubicación actual.');
+        }
+
+        if (this.geoJS) {
+          const res = this.ubicacionService.obtenerPoligono(this.geoJS);
+          if (res.length) {
+            const properties = res[0].feature.properties;
+            // this.poligonoSeleccionado = properties;
+          } else {
+            // this.poligonoSeleccionado = undefined;
+          }
+        }
       });
   }
 
   async encuesta() {
+    if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
+      await this.presentAlert();
+      return;
+    }
+
     const modal = await this.modalCtrl.create({
       component: EncuestaComponent,
       componentProps: {
@@ -82,6 +126,10 @@ export class TareaPage implements OnInit {
   }
 
   async mapeo() {
+    if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
+      await this.presentAlert();
+      return;
+    }
     const modal = await this.modalCtrl.create({
       component: MapeoComponent,
       componentProps: {
@@ -142,6 +190,17 @@ export class TareaPage implements OnInit {
           await modal.present();
         }
       });
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      header: 'Lo lamentamos',
+      animated: true,
+      message: 'Para realizar la tarea debes encontrarte dentro del territorio de la tarea.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 
   ionViewWillLeave() {

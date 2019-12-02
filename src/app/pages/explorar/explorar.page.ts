@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, ModalController } from '@ionic/angular';
 
 import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
-import * as leafletPip from '@mapbox/leaflet-pip';
 import barrios from 'src/assets/json/idescmc_barrios.json';
 
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
@@ -63,7 +62,7 @@ export class ExplorarPage implements OnInit {
 
     this.map.on('click', async e => {
 
-      const res = this.obtenerPoligono([e.latlng.lng, e.latlng.lat]);
+      const res = this.ubicacionService.obtenerPoligono(this.geoJSBarrios);
       if (res.length) {
         const properties = res[0].feature.properties;
         this.barrioSeleccionado = properties;
@@ -105,11 +104,11 @@ export class ExplorarPage implements OnInit {
     return this.ubicacionService.obtenerUbicacionActual()
       .then(async () => {
 
-        /* const lat = this.ubicacionService.ubicacionActual.latitude;
-        const long = this.ubicacionService.ubicacionActual.longitude; */
+        const lat = this.ubicacionService.ubicacionActual.latitude;
+        const long = this.ubicacionService.ubicacionActual.longitude;
 
-        const lat = 3.477951;
-        const long = -76.511594;
+        /* const lat = 3.477951;
+        const long = -76.511594; */
 
         if (this.marker) {
           this.map.removeLayer(this.marker);
@@ -125,7 +124,7 @@ export class ExplorarPage implements OnInit {
           this.map.setView([lat, long]);
         }
 
-        const res = this.obtenerPoligono([long, lat]);
+        const res = this.ubicacionService.obtenerPoligono(this.geoJSBarrios);
         if (res.length) {
           const properties = res[0].feature.properties;
           this.barrioUbicacion = properties;
@@ -167,10 +166,6 @@ export class ExplorarPage implements OnInit {
         }).addTo(this.map);
         this.loading = false;
       });
-  }
-
-  obtenerPoligono(ubicacion) {
-    return leafletPip.pointInLayer(ubicacion, this.geoJSBarrios);
   }
 
   colorAleatorio() {

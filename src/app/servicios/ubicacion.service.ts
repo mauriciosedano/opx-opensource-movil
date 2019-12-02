@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { map } from 'rxjs/operators';
+import * as leafletPip from '@mapbox/leaflet-pip';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,12 @@ export class UbicacionService {
         console.log('watch', data);
         return this.ubicacionActual = data.coords;
       }));
+  }
+
+  /**
+   * Devuelve un arreglo de polígonos que contienen un punto.
+   */
+  obtenerPoligono(geoJSON) {
+    return leafletPip.pointInLayer([this.ubicacionActual.longitude, this.ubicacionActual.latitude], geoJSON);
   }
 }
