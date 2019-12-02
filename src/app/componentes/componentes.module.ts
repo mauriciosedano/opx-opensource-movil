@@ -9,6 +9,8 @@ import { ModalLoginComponent } from './auth/modal-login/modal-login.component';
 import { FormsModule } from '@angular/forms';
 import { ModalAuthComponent } from './auth/modal-auth/modal-auth.component';
 import { PipesModule } from '../pipes/pipes.module';
+import { InfoContextoComponent } from './info-contexto/info-contexto.component';
+import { jqxBulletChartModule } from 'jqwidgets-ng/jqxbulletchart';
 
 @NgModule({
   declarations: [
@@ -17,20 +19,23 @@ import { PipesModule } from '../pipes/pipes.module';
     PeticionLoginComponent,
     ModalRegistroComponent,
     ModalLoginComponent,
-    ModalAuthComponent
+    ModalAuthComponent,
+    InfoContextoComponent
   ],
   imports: [
     CommonModule,
     IonicModule,
     FormsModule,
-    PipesModule
+    PipesModule,
+    jqxBulletChartModule
   ],
   exports: [
     TareasComponent,
     PeticionLoginComponent,
     ModalRegistroComponent,
     ModalLoginComponent,
-    ModalAuthComponent
+    ModalAuthComponent,
+    InfoContextoComponent
   ]
 })
 export class ComponentesModule { }

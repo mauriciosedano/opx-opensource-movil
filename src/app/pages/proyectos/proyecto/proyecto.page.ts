@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { ProyectosService } from 'src/app/servicios/proyectos.service';
 import { AuthService } from 'src/app/servicios/auth.service';
+import { Tarea } from 'src/app/interfaces/tarea';
 
 @Component({
   selector: 'app-proyecto',
@@ -12,7 +13,8 @@ import { AuthService } from 'src/app/servicios/auth.service';
 export class ProyectoPage implements OnInit {
 
   proyecto: any = {};
-  tareas: [];
+  tareas: Tarea[] = [];
+  tareasCompletadas: Tarea[] = [];
 
   segmentoTareas = true;
   segmentoValidar = false;
@@ -37,6 +39,7 @@ export class ProyectoPage implements OnInit {
         if (resp !== undefined) {
           this.proyecto = resp.proyecto;
           this.tareas = resp.tareas;
+          this.tareasCompletadas = this.tareas.filter(t => t.progreso === 100);
         } else {
           this.proyecto = undefined;
           this.navCtrl.back();

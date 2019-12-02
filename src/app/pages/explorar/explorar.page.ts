@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 
 import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
-import * as leafletPip from '@mapbox/leaflet-pip';
+import barrios from 'src/assets/json/idescmc_barrios.json';
 
-import { TareasService } from 'src/app/servicios/tareas.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { ContextosService } from 'src/app/servicios/contextos.service';
 import { TextoVozService } from 'src/app/servicios/texto-voz.service';
+import { InfoContextoComponent } from 'src/app/componentes/info-contexto/info-contexto.component';
+import { AuthService } from 'src/app/servicios/auth.service';
 
 @Component({
   selector: 'app-explorar',
@@ -16,23 +17,29 @@ import { TextoVozService } from 'src/app/servicios/texto-voz.service';
 })
 export class ExplorarPage implements OnInit {
 
+  loading = true;
+
   map: Map;
 
-  poligonoSeleccionado: any;
-  areasMedicion = [];
+  barrioSeleccionado: any;
+  barrioUbicacion: any;
+
   geoJS: any;
+  geoJSBarrios: any;
 
   marker: marker;
 
   constructor(
-    private tareasService: TareasService,
+    private modalController: ModalController,
     private ubicacionService: UbicacionService,
-    private navCtrl: NavController,
     private contextoService: ContextosService,
-    private textoVozService: TextoVozService
+    private textoVozService: TextoVozService,
+    public authService: AuthService,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() {
+    this.geoJSBarrios = geoJSON(barrios);
     this.ubicacionService.obtenerUbicacionActual();
   }
 
@@ -44,9 +51,7 @@ export class ExplorarPage implements OnInit {
   async leafletMap() {
     this.map = new Map('mapId').setView([3.4376309, -76.5429797], 16);
 
-    tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'edupala.com © ionic LeafLet',
-    }).addTo(this.map);
+    tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}').addTo(this.map);
 
     tileLayer.wms('http://ws-idesc.cali.gov.co:8081/geoserver/wms?service=WMS', {
       layers: 'idesc:mc_barrios',
@@ -55,7 +60,44 @@ export class ExplorarPage implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
+    this.map.on('click', async e => {
+
+      const res = this.ubicacionService.obtenerPoligono(this.geoJSBarrios);
+      if (res.length) {
+        const properties = res[0].feature.properties;
+        this.barrioSeleccionado = properties;
+        await this.openMyModal();
+        this.barrioSeleccionado = undefined;
+      } else {
+        this.barrioSeleccionado = undefined;
+      }
+    });
+
     await this.actualizaUbicacion();
+  }
+
+  async openMyModal() {
+    if (!this.barrioUbicacion) {
+      return;
+    }
+
+    if (this.barrioSeleccionado === this.barrioUbicacion) {
+      this.barrioSeleccionado = undefined;
+    }
+    const myModal = await this.modalController.create({
+      component: InfoContextoComponent,
+      cssClass: 'my-custom-modal-css',
+      animated: true,
+      componentProps: {
+        barrioUbicacion: this.barrioUbicacion,
+        barrioSeleccionado: this.barrioSeleccionado
+      }
+    });
+    return await myModal.present();
+  }
+
+  irDecision(decision) {
+    this.navCtrl.navigateForward(`/tabs/explorar/decision/${decision}`, { animated: true });
   }
 
   actualizaUbicacion() {
@@ -64,6 +106,9 @@ export class ExplorarPage implements OnInit {
 
         const lat = this.ubicacionService.ubicacionActual.latitude;
         const long = this.ubicacionService.ubicacionActual.longitude;
+
+        /* const lat = 3.477951;
+        const long = -76.511594; */
 
         if (this.marker) {
           this.map.removeLayer(this.marker);
@@ -79,30 +124,30 @@ export class ExplorarPage implements OnInit {
           this.map.setView([lat, long]);
         }
 
-        if (this.geoJS) {
-          const res = this.obtenerPoligono([long, lat]);
-          if (res.length) {
-            const properties = res[0].feature.properties;
-            this.poligonoSeleccionado = properties;
-          } else {
-            this.poligonoSeleccionado = undefined;
-          }
-          console.log(this.poligonoSeleccionado);
+        const res = this.ubicacionService.obtenerPoligono(this.geoJSBarrios);
+        if (res.length) {
+          const properties = res[0].feature.properties;
+          this.barrioUbicacion = properties;
+        } else {
+          this.barrioUbicacion = undefined;
         }
+
       });
   }
 
   async reproducir() {
-    const txt = `${this.poligonoSeleccionado.datatipe}, ${this.poligonoSeleccionado.descripcion}`;
+    let txt = 'El indicador de paz para el barrio, ';
+    txt += `${this.barrioSeleccionado ? this.barrioSeleccionado.barrio : this.barrioUbicacion.barrio} `;
+    txt += `es, `;
     await this.textoVozService.interpretar(txt);
   }
 
   listarContextos() {
     this.contextoService.listadoContextos()
       .subscribe((resp) => {
-        this.areasMedicion = resp;
+        const areasMedicion = resp;
         const gjLayer = [];
-        this.areasMedicion.forEach(a => {
+        areasMedicion.forEach(a => {
           a.datos.forEach(d => {
             const geoJS = JSON.parse(d.geojson);
             delete d.geojson;
@@ -119,12 +164,8 @@ export class ExplorarPage implements OnInit {
             }
           }
         }).addTo(this.map);
-
+        this.loading = false;
       });
-  }
-
-  obtenerPoligono(ubicacion) {
-    return leafletPip.pointInLayer(ubicacion, this.geoJS);
   }
 
   colorAleatorio() {

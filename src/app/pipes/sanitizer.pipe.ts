@@ -6,10 +6,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class SanitizerPipe implements PipeTransform {
 
+  /**
+   * Habilita una dirección web para que pueda ser utilizada en la aplicación.
+   */
   constructor(private domSanitizer: DomSanitizer) { }
 
-  transform(text: string): any {
-    return this.domSanitizer.bypassSecurityTrustResourceUrl(text);
+  transform(url: string): any {
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
 }

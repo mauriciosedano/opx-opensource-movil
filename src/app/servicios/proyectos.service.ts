@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { catchError, map } from 'rxjs/operators';
 import { ErrorService } from './error.service';
 import { OfflineManagerService } from './offline-manager.service';
-import { NetworkService, ConnectionStatus } from './network.service';
+import { NetworkService } from './network.service';
 import { DataLocalService } from './data-local.service';
-import { from } from 'rxjs';
 
 const URL = environment.API_URL + '/proyectos';
 
@@ -18,6 +17,9 @@ export class ProyectosService {
 
   pageProyectos = 0;
 
+  /**
+   * Servicio que gestiona los proyectos
+   */
   constructor(
     private http: HttpClient,
     public authService: AuthService,
@@ -55,6 +57,9 @@ export class ProyectosService {
     /*  } */
   }
 
+  /**
+   * Carga un proyecto en detalle
+   */
   detalleProyecto(proyid: string) {
     /* if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
       return from(this.dataLocalService.detalleProyecto(proyid));

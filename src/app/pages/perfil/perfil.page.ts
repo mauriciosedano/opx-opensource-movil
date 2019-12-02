@@ -37,8 +37,18 @@ export class PerfilPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.detalleUsuario();
     this.cargarUtilidades();
+  }
+
+  async ionViewDidEnter() {
+    if (!this.authService.token) {
+      const modal = await this.modalCtrl.create({
+        component: ModalLoginComponent
+      });
+      modal.present();
+    } else {
+      this.detalleUsuario();
+    }
   }
 
   detalleUsuario() {
@@ -64,15 +74,6 @@ export class PerfilPage implements OnInit {
       .subscribe(r => {
         this.barrios = r;
       });
-  }
-
-  async ionViewDidEnter() {
-    if (!this.authService.token) {
-      const modal = await this.modalCtrl.create({
-        component: ModalLoginComponent
-      });
-      modal.present();
-    }
   }
 
   cerrarSesion() {

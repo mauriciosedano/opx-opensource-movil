@@ -23,8 +23,7 @@ export class PeticionLoginComponent implements OnInit {
     switch (component) {
       case 'login':
         const modal = await this.modalCtrl.create({
-          component: ModalLoginComponent,
-          cssClass: 'my-custom-modal-css'
+          component: ModalLoginComponent
         });
         modal.present();
         break;

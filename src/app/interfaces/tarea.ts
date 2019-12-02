@@ -2,7 +2,10 @@ export interface Tarea {
     tareid: string;
     tarenombre: string;
     taretipo: number;
+    tareestado: number;
+    observaciones: string;
     tarerestricgeo: any;
+    progreso: number;
     tarerestriccant: number;
     tarerestrictime: any;
     instrid: string;

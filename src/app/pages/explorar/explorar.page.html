@@ -1,5 +1,29 @@
 <ion-content>
+  <div *ngIf="loading" class="splash">
+    <div class="spinner">
+      <ion-img src="assets/icon/logo-splash.png"></ion-img>
+    </div>
+  </div>
+
   <div id="mapId"></div>
+
+  <!-- Botón flotante del proyectista -->
+  <ion-fab *ngIf="authService.user &&  authService.user.rol === 'Proyectista'" vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button color="light" (click)="actualizaUbicacion()">
+      <ion-icon color="primary" name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="irDecision('tiempo')">
+        <ion-icon color="medium" name="time"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="irDecision('territorio')">
+        <ion-icon color="medium" name="apps" mode="ios"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="irDecision('objetivo')">
+        <ion-icon color="medium" name="shuffle" mode=ios></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 
   <!-- Botón flotante que actualiza la ubicación actual -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
@@ -12,10 +36,10 @@
 
 </ion-content>
 
-<ion-footer *ngIf="poligonoSeleccionado">
-  <ion-toolbar>
+<ion-footer *ngIf="!loading && barrioUbicacion">
+  <ion-toolbar (click)="openMyModal()">
     <ion-text>
-      <p class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>{{poligonoSeleccionado.descripcion}}</b></p>
+      <h3 class="ion-padding-horizontal" style="margin-bottom: 0px;"><b>Barrio {{barrioUbicacion.barrio}}</b></h3>
       <ion-item lines="none">
         <ion-icon color="success" name="radio-button-on" style="padding-right: 5px;"></ion-icon>
         <ion-label color="medium"><b>INDICADOR DE PAZ</b></ion-label>
