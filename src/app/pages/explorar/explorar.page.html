@@ -8,22 +8,25 @@
   <div id="mapId"></div>
 
   <!-- Botón flotante del proyectista -->
-  <ion-fab *ngIf="authService.user &&  authService.user.rol === 'Proyectista'" vertical="bottom" horizontal="start" slot="fixed">
-    <ion-fab-button color="light" (click)="actualizaUbicacion()">
-      <ion-icon color="primary" name="add"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="top">
-      <ion-fab-button (click)="irDecision('tiempo')">
-        <ion-icon color="medium" name="time"></ion-icon>
+  <div *ngIf="authService.user">
+    <ion-fab *ngIf="authService.user.rol === 'Proyectista' || authService.user.rol === 'Super Administrador'"
+      vertical="bottom" horizontal="start" slot="fixed">
+      <ion-fab-button color="light" routerLink="proyectista">
+        <ion-icon color="primary" name="add"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button (click)="irDecision('territorio')">
-        <ion-icon color="medium" name="apps" mode="ios"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button (click)="irDecision('objetivo')">
-        <ion-icon color="medium" name="shuffle" mode=ios></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
+      <!-- <ion-fab-list side="top">
+        <ion-fab-button (click)="irDecision('tiempo')">
+          <ion-icon color="medium" name="time"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button (click)="irDecision('territorio')">
+          <ion-icon color="medium" name="apps" mode="ios"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button (click)="irDecision('objetivo')">
+          <ion-icon color="medium" name="shuffle" mode=ios></ion-icon>
+        </ion-fab-button>
+      </ion-fab-list> -->
+    </ion-fab>
+  </div>
 
   <!-- Botón flotante que actualiza la ubicación actual -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

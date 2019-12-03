@@ -1,13 +1,14 @@
 import { Tarea } from './tarea';
 
 export interface Proyecto {
-    proyid: string;
-    proynombre: string;
-    proydescripcion: string;
-    proyectista: string;
-    proyfechacreacion: Date;
-    proyidexterno: string;
-    proyestado: number;
+    proyid?: string;
+    proynombre?: string;
+    proydescripcion?: string;
+    proyectista?: string;
+    proyfechacreacion?: Date;
+    proyidexterno?: string;
+    proyestado?: number;
+    tareas?: Tarea[];
 }
 
 export interface ProyectoBackend {

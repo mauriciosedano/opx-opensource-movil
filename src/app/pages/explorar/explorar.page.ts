@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 
 import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
 import barrios from 'src/assets/json/idescmc_barrios.json';
@@ -34,8 +34,7 @@ export class ExplorarPage implements OnInit {
     private ubicacionService: UbicacionService,
     private contextoService: ContextosService,
     private textoVozService: TextoVozService,
-    public authService: AuthService,
-    private navCtrl: NavController
+    public authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -94,10 +93,6 @@ export class ExplorarPage implements OnInit {
       }
     });
     return await myModal.present();
-  }
-
-  irDecision(decision) {
-    this.navCtrl.navigateForward(`/tabs/explorar/decision/${decision}`, { animated: true });
   }
 
   actualizaUbicacion() {

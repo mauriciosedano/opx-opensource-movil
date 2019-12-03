@@ -22,9 +22,6 @@ const routes: Routes = [{
 }, {
   path: 'objetivo',
   loadChildren: () => import('./objetivo/objetivo.module').then(m => m.ObjetivoPageModule)
-}, {
-  path: 'territorio',
-  loadChildren: () => import('./territorio/territorio.module').then(m => m.TerritorioPageModule)
 }];
 
 @NgModule({

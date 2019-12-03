@@ -54,8 +54,8 @@
           Realizar mapeo
         </ion-button>
 
-        <ion-button *ngIf="authService.user.rol === 'Validador'" class="ion-text-uppercase"
-          color="primary" expand="block" (click)="validar()">
+        <ion-button *ngIf="authService.user.rol === 'Validador' || authService.user.rol === 'Super Administrador'"
+          class="ion-text-uppercase" color="primary" expand="block" (click)="validar()">
           Validar
         </ion-button>
       </ion-col>
