@@ -7,6 +7,7 @@ import { ErrorService } from './error.service';
 import { OfflineManagerService } from './offline-manager.service';
 import { NetworkService } from './network.service';
 import { DataLocalService } from './data-local.service';
+import { Proyecto } from '../interfaces/proyecto';
 
 const URL = environment.API_URL + '/proyectos';
 
@@ -73,6 +74,25 @@ export class ProyectosService {
         return resp.detail;
       }), catchError(e => this.errorService.handleError(e)));
     /*   } */
+  }
+
+  /**
+   * Actualiza un proyectp
+   */
+  actualizarProyecto(proyecto: Proyecto) {
+    const headers = new HttpHeaders({
+      Authorization: this.authService.token,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+
+    const querystring = this.authService.querystring(proyecto);
+
+    return this.http.post(`${URL}/${proyecto.proyid}`, querystring, { headers })
+      .pipe(map((resp: any) => {
+        console.log(resp);
+        return resp;
+      }), catchError(e => this.errorService.handleError(e)));
+
   }
 
   dimensionesTerritoriales(proyid: string) {

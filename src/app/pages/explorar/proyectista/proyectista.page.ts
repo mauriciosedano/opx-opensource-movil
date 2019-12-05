@@ -46,6 +46,9 @@ export class ProyectistaPage implements OnInit {
 
   ionViewDidEnter() {
     this.leafletMap();
+    if (this.territorioSeleccionado.proyid) {
+      this.detalleProyecto(this.proyectoSeleccionado.proyid);
+    }
   }
 
   cargarProyectos() {
@@ -151,7 +154,7 @@ export class ProyectistaPage implements OnInit {
   }
 
   async leafletMap() {
-    this.map = new Map('mapPro').setView([3.4376309, -76.5429797], 16);
+    this.map = new Map('mapPro').setView([3.4376309, -76.5429797], 13);
 
     tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}').addTo(this.map);
 
@@ -162,7 +165,7 @@ export class ProyectistaPage implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
-    await this.actualizaUbicacion();
+   // await this.actualizaUbicacion();
 
     this.map.on('click', () => {
       this.nombreSeleccionado = '';
@@ -249,12 +252,17 @@ export class ProyectistaPage implements OnInit {
   }
 
   irDecision(decision) {
-    // this.navCtrl.navigateForward(`/tabs/explorar/proyectista/decision/${decision}`, { animated: true });
+    this.navCtrl.navigateForward(`/tabs/explorar/proyectista/decision/${decision}/${this.territorioSeleccionado.proyid}`,
+      { animated: true });
   }
 
   colorAleatorio() {
     // tslint:disable-next-line: no-bitwise
     return { color: '#' + (Math.random() * 0xffbdbd << 0).toString(16) };
+  }
+
+  ionViewWillLeave() {
+    this.map.remove();
   }
 
 }

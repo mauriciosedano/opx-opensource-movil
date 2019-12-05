@@ -145,6 +145,10 @@ export class InfoContextoComponent implements OnInit {
 
   }
 
+  showHide(type: string) {
+
+  }
+
   ionChange(defaultDate) {
     const date = new Date(defaultDate);
     this.year = date.getFullYear();
@@ -168,7 +172,6 @@ export class InfoContextoComponent implements OnInit {
         });
     }
   }
-
 
 
 }

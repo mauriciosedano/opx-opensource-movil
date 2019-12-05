@@ -12,7 +12,7 @@ const routes: Routes = [
     path: '',
     component: ProyectistaPage
   }, {
-    path: 'decision/:tipo',
+    path: 'decision/:tipo/:proyecto',
     loadChildren: () => import('./decision/decision.module').then(m => m.DecisionPageModule)
   }
 ];

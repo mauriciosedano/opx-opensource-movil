@@ -51,7 +51,7 @@
     </ion-row>
   </ion-grid>
 
-  <div *ngIf="!loadingBullets" class="ion-padding-vertical">
+  <div *ngIf="!loadingBullets" class="ion-padding">
     <div *ngFor="let bullet of bulletCharts">
       <ion-label>{{bullet.title}}</ion-label>
       <jqxBulletChart width='95%' height='70px' barSize='50%' [showTooltip]='true' [title]='title'
@@ -61,23 +61,24 @@
     </div>
 
     <ion-chip outline>
-      <ion-icon name="water" mode="ios" style="opacity: 0.2;" color="medium"></ion-icon>
+      <ion-icon (click)="showHide('ciudad')" name="water" mode="ios" style="opacity: 0.2;" color="medium"></ion-icon>
       <ion-label>Ciudad</ion-label>
     </ion-chip>
     <ion-chip outline>
-      <ion-icon name="water" mode="ios" style="opacity: 0.7;" color="medium"></ion-icon>
+      <ion-icon (click)="showHide('ubicacion')" name="water" mode="ios" style="opacity: 0.7;" color="medium"></ion-icon>
       <ion-label>Ubicación</ion-label>
     </ion-chip>
     <ion-chip outline>
-      <ion-icon name="water" mode="ios" style="opacity: 0.2;" color="primary"></ion-icon>
+      <ion-icon (click)="showHide('seleccion')" name="water" mode="ios" style="opacity: 0.2;" color="primary">
+      </ion-icon>
       <ion-label>Selección</ion-label>
     </ion-chip>
     <ion-chip outline>
-      <ion-icon name="water" mode="ios" color="dark"></ion-icon>
+      <ion-icon (click)="showHide('promedio')" name="water" mode="ios" color="dark"></ion-icon>
       <ion-label>Promedio</ion-label>
     </ion-chip>
     <ion-chip outline>
-      <ion-icon name="water" mode="ios" color="primary"></ion-icon>
+      <ion-icon (click)="showHide('perfil')" name="water" mode="ios" color="primary"></ion-icon>
       <ion-label>Perfil</ion-label>
     </ion-chip>
 
@@ -90,15 +91,5 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
-  <!-- <ion-grid class="ion-padding-top">
-    <ion-row>
-      <ion-col size="12">
-
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus at iusto ullam error odio alias debitis
-        vitae enim praesentium illo vero quidem nisi aspernatur, perferendis voluptatum quasi maiores soluta quibusdam?
-      </ion-col>
-    </ion-row>
-  </ion-grid> -->
 
 </ion-content>

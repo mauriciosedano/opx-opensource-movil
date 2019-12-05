@@ -6,6 +6,8 @@ export interface Proyecto {
     proydescripcion?: string;
     proyectista?: string;
     proyfechacreacion?: Date;
+    proyfechacierre?: string;
+    proyfechainicio?: string;
     proyidexterno?: string;
     proyestado?: number;
     tareas?: Tarea[];
