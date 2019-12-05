@@ -69,11 +69,16 @@ export class ModalRegistroComponent implements OnInit {
 
     await this.presentLoading('Registrando...');
 
+    const date = new Date(this.nuevoUsuario.fecha_nacimiento);
+    const year = date.getFullYear().toString();
+    const month = (date.getMonth() + 1).toString();
+    const day = date.getDate().toString();
+
     const form = {
       useremail: this.nuevoUsuario.useremail,
       password: this.nuevoUsuario.userpassword,
       rolid: ROLID,
-      fecha_nacimiento: `${this.nuevoUsuario.anio}-${this.nuevoUsuario.mes}-${this.nuevoUsuario.dia}`,
+      fecha_nacimiento: `${year}-${month}-${day}`,
       generoid: this.nuevoUsuario.genero,
       userfullname: `${this.nuevoUsuario.nombre} ${this.nuevoUsuario.apellido}`,
       barrioid: this.nuevoUsuario.barrio,

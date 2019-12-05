@@ -27,6 +27,7 @@ export class TareasPage {
   ) { }
 
   ionViewDidEnter() {
+    this.cargando = true;
     this.tareas = [];
     this.tareasCompletadas = [];
     if (this.authService.token) {

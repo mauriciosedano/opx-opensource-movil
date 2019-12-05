@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
+import * as leafletPip from '@mapbox/leaflet-pip';
 import barrios from 'src/assets/json/idescmc_barrios.json';
 
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
@@ -61,7 +62,7 @@ export class ExplorarPage implements OnInit {
 
     this.map.on('click', async e => {
 
-      const res = this.ubicacionService.obtenerPoligono(this.geoJSBarrios);
+      const res = this.obtenerPoligono([e.latlng.lng, e.latlng.lat]);
       if (res.length) {
         const properties = res[0].feature.properties;
         this.barrioSeleccionado = properties;
@@ -161,6 +162,10 @@ export class ExplorarPage implements OnInit {
         }).addTo(this.map);
         this.loading = false;
       });
+  }
+
+  obtenerPoligono(ubicacion) {
+    return leafletPip.pointInLayer(ubicacion, this.geoJSBarrios);
   }
 
   colorAleatorio() {

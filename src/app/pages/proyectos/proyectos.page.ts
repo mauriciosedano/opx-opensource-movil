@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ProyectosService } from 'src/app/servicios/proyectos.service';
 import { NavController } from '@ionic/angular';
 import { Proyecto } from 'src/app/interfaces/proyecto';
@@ -8,7 +8,7 @@ import { Proyecto } from 'src/app/interfaces/proyecto';
   templateUrl: './proyectos.page.html',
   styleUrls: ['./proyectos.page.scss']
 })
-export class ProyectosPage implements OnInit {
+export class ProyectosPage {
 
   cargando = true;
   enabled = true;
@@ -22,7 +22,9 @@ export class ProyectosPage implements OnInit {
     private navCtrl: NavController
   ) { }
 
-  ngOnInit() {
+  ionViewDidEnter() {
+    this.cargando = true;
+    this.proyectos = [];
     this.incoming(null, true);
   }
 
