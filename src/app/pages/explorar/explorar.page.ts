@@ -7,7 +7,6 @@ import barrios from 'src/assets/json/idescmc_barrios.json';
 
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { ContextosService } from 'src/app/servicios/contextos.service';
-import { TextoVozService } from 'src/app/servicios/texto-voz.service';
 import { InfoContextoComponent } from 'src/app/componentes/info-contexto/info-contexto.component';
 import { AuthService } from 'src/app/servicios/auth.service';
 
@@ -19,6 +18,7 @@ import { AuthService } from 'src/app/servicios/auth.service';
 export class ExplorarPage implements OnInit {
 
   loading = true;
+  cargaReproduccion = false;
 
   map: Map;
 
@@ -34,7 +34,6 @@ export class ExplorarPage implements OnInit {
     private modalController: ModalController,
     private ubicacionService: UbicacionService,
     private contextoService: ContextosService,
-    private textoVozService: TextoVozService,
     public authService: AuthService
   ) { }
 
@@ -132,10 +131,9 @@ export class ExplorarPage implements OnInit {
   }
 
   async reproducir() {
-    let txt = 'El indicador de paz para el barrio, ';
-    txt += `${this.barrioSeleccionado ? this.barrioSeleccionado.barrio : this.barrioUbicacion.barrio} `;
-    txt += `es, `;
-    await this.textoVozService.interpretar(txt);
+    this.cargaReproduccion = true;
+    await this.contextoService.reproducir(this.barrioUbicacion, this.barrioSeleccionado).toPromise();
+    this.cargaReproduccion = false;
   }
 
   listarContextos() {

@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Chart } from 'chart.js';
-import { TextoVozService } from 'src/app/servicios/texto-voz.service';
 import { ContextosService } from 'src/app/servicios/contextos.service';
 
 @Component({
@@ -13,6 +12,8 @@ export class InfoContextoComponent implements OnInit {
   @Input() barrioSeleccionado: any;
   @Input() barrioUbicacion: any;
   @ViewChild('barCanvas', { static: true }) barCanvas: ElementRef;
+
+  cargaReproduccion = false;
 
   segmentoActual = 'todo';
 
@@ -31,7 +32,6 @@ export class InfoContextoComponent implements OnInit {
   cargandoBar = true;
 
   constructor(
-    private textoVozService: TextoVozService,
     private contextosService: ContextosService
   ) { }
 
@@ -68,10 +68,9 @@ export class InfoContextoComponent implements OnInit {
   }
 
   async reproducir() {
-    let txt = 'El indicador de paz para el barrio, ';
-    txt += `${this.barrioSeleccionado ? this.barrioSeleccionado.barrio : this.barrioUbicacion.barrio} en el año ${this.year} `;
-    txt += `es, `;
-    await this.textoVozService.interpretar(txt);
+    this.cargaReproduccion = true;
+    await this.contextosService.reproducir(this.barrioUbicacion, this.barrioSeleccionado).toPromise();
+    this.cargaReproduccion = false;
   }
 
   cargarGraficaLinea(data: any) {
