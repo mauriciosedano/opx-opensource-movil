@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Tarea } from 'src/app/interfaces/tarea';
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { AuthService } from 'src/app/servicios/auth.service';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { User } from 'src/app/interfaces/user';
 
 @Component({
   selector: 'app-tareas-tab',
@@ -20,14 +22,17 @@ export class TareasPage {
 
   tareas: Tarea[] = [];
   tareasCompletadas: Tarea[] = [];
+  usuario: any;
 
   constructor(
     private tareasService: TareasService,
-    public authService: AuthService
+    public authService: AuthService,
+    private usuarioService: UsuarioService
   ) { }
 
   ionViewDidEnter() {
     this.cargando = true;
+    this.detalleUsuario();
     this.tareas = [];
     this.tareasCompletadas = [];
     if (this.authService.token) {
@@ -35,6 +40,13 @@ export class TareasPage {
     } else {
       this.cargando = false;
     }
+  }
+
+  detalleUsuario() {
+    this.usuarioService.detalleUsuario(this.authService.user.userid)
+      .subscribe((u: User) => {
+        this.usuario = u;
+      });
   }
 
   buscar(event) {

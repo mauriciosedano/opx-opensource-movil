@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { ModalController, NavController, IonSlides } from '@ionic/angular';
+import { Component, OnInit, Input } from '@angular/core';
+import { ModalController, } from '@ionic/angular';
 import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
 
 @Component({
@@ -15,7 +15,6 @@ export class EncuestaComponent implements OnInit {
   url: string;
 
   constructor(
-    private navCtrl: NavController,
     private modalCtrl: ModalController,
     private instrumentosServices: InstrumentosService) { }
 
@@ -25,10 +24,6 @@ export class EncuestaComponent implements OnInit {
         this.url = enlace;
         this.loading = false;
       });
-  }
-
-  async ionViewDidEnter() {
-
   }
 
   regresar() {
