@@ -343,14 +343,11 @@ export class MapeoComponent implements OnInit {
           text: 'Cancelar',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
-          }
+          handler: () => { }
         }, {
           text: 'Aceptar',
           handler: async (e) => {
             await this.presentLoading('Invalidando');
-            console.log(e.obs);
 
             this.tarea.observaciones = e.obs;
             const estadoPrevio = this.tarea.tareestado;

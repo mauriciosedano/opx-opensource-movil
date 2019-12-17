@@ -30,8 +30,8 @@ export class UsuarioService {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
     return this.http.get(`${URL}/detail/${id}`, { headers })
       .pipe(map((resp: any) => {
-        if (this.authService.getUser().rol !== resp.usuario.rol) {
-          // this.authService.logout();
+        if (this.authService.getUser().rolname !== resp.usuario.rol) {
+          this.authService.logout();
         }
 
         return resp.usuario;

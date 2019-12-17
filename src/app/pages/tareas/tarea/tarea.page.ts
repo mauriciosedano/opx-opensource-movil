@@ -140,7 +140,7 @@ export class TareaPage implements OnInit {
   }
 
   validar() {
-    this.instrumentosServices.informacionInstrumento(this.tarea.instrid)
+    this.instrumentosServices.informacionInstrumento(this.tarea.tareid)
       .subscribe(async r => {
 
         if (this.tarea.taretipo === 1) {
