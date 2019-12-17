@@ -15,9 +15,6 @@ const routes: Routes = [
   {
     path: '',
     component: TareasPage
-  }, {
-    path: 't/:id',
-    loadChildren: () => import('./tarea/tarea.module').then(m => m.TareaPageModule)
   }
 ];
 

@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
-import { UbicacionService } from 'src/app/servicios/ubicacion.service';
+import { Component, OnInit } from '@angular/core';
+import { Map, tileLayer, marker, geoJSON } from 'leaflet';
 import { ProyectosService } from 'src/app/servicios/proyectos.service';
 import { Proyecto } from 'src/app/interfaces/proyecto';
 import { UiService } from 'src/app/servicios/ui.service';
@@ -29,7 +28,6 @@ export class ProyectistaPage implements OnInit {
   marker: marker;
 
   constructor(
-    private ubicacionService: UbicacionService,
     private proyectosService: ProyectosService,
     public pickerController: PickerController,
     public alertController: AlertController,
@@ -80,12 +78,11 @@ export class ProyectistaPage implements OnInit {
 
         this.geoJSONDimensiones = geoJSON(gjLayer, {
           onEachFeature: (feature, layer) => {
-            /*  layer.setStyle(this.colorAleatorio()); */
             if (feature.properties && feature.properties.nombre) {
               layer.bindPopup(feature.properties.nombre);
             }
             layer.on({
-              click: (e) => {
+              click: () => {
                 this.nombreSeleccionado = feature.properties.nombre;
                 this.territorioSeleccionado = feature.properties;
                 this.tareaSeleccionada = false;
@@ -100,7 +97,6 @@ export class ProyectistaPage implements OnInit {
             const gjLayerr = [];
             pp.tareas.forEach(t => {
               const geoJS = JSON.parse(t.geojson_subconjunto);
-              // delete t.geojson_subconjunto;
               geoJS.properties = t;
               gjLayerr.push(geoJS);
             });
@@ -112,7 +108,7 @@ export class ProyectistaPage implements OnInit {
                   layer.bindPopup(feature.properties.tarenombre);
                 }
                 layer.on({
-                  click: (e) => {
+                  click: () => {
                     this.nombreSeleccionado = feature.properties.tarenombre;
                     this.territorioSeleccionado = feature.properties;
                     this.tareaSeleccionada = true;
@@ -165,8 +161,6 @@ export class ProyectistaPage implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
-   // await this.actualizaUbicacion();
-
     this.map.on('click', () => {
       this.nombreSeleccionado = '';
       this.territorioSeleccionado = null;
@@ -180,6 +174,7 @@ export class ProyectistaPage implements OnInit {
       inputs: [{
         name: 'number',
         type: 'number',
+        value: this.territorioSeleccionado.tarerestriccant,
         min: 0
       }],
       buttons: [
@@ -197,37 +192,12 @@ export class ProyectistaPage implements OnInit {
               }, () => {
                 this.uiService.presentToastError('Error al actualizar cantidad');
               });
-
           }
         }
       ]
     });
 
     await alert.present();
-  }
-
-  actualizaUbicacion() {
-    return this.ubicacionService.obtenerUbicacionActual()
-      .then(async () => {
-
-        const lat = this.ubicacionService.ubicacionActual.latitude;
-        const long = this.ubicacionService.ubicacionActual.longitude;
-
-        if (this.marker) {
-          this.map.removeLayer(this.marker);
-          const latlng = latLng(lat, long);
-          this.marker.setLatLng(latlng)
-            .addTo(this.map)
-            .bindPopup('Ubicación actual.').openPopup();
-          this.map.setView([lat, long]);
-        } else {
-          this.marker = marker([lat, long])
-            .addTo(this.map)
-            .bindPopup('Ubicación actual.').openPopup();
-          this.map.setView([lat, long]);
-        }
-
-      });
   }
 
   getColumns(numColumns, columnOptions) {

@@ -56,30 +56,21 @@
     <div *ngFor="let bullet of bulletCharts">
       <ion-label>{{bullet.title}}</ion-label>
       <jqxBulletChart width='95%' height='70px' barSize='50%' [showTooltip]='true' [title]='title'
-        [description]='description' [ranges]='bullet.ranges' [pointer]='bullet.pointer' [target]='bullet.target'
-        [ticks]='ticks'>
+        [description]='description' [ranges]='bullet.ranges | bullet' [pointer]='bullet.pointer'
+        [target]='bullet.target' [ticks]='ticks'>
       </jqxBulletChart>
     </div>
 
-    <ion-chip outline>
-      <ion-icon (click)="showHide('ciudad')" name="water" mode="ios" style="opacity: 0.2;" color="medium"></ion-icon>
-      <ion-label>Ciudad</ion-label>
+    <ion-chip *ngFor="let chip of ionchips" (click)="showHide(chip)" color="dark" [outline]="chip.check">
+      <ion-icon name="water" mode="ios" [style]="chip.style | sanitizerStyle" [color]="chip.color"></ion-icon>
+      <ion-label>{{chip.text}}</ion-label>
     </ion-chip>
     <ion-chip outline>
-      <ion-icon (click)="showHide('ubicacion')" name="water" mode="ios" style="opacity: 0.7;" color="medium"></ion-icon>
-      <ion-label>Ubicación</ion-label>
-    </ion-chip>
-    <ion-chip outline>
-      <ion-icon (click)="showHide('seleccion')" name="water" mode="ios" style="opacity: 0.2;" color="primary">
-      </ion-icon>
-      <ion-label>Selección</ion-label>
-    </ion-chip>
-    <ion-chip outline>
-      <ion-icon (click)="showHide('promedio')" name="water" mode="ios" color="dark"></ion-icon>
+      <ion-icon name="water" mode="ios" color="dark"></ion-icon>
       <ion-label>Promedio</ion-label>
     </ion-chip>
     <ion-chip outline>
-      <ion-icon (click)="showHide('perfil')" name="water" mode="ios" color="primary"></ion-icon>
+      <ion-icon name="water" mode="ios" color="primary"></ion-icon>
       <ion-label>Perfil</ion-label>
     </ion-chip>
 

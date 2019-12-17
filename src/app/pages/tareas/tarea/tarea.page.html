@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button (click)="navCtrl.back({ animated: true });"></ion-back-button>
     </ion-buttons>
-    <ion-title>Explorar</ion-title>
+    <ion-title>Tarea</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -54,7 +54,8 @@
           Realizar mapeo
         </ion-button>
 
-        <ion-button *ngIf="authService.user.rol === 'Validador' || authService.user.rol === 'Super Administrador'"
+        <ion-button
+          *ngIf="authService.user.rol === 'Validador' || authService.user.rol === 'Proyectista' || authService.user.rol === 'Super Administrador'"
           class="ion-text-uppercase" color="primary" expand="block" (click)="validar()">
           Validar
         </ion-button>

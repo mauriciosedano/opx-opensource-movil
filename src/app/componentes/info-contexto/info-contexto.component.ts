@@ -31,6 +31,38 @@ export class InfoContextoComponent implements OnInit {
   barChart: Chart;
   cargandoBar = true;
 
+  ionchips: any[] = [{
+    value: 'ciudad',
+    check: true,
+    style: 'opacity: 0.2;',
+    color: 'medium',
+    text: 'Ciudad'
+  }, {
+    value: 'ubicacion',
+    check: true,
+    style: 'opacity: 0.7;',
+    color: 'medium',
+    text: 'Ubicación'
+  }, {
+    value: 'seleccion',
+    check: true,
+    style: 'opacity: 0.2;',
+    color: 'primary',
+    text: 'Selección'
+  }/* , {
+    value: 'promedio',
+    check: true,
+    style: '',
+    color: 'dark',
+    text: 'Promedio'
+  }, {
+    value: 'perfil',
+    check: true,
+    style: '',
+    color: 'primary',
+    text: 'Perfil'
+  } */];
+
   constructor(
     private contextosService: ContextosService
   ) { }
@@ -128,9 +160,9 @@ export class InfoContextoComponent implements OnInit {
       const pointer = { value: ind.perfil ? ind.perfil : 0, label: 'Perfil', size: '25%', color: 'var(--ion-color-primary)' };
 
       const ranges = [
-        { startValue: 0, endValue: ind.ubicacion, color: 'var(--ion-color-medium)', opacity: 0.7 },
-        { startValue: 0, endValue: ind.seleccion, color: 'var(--ion-color-primary)', opacity: 0.2 },
-        { startValue: 0, endValue: ind.ciudad, color: 'var(--ion-color-medium)', opacity: 0.2 }
+        { show: true, name: 'ubicacion', startValue: 0, endValue: ind.ubicacion, color: 'var(--ion-color-medium)', opacity: 0.7 },
+        { show: true, name: 'seleccion', startValue: 0, endValue: ind.seleccion, color: 'var(--ion-color-primary)', opacity: 0.2 },
+        { show: true, name: 'ciudad', startValue: 0, endValue: ind.ciudad, color: 'var(--ion-color-medium)', opacity: 0.2 }
       ];
       this.bulletCharts.push({
         title: titulo,
@@ -141,10 +173,18 @@ export class InfoContextoComponent implements OnInit {
     });
 
     this.loadingBullets = false;
-
   }
 
-  showHide(type: string) {
+  showHide(chip) {
+    chip.check = !chip.check;
+    this.bulletCharts.forEach(b => {
+      b.ranges.forEach(r => {
+        if (r.name === chip.value) {
+          r.show = !r.show;
+        }
+      });
+    });
+
 
   }
 

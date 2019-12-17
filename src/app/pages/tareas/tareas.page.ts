@@ -22,7 +22,7 @@ export class TareasPage {
 
   tareas: Tarea[] = [];
   tareasCompletadas: Tarea[] = [];
-  usuario: any;
+  usuario: User;
 
   constructor(
     private tareasService: TareasService,
@@ -30,9 +30,9 @@ export class TareasPage {
     private usuarioService: UsuarioService
   ) { }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     this.cargando = true;
-    this.detalleUsuario();
+    this.usuario = await this.usuarioService.detalleUsuario(this.authService.user.userid).toPromise();
     this.tareas = [];
     this.tareasCompletadas = [];
     if (this.authService.token) {
@@ -40,13 +40,6 @@ export class TareasPage {
     } else {
       this.cargando = false;
     }
-  }
-
-  detalleUsuario() {
-    this.usuarioService.detalleUsuario(this.authService.user.userid)
-      .subscribe((u: User) => {
-        this.usuario = u;
-      });
   }
 
   buscar(event) {
