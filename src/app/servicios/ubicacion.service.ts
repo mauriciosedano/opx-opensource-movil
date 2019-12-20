@@ -15,10 +15,12 @@ export class UbicacionService {
    */
   ubicacionActual: any = {};
 
-  constructor(private geolocation: Geolocation) { }
+  constructor(private geolocation: Geolocation) {
+    this.obtenerUbicacionActual();
+  }
 
   obtenerUbicacionActual() {
-    return this.geolocation.getCurrentPosition().then(resp => {
+    return this.geolocation.getCurrentPosition({ enableHighAccuracy: true }).then(resp => {
       return this.ubicacionActual = resp.coords;
       // resp.coords.latitude
       // resp.coords.longitude
