@@ -106,13 +106,17 @@
   </div>
 
   <div *ngIf="segmentoValidar">
-    <app-tareas
-      *ngIf="authService.token && authService.user.rol === 'Validador' || authService.user.rol === 'Proyectista'"
-      [cargando]="cargando" [tareas]="tareasCompletadas"></app-tareas>
-    <ion-text *ngIf="!(authService.user.rol === 'Validador' || authService.user.rol === 'Proyectista')"
-      class="ion-text-center ion-padding-horizontal">
-      <h3>No tienes el ranking suficiente para realizar validaciones</h3>
-    </ion-text>
+    <div *ngIf="authService.token">
+      <app-tareas *ngIf="authService.user.rol === 'Validador' || authService.user.rol === 'Proyectista'"
+        [cargando]="cargando" [tareas]="tareasCompletadas"></app-tareas>
+      <ion-text
+        *ngIf="!(authService.user.rol === 'Validador' || authService.user.rol === 'Proyectista' || authService.user.rol === 'Super Administrador')"
+        class="ion-text-center ion-padding-horizontal">
+        <h3>No tienes el ranking suficiente para realizar validaciones</h3>
+      </ion-text>
+    </div>
+    <app-peticion-login mensaje="Para contribuir a este proyecto debes iniciar sesión."
+      *ngIf="!authService.token && !cargando"></app-peticion-login>
   </div>
 
 </ion-content>
