@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { catchError, map } from 'rxjs/operators';
 import { ErrorService } from './error.service';
 import { OfflineManagerService } from './offline-manager.service';
 import { NetworkService } from './network.service';
 import { DataLocalService } from './data-local.service';
+import { Proyecto } from '../interfaces/proyecto';
 
 const URL = environment.API_URL + '/proyectos';
 
@@ -46,8 +47,9 @@ export class ProyectosService {
     this.pageProyectos++;
 
     const url = search ? URL + `/list/?search=${search}` : URL + `/list/?page=${this.pageProyectos}`;
+    const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
 
-    return this.http.get(url)
+    return this.http.get(url, { headers })
       .pipe(map((resp: any) => {
         if (!search) {
           this.dataLocalService.guardarProyectos(resp.proyectos, pull, search);
@@ -64,11 +66,42 @@ export class ProyectosService {
     /* if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
       return from(this.dataLocalService.detalleProyecto(proyid));
     } else { */
-    return this.http.get(`${URL}/detail/${proyid}`)
+    const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
+
+    return this.http.get(`${URL}/detail/${proyid}`, { headers })
       .pipe(map((resp: any) => {
         /* this.dataLocalService.guardarDetalleProyecto(resp.detail); */
         return resp.detail;
       }), catchError(e => this.errorService.handleError(e)));
     /*   } */
+  }
+
+  /**
+   * Actualiza un proyectp
+   */
+  actualizarProyecto(proyecto: Proyecto) {
+    const headers = new HttpHeaders({
+      Authorization: this.authService.token,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+
+    const querystring = this.authService.querystring(proyecto);
+
+    return this.http.post(`${URL}/${proyecto.proyid}`, querystring, { headers })
+      .pipe(map((resp: any) => {
+        console.log(resp);
+        return resp;
+      }), catchError(e => this.errorService.handleError(e)));
+
+  }
+
+  dimensionesTerritoriales(proyid: string) {
+    const headers = new HttpHeaders({ Authorization: this.authService.token });
+
+    return this.http.get(`${URL}/dimensiones-territoriales/${proyid}`, { headers })
+      .pipe(map((resp: any) => {
+        return resp.dimensionesTerritoriales;
+      }), catchError(e => this.errorService.handleError(e)));
+
   }
 }

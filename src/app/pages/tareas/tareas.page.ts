@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Tarea } from 'src/app/interfaces/tarea';
 import { TareasService } from 'src/app/servicios/tareas.service';
 import { AuthService } from 'src/app/servicios/auth.service';
+import { UsuarioService } from 'src/app/servicios/usuario.service';
+import { User } from 'src/app/interfaces/user';
 
 @Component({
   selector: 'app-tareas-tab',
@@ -20,13 +22,19 @@ export class TareasPage {
 
   tareas: Tarea[] = [];
   tareasCompletadas: Tarea[] = [];
+  usuario: User;
 
   constructor(
     private tareasService: TareasService,
-    public authService: AuthService
+    public authService: AuthService,
+    private usuarioService: UsuarioService
   ) { }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
+    this.cargando = true;
+    if (this.authService.token) {
+      this.usuario = await this.usuarioService.detalleUsuario(this.authService.user.userid).toPromise();
+    }
     this.tareas = [];
     this.tareasCompletadas = [];
     if (this.authService.token) {

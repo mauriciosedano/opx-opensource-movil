@@ -18,7 +18,7 @@ export class TareaComponent implements OnInit {
   ngOnInit() { }
 
   click() {
-    this.navCtrl.navigateForward(`/tabs/tareas/t/${this.tarea.tareid}`, { animated: true });
+    this.navCtrl.navigateForward(`/tabs/t/${this.tarea.tareid}`, { animated: true });
   }
 
 }

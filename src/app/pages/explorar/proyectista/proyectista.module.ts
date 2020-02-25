@@ -5,12 +5,15 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { HorarioPage } from './horario.page';
+import { ProyectistaPage } from './proyectista.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: HorarioPage
+    component: ProyectistaPage
+  }, {
+    path: 'decision/:tipo/:proyecto',
+    loadChildren: () => import('./decision/decision.module').then(m => m.DecisionPageModule)
   }
 ];
 
@@ -21,6 +24,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [HorarioPage]
+  declarations: [ProyectistaPage]
 })
-export class HorarioPageModule {}
+export class ProyectistaPageModule { }

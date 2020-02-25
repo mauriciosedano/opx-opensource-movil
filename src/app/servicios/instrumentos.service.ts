@@ -48,17 +48,17 @@ export class InstrumentosService {
 
   /**
    * Envía al servicio un nuevo mapeo en la cartografia.
-   * @param instrId id Identificación del instrumento de tipo mapa.
+   * @param tareid id Identificación de la tarea de tipo mapa.
    * @param osmelement Tipo de elemento (casa, calle).
    * @param coordinates Coordenadas de mapeo realizado.
    */
-  mapeoOSM(instrId: string, osmelement: string, coordinates) {
+  mapeoOSM(tareid: string, osmelement: string, coordinates) {
     const data = JSON.stringify({ osmelement, coordinates });
     const headers = new HttpHeaders({
       Authorization: this.authService.token,
       'Content-Type': 'application/json'
     });
-    return this.http.post(`${URL}/mapear/${instrId}`, data, { headers })
+    return this.http.post(`${URL}/mapear/${tareid}`, data, { headers })
       .pipe(map((resp: any) => {
         return resp;
       }), catchError(e => this.errorService.handleError(e)));
@@ -66,11 +66,11 @@ export class InstrumentosService {
 
   /**
    * Carga los elementos que ya fueron mapeados en un instrumento de tipo cartografía
-   * @param instrId id Identificación del instrumento de tipo cartografia.
+   * @param tareid id Identificación de la tarea.
    */
-  detalleMapeo(instrId: string) {
+  detalleMapeo(tareid: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/detalle-cartografia/${instrId}`, { headers })
+    return this.http.get(`${URL}/detalle-cartografia/${tareid}`, { headers })
       .pipe(map((resp: any) => {
         return resp.geojson;
       }), catchError(e => this.errorService.handleError(e)));
@@ -90,9 +90,9 @@ export class InstrumentosService {
    * Trae información respecto de un instrumento por VALIDAR
    * Usado en el perfil del validador
    */
-  informacionInstrumento(idInstrumento: string) {
+  informacionInstrumento(tareid: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/${idInstrumento}/informacion/`, { headers })
+    return this.http.get(`${URL}/${tareid}/informacion/`, { headers })
       .pipe(map((resp: any) => {
         return resp.info;
       }), catchError(e => this.errorService.handleError(e)));

@@ -18,6 +18,9 @@ const routes: Routes = [{
     path: 'explorar',
     loadChildren: () => import('../explorar/explorar.module').then(m => m.ExplorarPageModule)
   }, {
+    path: 't/:id',
+    loadChildren: () => import('../tareas/tarea/tarea.module').then(m => m.TareaPageModule)
+  }, {
     path: '',
     redirectTo: '/tabs/explorar',
     pathMatch: 'full'

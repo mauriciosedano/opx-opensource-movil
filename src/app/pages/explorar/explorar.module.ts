@@ -13,8 +13,8 @@ const routes: Routes = [{
   path: '',
   component: ExplorarPage
 }, {
-  path: 'decision/:tipo',
-  loadChildren: () => import('./decision/decision.module').then(m => m.DecisionPageModule)
+  path: 'proyectista',
+  loadChildren: () => import('./proyectista/proyectista.module').then(m => m.ProyectistaPageModule)
 }];
 
 @NgModule({

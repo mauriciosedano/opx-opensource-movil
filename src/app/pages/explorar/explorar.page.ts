@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 
 import { Map, latLng, tileLayer, marker, geoJSON } from 'leaflet';
+import * as leafletPip from '@mapbox/leaflet-pip';
 import barrios from 'src/assets/json/idescmc_barrios.json';
 
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { ContextosService } from 'src/app/servicios/contextos.service';
-import { TextoVozService } from 'src/app/servicios/texto-voz.service';
 import { InfoContextoComponent } from 'src/app/componentes/info-contexto/info-contexto.component';
 import { AuthService } from 'src/app/servicios/auth.service';
 
@@ -18,6 +18,7 @@ import { AuthService } from 'src/app/servicios/auth.service';
 export class ExplorarPage implements OnInit {
 
   loading = true;
+  cargaReproduccion = false;
 
   map: Map;
 
@@ -33,9 +34,7 @@ export class ExplorarPage implements OnInit {
     private modalController: ModalController,
     private ubicacionService: UbicacionService,
     private contextoService: ContextosService,
-    private textoVozService: TextoVozService,
-    public authService: AuthService,
-    private navCtrl: NavController
+    public authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -62,7 +61,7 @@ export class ExplorarPage implements OnInit {
 
     this.map.on('click', async e => {
 
-      const res = this.ubicacionService.obtenerPoligono(this.geoJSBarrios);
+      const res = this.obtenerPoligono([e.latlng.lng, e.latlng.lat]);
       if (res.length) {
         const properties = res[0].feature.properties;
         this.barrioSeleccionado = properties;
@@ -94,10 +93,6 @@ export class ExplorarPage implements OnInit {
       }
     });
     return await myModal.present();
-  }
-
-  irDecision(decision) {
-    this.navCtrl.navigateForward(`/tabs/explorar/decision/${decision}`, { animated: true });
   }
 
   actualizaUbicacion() {
@@ -136,10 +131,9 @@ export class ExplorarPage implements OnInit {
   }
 
   async reproducir() {
-    let txt = 'El indicador de paz para el barrio, ';
-    txt += `${this.barrioSeleccionado ? this.barrioSeleccionado.barrio : this.barrioUbicacion.barrio} `;
-    txt += `es, `;
-    await this.textoVozService.interpretar(txt);
+    this.cargaReproduccion = true;
+    await this.contextoService.reproducir(this.barrioUbicacion, this.barrioSeleccionado).toPromise();
+    this.cargaReproduccion = false;
   }
 
   listarContextos() {
@@ -166,6 +160,10 @@ export class ExplorarPage implements OnInit {
         }).addTo(this.map);
         this.loading = false;
       });
+  }
+
+  obtenerPoligono(ubicacion) {
+    return leafletPip.pointInLayer(ubicacion, this.geoJSBarrios);
   }
 
   colorAleatorio() {

@@ -12,6 +12,8 @@ import { AuthService } from 'src/app/servicios/auth.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { TareasService } from 'src/app/servicios/tareas.service';
 
+import * as leafletPip from '@mapbox/leaflet-pip';
+
 @Component({
   selector: 'app-mapeo',
   templateUrl: './mapeo.component.html',
@@ -69,7 +71,7 @@ export class MapeoComponent implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
-    this.instrumentosService.detalleMapeo(this.tarea.instrid)
+    this.instrumentosService.detalleMapeo(this.tarea.tareid)
       .subscribe(r => {
         geoJSON(JSON.parse(r), {
           onEachFeature: (feature, layer) => {
@@ -134,7 +136,7 @@ export class MapeoComponent implements OnInit {
       if (type === 'polyline') {
 
         for (const element of layer.getLatLngs()) {
-          if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
+          if (!this.obtenerPoligono(element).length) {
             this.uiService.presentToastError('Marcadores fuera del polígono');
             fuera = true;
             break;
@@ -151,7 +153,7 @@ export class MapeoComponent implements OnInit {
       } else if (type === 'polygon') {
 
         for (const element of layer.getLatLngs()[0]) {
-          if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
+          if (!this.obtenerPoligono(element).length) {
             this.uiService.presentToastError('Marcadores fuera del polígono');
             fuera = true;
             break;
@@ -173,7 +175,14 @@ export class MapeoComponent implements OnInit {
    */
   eventoPopUpOpen(ev) {
     console.log(ev.popup._source);
-    // this.presentAlertConfirm(ev.popup._source);
+    this.presentAlertConfirm(ev.popup._source);
+  }
+
+  /**
+   * Devuelve un arreglo de polígonos que contienen un punto.
+   */
+  obtenerPoligono(punto) {
+    return leafletPip.pointInLayer(punto, this.geoJS);
   }
 
   actualizaUbicacion() {
@@ -263,7 +272,7 @@ export class MapeoComponent implements OnInit {
         text: e.nombre,
         handler: async () => {
           await this.presentLoading('Agregando cartografía.');
-          this.instrumentosService.mapeoOSM(this.tarea.instrid, e.elemosmid, coor)
+          this.instrumentosService.mapeoOSM(this.tarea.tareid, e.elemosmid, coor)
             .subscribe(async () => {
               await this.loading.dismiss();
               editableLayers.addLayer(layer);
@@ -334,14 +343,11 @@ export class MapeoComponent implements OnInit {
           text: 'Cancelar',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
-          }
+          handler: () => { }
         }, {
           text: 'Aceptar',
           handler: async (e) => {
             await this.presentLoading('Invalidando');
-            console.log(e.obs);
 
             this.tarea.observaciones = e.obs;
             const estadoPrevio = this.tarea.tareestado;
