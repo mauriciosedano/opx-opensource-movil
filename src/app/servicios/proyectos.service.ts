@@ -77,7 +77,7 @@ export class ProyectosService {
   }
 
   /**
-   * Actualiza un proyectp
+   * Actualiza un proyecto
    */
   actualizarProyecto(proyecto: Proyecto) {
     const headers = new HttpHeaders({
@@ -95,6 +95,9 @@ export class ProyectosService {
 
   }
 
+  /**
+   * Obtiene las dimensiones territoriales por proyecto
+   */
   dimensionesTerritoriales(proyid: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
 

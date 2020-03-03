@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { UiService } from './ui.service';
 import { Tarea } from '../interfaces/tarea';
 import { Proyecto, ProyectoBackend } from '../interfaces/proyecto';
+import { UtilidadesService } from './utilidades.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class DataLocalService {
     private storage: Storage,
     public uiService: UiService
   ) { }
+
+  bajarVersionOffline() {
+
+  }
 
   /**
    * Función que guarda localmente los proyectos que se consultaron cuando había conexión a internet.
@@ -88,7 +93,52 @@ export class DataLocalService {
    */
   async guardarTareas(tareas: Tarea[]) {
     this.tareas = tareas;
-    await this.storage.set('tareas', this.tareas);
+    return await this.storage.set('tareas', this.tareas);
+  }
+
+  /**
+   * Usado en la sección Explorar
+   */
+  async contextos(contextos?) {
+    if (contextos) {
+      return await this.storage.set('contextos', contextos);
+    }
+    return await this.storage.get('contextos');
+  }
+
+  async usuario(usuario?) {
+    if (usuario) {
+      return this.storage.set('usuario', usuario);
+    }
+    return await this.storage.get('usuario');
+  }
+
+  async generos(generos?) {
+    if (generos) {
+      return this.storage.set('generos', generos);
+    }
+    return await this.storage.get('generos');
+  }
+
+  async nivelesEducativos(niveles?) {
+    if (niveles) {
+      return this.storage.set('nivelesEdu', niveles);
+    }
+    return await this.storage.get('nivelesEdu');
+  }
+
+  async barrios(barrios?) {
+    if (barrios) {
+      return this.storage.set('barrios', barrios);
+    }
+    return await this.storage.get('barrios');
+  }
+
+  async elementosOSM(elementosOSM?) {
+    if (elementosOSM) {
+      return this.storage.set('elementosOSM', elementosOSM);
+    }
+    return await this.storage.get('elementosOSM');
   }
 
   /**

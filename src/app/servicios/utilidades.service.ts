@@ -4,6 +4,9 @@ import { environment } from 'src/environments/environment';
 import { map, catchError } from 'rxjs/operators';
 import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
+import { DataLocalService } from './data-local.service';
+import { NetworkService, ConnectionStatus } from './network.service';
+import { from } from 'rxjs';
 
 const URL = environment.API_URL;
 
@@ -18,50 +21,75 @@ export class UtilidadesService {
   constructor(
     private errorService: ErrorService,
     private http: HttpClient,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+    private networkService: NetworkService,
+    private dataLocalService: DataLocalService
+  ) {
+    console.log('UtilidadesService');
+
+  }
 
   /**
    * Obtiene la lista de generos
    */
   listaGeneros() {
-    return this.http.get(URL + '/generos/list/')
-      .pipe(map((resp: any) => {
-        return resp.generos;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.generos());
+    } else {
+      return this.http.get(URL + '/generos/list/')
+        .pipe(map((resp: any) => {
+          this.dataLocalService.generos(resp.generos);
+          return resp.generos;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**
    * Carga los niveles educativos.
    */
   listaNivelesEducativos() {
-    return this.http.get(URL + '/niveles-educativos/list/')
-      .pipe(map((resp: any) => {
-        return resp.nivelesEducativos;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.nivelesEducativos());
+    } else {
+      return this.http.get(URL + '/niveles-educativos/list/')
+        .pipe(map((resp: any) => {
+          this.dataLocalService.nivelesEducativos(resp.nivelesEducativos);
+          return resp.nivelesEducativos;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**
    * Barrios disponibles en la plataforma.
    */
   listaBarrios() {
-    return this.http.get(URL + '/barrios/list/')
-      .pipe(map((resp: any) => {
-        return resp.barrios;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.barrios());
+    } else {
+      return this.http.get(URL + '/barrios/list/')
+        .pipe(map((resp: any) => {
+          this.dataLocalService.barrios(resp.barrios);
+          return resp.barrios;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**
    * Elementos disponibles para realizar el mapeo.
    */
   listaElementosOSM() {
-    const headers = new HttpHeaders({
-      Authorization: this.authService.token,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    return this.http.get(URL + '/elementos-osm/list/', { headers })
-      .pipe(map((resp: any) => {
-        return resp.elementosOSM;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.elementosOSM());
+    } else {
+      const headers = new HttpHeaders({
+        Authorization: this.authService.token,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      });
+      return this.http.get(URL + '/elementos-osm/list/', { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.elementosOSM(resp.elementosOSM);
+          return resp.elementosOSM;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 }

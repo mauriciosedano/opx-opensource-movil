@@ -5,6 +5,9 @@ import { AuthService } from './auth.service';
 import { environment } from 'src/environments/environment';
 import { User } from '../interfaces/user';
 import { map, catchError } from 'rxjs/operators';
+import { DataLocalService } from './data-local.service';
+import { NetworkService, ConnectionStatus } from './network.service';
+import { from } from 'rxjs';
 
 const URL = environment.API_URL + '/usuarios';
 
@@ -19,7 +22,9 @@ export class UsuarioService {
   constructor(
     private http: HttpClient,
     public authService: AuthService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private networkService: NetworkService,
+    private dataLocalService: DataLocalService
   ) { }
 
   /**
@@ -27,15 +32,19 @@ export class UsuarioService {
    * @param id identificación de un usuario
    */
   detalleUsuario(id: string) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/detail/${id}`, { headers })
-      .pipe(map((resp: any) => {
-        if (this.authService.getUser().rolname !== resp.usuario.rol) {
-          this.authService.logout();
-        }
-
-        return resp.usuario;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.usuario());
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      return this.http.get(`${URL}/detail/${id}`, { headers })
+        .pipe(map((resp: any) => {
+          if (this.authService.getUser().rolname !== resp.usuario.rol) {
+            this.authService.logout();
+          }
+          this.dataLocalService.usuario(resp.usuario);
+          return resp.usuario;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**

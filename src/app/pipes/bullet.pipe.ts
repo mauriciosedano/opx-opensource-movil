@@ -6,6 +6,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class BulletPipe implements PipeTransform {
 
+  /**
+   * Regresa solo los rangos con la variable `show` habilitada
+   */
   transform(ranges: any[]): any[] {
     return ranges.filter(r => r.show);
   }

@@ -47,6 +47,9 @@ export class ExplorarPage implements OnInit {
     this.leafletMap();
   }
 
+  /**
+   * Inicializar mapa
+   */
   async leafletMap() {
     this.map = new Map('mapId').setView([3.4376309, -76.5429797], 16);
 
@@ -59,8 +62,10 @@ export class ExplorarPage implements OnInit {
       version: '1.1.0'
     }).addTo(this.map);
 
+    /**
+     * Evento click para extraer información de un polígono seleccionado
+     */
     this.map.on('click', async e => {
-
       const res = this.obtenerPoligono([e.latlng.lng, e.latlng.lat]);
       if (res.length) {
         const properties = res[0].feature.properties;
@@ -75,6 +80,9 @@ export class ExplorarPage implements OnInit {
     await this.actualizaUbicacion();
   }
 
+  /**
+   * Modal con información de poligono seleccionado
+   */
   async openMyModal() {
     if (!this.barrioUbicacion) {
       return;
@@ -95,6 +103,9 @@ export class ExplorarPage implements OnInit {
     return await myModal.present();
   }
 
+  /**
+   * Acción para refrescar la ubicación del dispositivo
+   */
   actualizaUbicacion() {
     return this.ubicacionService.obtenerUbicacionActual()
       .then(async () => {
@@ -130,12 +141,14 @@ export class ExplorarPage implements OnInit {
       });
   }
 
+  /* Evento que permite reproducir */
   async reproducir() {
     this.cargaReproduccion = true;
     await this.contextoService.reproducir(this.barrioUbicacion, this.barrioSeleccionado).toPromise();
     this.cargaReproduccion = false;
   }
 
+  /* Obtiene la lista de contextos del sistema */
   listarContextos() {
     this.contextoService.listadoContextos()
       .subscribe((resp) => {

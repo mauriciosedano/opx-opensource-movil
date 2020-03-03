@@ -19,6 +19,9 @@ export class UbicacionService {
     this.obtenerUbicacionActual();
   }
 
+  /**
+   * Regresa la ubicación actual del dispositivo móvil
+   */
   obtenerUbicacionActual() {
     return this.geolocation.getCurrentPosition({ enableHighAccuracy: true }).then(resp => {
       return this.ubicacionActual = resp.coords;

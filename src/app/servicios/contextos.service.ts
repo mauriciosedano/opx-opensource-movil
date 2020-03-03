@@ -5,6 +5,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { ErrorService } from './error.service';
 import { TextoVozService } from './texto-voz.service';
+import { NetworkService, ConnectionStatus } from './network.service';
+import { DataLocalService } from './data-local.service';
+import { OfflineManagerService } from './offline-manager.service';
+import { from } from 'rxjs';
 
 const URL = environment.API_URL + '/datos-contexto';
 
@@ -20,19 +24,33 @@ export class ContextosService {
     private http: HttpClient,
     public authService: AuthService,
     private errorService: ErrorService,
-    private textoVozService: TextoVozService
+    private textoVozService: TextoVozService,
+    private networkService: NetworkService,
+    private dataLocalService: DataLocalService
   ) { }
 
   /**
    * Obtiene del backend, todos los contextos almacenados en el sistema.
    */
   listadoContextos() {
-    return this.http.get(`${URL}/list/`)
-      .pipe(map((resp: any) => {
-        return resp.contextos;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.contextos());
+    } else {
+      return this.http.get(`${URL}/list/`)
+        .pipe(map((resp: any) => {
+          const contextos = resp.contextos;
+          this.dataLocalService.contextos(contextos);
+          return resp.contextos;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
+  /**
+   * Obtiene datos de categorización
+   * @param barrioUbicacion Ubicación del dispocitivo movil
+   * @param barrioSeleccion Barrio seleccionado
+   * @param año Año por consultar
+   */
   categorizacion(
     barrioUbicacion: string = '1603',
     barrioSeleccion: string = '206',
@@ -72,6 +90,9 @@ export class ContextosService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Servicio que convierte texto a voz audible
+   */
   reproducir(barrioUbicacion, barrioSeleccionado) {
     let txt = 'El indicador de paz para el barrio ';
     txt += `${barrioSeleccionado ? barrioSeleccionado.barrio : barrioUbicacion.barrio} en el año 2019 `;

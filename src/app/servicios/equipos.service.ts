@@ -18,6 +18,10 @@ export class EquiposService {
     private errorService: ErrorService,
   ) { }
 
+  /**
+   * Lista de equipos por proyecto
+   * @param proyid Id del proyecto
+   */
   equiposPorProyecto(proyid: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
 
@@ -27,6 +31,10 @@ export class EquiposService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Lista los usuarios disponibles por proyecto
+   * @param proyid Identificador del proyecto
+   */
   usuariosDisponibles(proyid: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
     return this.http.get(`${URL}/${proyid}/usuarios-disponibles/`, { headers })
@@ -35,6 +43,10 @@ export class EquiposService {
       }), catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Método que se encarga de asignar un usuario a un proyecto
+   * Solo realizado por Proyectista
+   */
   agregarUsuarioProyecto(proyid: string, userid: string) {
 
     const headers = new HttpHeaders({
@@ -46,6 +58,9 @@ export class EquiposService {
       .pipe(catchError(e => this.errorService.handleError(e)));
   }
 
+  /**
+   * Elimina un usuario de proyecto
+   */
   eliminarUsuarioProyecto(equid: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
     return this.http.delete(`${URL}/delete/${equid}`, { headers })
