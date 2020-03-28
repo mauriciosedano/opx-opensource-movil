@@ -25,7 +25,8 @@ export class PerfilPage implements OnInit {
   nivelesEducativos: any = [];
   barrios: any = [];
 
-  usuario: any;
+  usuario: any = {};
+  name = '';
 
   constructor(
     public authService: AuthService,
@@ -55,6 +56,7 @@ export class PerfilPage implements OnInit {
     this.usuarioService.detalleUsuario(this.authService.user.userid)
       .subscribe((u: User) => {
         this.usuario = u;
+        this.name = u.userfullname;
         this.loading = false;
       });
   }
@@ -112,7 +114,8 @@ export class PerfilPage implements OnInit {
     };
 
     this.usuarioService.editarUsuario(usuario)
-      .subscribe(r => {
+      .subscribe(() => {
+        this.name = this.usuario.userfullname;
         this.uiService.presentToastSucess('Actualizado correctamente.');
         this.loader.dismiss();
       }, (error => {

@@ -14,13 +14,6 @@ export interface Proyecto {
 }
 
 export interface ProyectoBackend {
-    model: string;
-    proyecto: {
-        pk: string;
-        fields: Proyecto;
-    };
-    tareas: [{
-        pk: string;
-        fields: Tarea
-    }];
+    proyecto: Proyecto;
+    tareas: Tarea[];
 }

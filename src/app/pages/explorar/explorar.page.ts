@@ -103,9 +103,6 @@ export class ExplorarPage implements OnInit {
     return await myModal.present();
   }
 
-  /**
-   * Acción para refrescar la ubicación del dispositivo
-   */
   actualizaUbicacion() {
     return this.ubicacionService.obtenerUbicacionActual()
       .then(async () => {
@@ -141,14 +138,12 @@ export class ExplorarPage implements OnInit {
       });
   }
 
-  /* Evento que permite reproducir */
   async reproducir() {
     this.cargaReproduccion = true;
     await this.contextoService.reproducir(this.barrioUbicacion, this.barrioSeleccionado).toPromise();
     this.cargaReproduccion = false;
   }
 
-  /* Obtiene la lista de contextos del sistema */
   listarContextos() {
     this.contextoService.listadoContextos()
       .subscribe((resp) => {

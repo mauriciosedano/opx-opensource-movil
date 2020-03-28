@@ -4,6 +4,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ErrorService } from './error.service';
 import { environment } from 'src/environments/environment';
 import { map, catchError } from 'rxjs/operators';
+import { DataLocalService } from './data-local.service';
+import { ConnectionStatus, NetworkService } from './network.service';
+import { from } from 'rxjs';
 
 const URL = environment.API_URL + '/instrumentos';
 
@@ -15,7 +18,9 @@ export class InstrumentosService {
   constructor(
     private http: HttpClient,
     public authService: AuthService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private networkService: NetworkService,
+    private dataLocalService: DataLocalService
   ) { }
 
   /**
@@ -23,15 +28,20 @@ export class InstrumentosService {
    * @param id Identificación del instrumento de tipo encuesta.
    */
   verificarImplementacion(id: string): any {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return new Promise((resolve) => {
-      this.http.get(`${URL}/${id}/verificar-implementacion/`, { headers })
-        .subscribe((resp: any) => {
-          resolve(resp.implementacion);
-        }, (err => {
-          resolve(false);
-        }));
-    });
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return this.dataLocalService.cargarVerificarImplementacion(id);
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      return new Promise((resolve) => {
+        this.http.get(`${URL}/${id}/verificar-implementacion/`, { headers })
+          .subscribe((resp: any) => {
+            this.dataLocalService.guardarVerificarImplementacion(id, resp.implementacion);
+            resolve(resp.implementacion);
+          }, (err => {
+            resolve(false);
+          }));
+      });
+    }
   }
 
   /**
@@ -39,11 +49,16 @@ export class InstrumentosService {
    * @param id id Identificación del instrumento de tipo encuesta.
    */
   enlaceFormularioKoboToolbox(id: string) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/enlace-formulario/${id}`, { headers })
-      .pipe(map((resp: any) => {
-        return resp.enlace;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.cargarEnlaceFormularioKoboToolbox(id));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      return this.http.get(`${URL}/enlace-formulario/${id}`, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarEnlaceFormularioKoboToolbox(id, resp.enlace);
+          return resp.enlace;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**
@@ -72,6 +87,7 @@ export class InstrumentosService {
     const headers = new HttpHeaders({ Authorization: this.authService.token });
     return this.http.get(`${URL}/detalle-cartografia/${tareid}`, { headers })
       .pipe(map((resp: any) => {
+        this.dataLocalService.guardarDetalleCartografia(tareid, resp.geojson);
         return resp.geojson;
       }), catchError(e => this.errorService.handleError(e)));
   }

@@ -111,10 +111,10 @@ export class TareaPage implements OnInit {
   }
 
   async encuesta() {
-    if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
+   /*  if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
       await this.presentAlert();
       return;
-    }
+    } */
 
     const modal = await this.modalCtrl.create({
       component: EncuestaComponent,

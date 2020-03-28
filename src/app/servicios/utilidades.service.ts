@@ -24,10 +24,7 @@ export class UtilidadesService {
     private authService: AuthService,
     private networkService: NetworkService,
     private dataLocalService: DataLocalService
-  ) {
-    console.log('UtilidadesService');
-
-  }
+  ) { }
 
   /**
    * Obtiene la lista de generos

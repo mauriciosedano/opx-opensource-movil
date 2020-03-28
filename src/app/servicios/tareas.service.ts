@@ -54,17 +54,16 @@ export class TareasService {
    * Obtiene una tarea en detalle
    */
   detalleTarea(tareid: string) {
-    /*  if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
-       return from(this.dataLocalService.detalleProyecto(tareid));
-     } else { */
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/detail/${tareid}`, { headers })
-      .pipe(map((resp: any) => {
-        return resp.tarea;
-        // this.dataLocalService.guardarDetalleProyecto(resp.tarea);
-      }), catchError(e => this.errorService.handleError(e)));
-
-    /* } */
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.detalleTarea(tareid));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      return this.http.get(`${URL}/detail/${tareid}`, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarDetalleTarea(resp.tarea);
+          return resp.tarea;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**
@@ -72,19 +71,24 @@ export class TareasService {
    * @param search parametro de búsqueda
    */
   listadoTareas(search?: string, pull: boolean = false) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.listarTareas(search));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
 
-    if (pull) {
-      this.pageTareas = 0;
+      if (pull) {
+        this.pageTareas = 0;
+      }
+      this.pageTareas++;
+
+      const url = search ? URL + `/list/?search=${search}` : URL + `/list/?page=${this.pageTareas}`;
+
+      return this.http.get(url, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarTareas(resp.tareas);
+          return resp;
+        }), catchError(e => this.errorService.handleError(e)));
     }
-    this.pageTareas++;
-
-    const url = search ? URL + `/list/?search=${search}` : URL + `/list/?page=${this.pageTareas}`;
-
-    return this.http.get(url, { headers })
-      .pipe(map((resp: any) => {
-        return resp;
-      }), catchError(e => this.errorService.handleError(e)));
   }
 
 }

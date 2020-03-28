@@ -83,6 +83,8 @@ export class InfoContextoComponent implements OnInit {
 
       this.contextosService.categorizacion(this.barrioUbicacion.id_barrio, this.barrioSeleccionado.id_barrio, this.year)
         .subscribe(r => {
+          console.log('r', r);
+
           this.cargarBulletCharts(r);
         });
     } else {
@@ -94,6 +96,7 @@ export class InfoContextoComponent implements OnInit {
 
       this.contextosService.categorizacion(this.barrioUbicacion.id_barrio, this.barrioUbicacion.id_barrio, this.year)
         .subscribe(r => {
+          console.log('r', r);
           this.cargarBulletCharts(r);
         });
     }
@@ -212,5 +215,10 @@ export class InfoContextoComponent implements OnInit {
     }
   }
 
+  ionViewWillLeave() {
+    console.log('BYE');
+    this.bulletCharts = [];
+    this.barChart = null;
+  }
 
 }

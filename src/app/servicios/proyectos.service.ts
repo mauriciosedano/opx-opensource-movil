@@ -5,9 +5,10 @@ import { AuthService } from './auth.service';
 import { catchError, map } from 'rxjs/operators';
 import { ErrorService } from './error.service';
 import { OfflineManagerService } from './offline-manager.service';
-import { NetworkService } from './network.service';
+import { NetworkService, ConnectionStatus } from './network.service';
 import { DataLocalService } from './data-local.service';
 import { Proyecto } from '../interfaces/proyecto';
+import { from } from 'rxjs';
 
 const URL = environment.API_URL + '/proyectos';
 
@@ -37,43 +38,42 @@ export class ProyectosService {
    * @param pull bandera para traer nueva página. Es usada solo en modo Online
    */
   listadoProyectos(search?: string, pull: boolean = false) {
-    /*  if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
-       return from(this.dataLocalService.listarProyectos(search));
-     } else { */
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.listarProyectos(search));
+    } else {
 
-    if (pull) {
-      this.pageProyectos = 0;
+      if (pull) {
+        this.pageProyectos = 0;
+      }
+      this.pageProyectos++;
+
+      const url = search ? URL + `/list/?search=${search}` : URL + `/list/?page=${this.pageProyectos}`;
+      const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
+
+      return this.http.get(url, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarProyectos(resp.proyectos);
+          return resp;
+        }), catchError(e => this.errorService.handleError(e)));
     }
-    this.pageProyectos++;
-
-    const url = search ? URL + `/list/?search=${search}` : URL + `/list/?page=${this.pageProyectos}`;
-    const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
-
-    return this.http.get(url, { headers })
-      .pipe(map((resp: any) => {
-        if (!search) {
-          this.dataLocalService.guardarProyectos(resp.proyectos, pull, search);
-        }
-        return resp;
-      }), catchError(e => this.errorService.handleError(e)));
-    /*  } */
   }
 
   /**
    * Carga un proyecto en detalle
    */
   detalleProyecto(proyid: string) {
-    /* if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
       return from(this.dataLocalService.detalleProyecto(proyid));
-    } else { */
-    const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
 
-    return this.http.get(`${URL}/detail/${proyid}`, { headers })
-      .pipe(map((resp: any) => {
-        /* this.dataLocalService.guardarDetalleProyecto(resp.detail); */
-        return resp.detail;
-      }), catchError(e => this.errorService.handleError(e)));
-    /*   } */
+      return this.http.get(`${URL}/detail/${proyid}`, { headers })
+        .pipe(map((resp: any) => {
+          resp.detail.proyecto.proyid = proyid;
+          this.dataLocalService.guardarDetalleProyecto(resp.detail);
+          return resp.detail;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**

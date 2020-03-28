@@ -1,20 +1,22 @@
 <ion-content *ngIf="authService.token">
 
-  <ion-item lines="none" class="ion-padding-top">
-    <div class="circulo">{{authService.user.userfullname | iniciales}}</div>
-  </ion-item>
-  <ion-item lines="none">
-    <ion-label>
-      <ion-text class="ion-text-center" color="dark">
-        <h1>{{authService.user.userfullname}} <ion-icon (click)='hideShowEdit()' [name]="profileIcon" color="medium">
-          </ion-icon>
-        </h1>
-      </ion-text>
-      <ion-text class="ion-text-center" color="medium">
-        <h3><b>{{authService.user.rol | uppercase }}</b></h3>
-      </ion-text>
-    </ion-label>
-  </ion-item>
+  <div *ngIf="!loading">
+    <ion-item lines="none" class="ion-padding-top">
+      <div class="circulo">{{name | iniciales}}</div>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>
+        <ion-text class="ion-text-center" color="dark">
+          <h1>{{name}} <ion-icon (click)='hideShowEdit()' [name]="profileIcon" color="medium">
+            </ion-icon>
+          </h1>
+        </ion-text>
+        <ion-text class="ion-text-center" color="medium">
+          <h3><b>{{usuario.rol | uppercase }}</b></h3>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+  </div>
 
   <ion-list *ngIf="!loading">
     <ion-item-divider>
@@ -77,7 +79,7 @@
       <ion-icon slot="start" name="mail"></ion-icon>
       <ion-label>Correo Electrónico</ion-label>
       <ion-input slot="end" type="email" [disabled]="!profileEdit" name="useremail"
-        [(ngModel)]="authService.user.useremail">
+        [(ngModel)]="usuario.useremail">
       </ion-input>
     </ion-item>
 
@@ -85,7 +87,7 @@
       <ion-icon slot="start" name="lock"></ion-icon>
       <ion-label>Contraseña</ion-label>
       <ion-input slot="end" type="password" [disabled]="!profileEdit" name="password"
-        [(ngModel)]="authService.user.password">
+        [(ngModel)]="usuario.password">
       </ion-input>
     </ion-item>
 
