@@ -31,15 +31,15 @@ export class TareaPage implements OnInit {
   marker: marker;
 
   constructor(
-    private modalCtrl: ModalController,
+    private instrumentosServices: InstrumentosService,
+    private ubicacionService: UbicacionService,
+    public alertController: AlertController,
     private activatedRoute: ActivatedRoute,
     private tareasService: TareasService,
-    private instrumentosServices: InstrumentosService,
-    public navCtrl: NavController,
+    private modalCtrl: ModalController,
     public authService: AuthService,
-    private ubicacionService: UbicacionService,
-    public alertController: AlertController
-  ) { }
+    public navCtrl: NavController
+    ) { }
 
   ngOnInit() {
     this.ubicacionService.obtenerUbicacionActual();
@@ -65,17 +65,22 @@ export class TareaPage implements OnInit {
   detalleTarea(id: string) {
     this.tareasService.detalleTarea(id)
       .subscribe(async resp => {
-        this.cargando = false;
-        this.tarea = resp;
-        this.tarea.tareid = id;
+        if (resp) {
+          this.cargando = false;
+          this.tarea = resp;
+          this.tarea.tareid = id;
 
-        if (this.tarea.taretipo === 1) {
-          const res = await this.instrumentosServices.verificarImplementacion(this.tarea.instrid);
-          this.implementado = res;
+          if (this.tarea.taretipo === 1) {
+            const res = await this.instrumentosServices.verificarImplementacion(this.tarea.instrid);
+            this.implementado = res;
+          }
+
+          this.geoJS = geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
+          this.map.fitBounds(this.geoJS.getBounds());
+        } else {
+          this.tarea = undefined;
+          this.navCtrl.back();
         }
-
-        this.geoJS = geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
-        this.map.fitBounds(this.geoJS.getBounds());
       });
   }
 
@@ -111,10 +116,10 @@ export class TareaPage implements OnInit {
   }
 
   async encuesta() {
-   /*  if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
+    if (!this.ubicacionService.obtenerPoligono(this.geoJS).length) {
       await this.presentAlert();
       return;
-    } */
+    }
 
     const modal = await this.modalCtrl.create({
       component: EncuestaComponent,

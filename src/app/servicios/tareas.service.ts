@@ -60,7 +60,7 @@ export class TareasService {
       const headers = new HttpHeaders({ Authorization: this.authService.token });
       return this.http.get(`${URL}/detail/${tareid}`, { headers })
         .pipe(map((resp: any) => {
-          this.dataLocalService.guardarDetalleTarea(resp.tarea);
+          this.dataLocalService.guardarDetalleTarea(tareid, resp.tarea);
           return resp.tarea;
         }), catchError(e => this.errorService.handleError(e)));
     }

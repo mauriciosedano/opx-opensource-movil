@@ -5,6 +5,7 @@ import { Proyecto } from 'src/app/interfaces/proyecto';
 import { UiService } from 'src/app/servicios/ui.service';
 import { PickerController, NavController, AlertController } from '@ionic/angular';
 import { TareasService } from 'src/app/servicios/tareas.service';
+import { NetworkService, ConnectionStatus } from 'src/app/servicios/network.service';
 
 @Component({
   selector: 'app-proyectista',
@@ -31,6 +32,7 @@ export class ProyectistaPage implements OnInit {
     private proyectosService: ProyectosService,
     public pickerController: PickerController,
     public alertController: AlertController,
+    private networkService: NetworkService,
     private tareaService: TareasService,
     private navCtrl: NavController,
     private uiService: UiService,
@@ -168,6 +170,11 @@ export class ProyectistaPage implements OnInit {
   }
 
   async presentAlertPrompt() {
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      this.uiService.presentToast('Función disponible solo online');
+      return;
+    }
+
     const alert = await this.alertController.create({
       header: 'Ingresa una nueva cantidad',
       animated: true,
@@ -222,6 +229,10 @@ export class ProyectistaPage implements OnInit {
   }
 
   irDecision(decision) {
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      this.uiService.presentToast('Función disponible solo online');
+      return;
+    }
     this.navCtrl.navigateForward(`/tabs/explorar/proyectista/decision/${decision}/${this.territorioSeleccionado.proyid}`,
       { animated: true });
   }

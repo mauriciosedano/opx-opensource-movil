@@ -60,6 +60,7 @@ export class AuthService {
       this.storage.remove('tareas'),
       this.storage.remove('proyectos'),
       this.storage.remove('usuario'),
+      this.storage.remove('proyectos-detalle')
     ]);
   }
 

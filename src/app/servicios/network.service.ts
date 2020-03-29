@@ -50,11 +50,11 @@ export class NetworkService {
   private async updateNetworkStatus(status: ConnectionStatus) {
     this.status.next(status);
 
-    const connection = status === ConnectionStatus.Offline ? 'sin conexión' : 'en linea';
+    const connection = status === ConnectionStatus.Offline ? 'perdida' : 'establecida';
     const toast = this.toastController.create({
-      message: `Estas ${connection}`,
+      message: `Conexión ${connection}`,
       duration: 3000,
-      position: 'bottom',
+      animated: true,
       color: status === ConnectionStatus.Offline ? 'danger' : 'success'
     });
     toast.then(t => t.present());

@@ -99,12 +99,15 @@ export class ProyectosService {
    * Obtiene las dimensiones territoriales por proyecto
    */
   dimensionesTerritoriales(proyid: string) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-
-    return this.http.get(`${URL}/dimensiones-territoriales/${proyid}`, { headers })
-      .pipe(map((resp: any) => {
-        return resp.dimensionesTerritoriales;
-      }), catchError(e => this.errorService.handleError(e)));
-
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.cargarDimensionesTerritoriales(proyid));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      return this.http.get(`${URL}/dimensiones-territoriales/${proyid}`, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarDimensionesTerritoriales(proyid, resp.dimensionesTerritoriales);
+          return resp.dimensionesTerritoriales;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 }

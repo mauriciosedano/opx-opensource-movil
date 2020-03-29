@@ -27,7 +27,8 @@ export class UiService {
     const toast = await this.toastController.create({
       message,
       position: 'top',
-      duration: 1500
+      duration: 2500,
+      animated: true
     });
     toast.present();
   }
@@ -37,7 +38,8 @@ export class UiService {
       message,
       position: 'top',
       color: 'success',
-      duration: 1500
+      duration: 2000,
+      animated: true
     });
     toast.present();
   }
@@ -47,7 +49,8 @@ export class UiService {
       message,
       color: 'danger',
       position: 'top',
-      duration: 2000
+      duration: 2000,
+      animated: true
     });
     toast.present();
   }

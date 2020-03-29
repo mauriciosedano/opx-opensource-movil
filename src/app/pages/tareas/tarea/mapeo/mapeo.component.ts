@@ -1,18 +1,19 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { ModalController, ActionSheetController, AlertController, LoadingController } from '@ionic/angular';
 import { Map, tileLayer, FeatureGroup, geoJSON, marker, latLng } from 'leaflet';
+import * as leafletPip from '@mapbox/leaflet-pip';
+import drawLocales from 'leaflet-draw-locales';
+import * as L from 'leaflet';
+
 import { UtilidadesService } from 'src/app/servicios/utilidades.service';
 import { ElementoOSM } from 'src/app/interfaces/elemento-osm';
 import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
 import { Tarea } from 'src/app/interfaces/tarea';
 import { UiService } from 'src/app/servicios/ui.service';
-import * as L from 'leaflet';
-import drawLocales from 'leaflet-draw-locales';
 import { AuthService } from 'src/app/servicios/auth.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { TareasService } from 'src/app/servicios/tareas.service';
 
-import * as leafletPip from '@mapbox/leaflet-pip';
 
 @Component({
   selector: 'app-mapeo',
@@ -35,16 +36,16 @@ export class MapeoComponent implements OnInit {
   marker: marker;
 
   constructor(
-    private modalCtrl: ModalController,
-    private utilidadesService: UtilidadesService,
-    private instrumentosService: InstrumentosService,
     public actionSheetController: ActionSheetController,
-    public alertController: AlertController,
+    private instrumentosService: InstrumentosService,
+    private utilidadesService: UtilidadesService,
     public loadingController: LoadingController,
-    private uiService: UiService,
-    public authService: AuthService,
     private ubicacionService: UbicacionService,
-    private tareasService: TareasService
+    public alertController: AlertController,
+    private tareasService: TareasService,
+    private modalCtrl: ModalController,
+    public authService: AuthService,
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
@@ -73,20 +74,24 @@ export class MapeoComponent implements OnInit {
 
     this.instrumentosService.detalleMapeo(this.tarea.tareid)
       .subscribe(r => {
-        geoJSON(JSON.parse(r), {
-          onEachFeature: (feature, layer) => {
-            feature.style = this.colorAleatorio();
-            if (feature.properties && feature.properties.tipo) {
-              layer.bindPopup(feature.properties.tipo);
+        if (r) {
+          geoJSON(JSON.parse(r), {
+            onEachFeature: (feature, layer) => {
+              feature.style = this.colorAleatorio();
+              if (feature.properties && feature.properties.tipo) {
+                layer.bindPopup(feature.properties.tipo);
+              }
+              layer.setStyle(this.colorAleatorio());
             }
-            layer.setStyle(this.colorAleatorio());
-          }
-        }).addTo(this.map);
+          }).addTo(this.map);
 
-        if (this.validar) {
-          this.map.on('popupopen', (ev) => {
-            this.eventoPopUpOpen(ev);
-          });
+          if (this.validar) {
+            this.map.on('popupopen', (ev) => {
+              this.eventoPopUpOpen(ev);
+            });
+          }
+        } else {
+          this.modalCtrl.dismiss();
         }
 
         this.cargando = false;

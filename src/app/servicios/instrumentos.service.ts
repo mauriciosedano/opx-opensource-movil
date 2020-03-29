@@ -84,12 +84,16 @@ export class InstrumentosService {
    * @param tareid id Identificación de la tarea.
    */
   detalleMapeo(tareid: string) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/detalle-cartografia/${tareid}`, { headers })
-      .pipe(map((resp: any) => {
-        this.dataLocalService.guardarDetalleCartografia(tareid, resp.geojson);
-        return resp.geojson;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.cargarDetalleCartografia(tareid));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      return this.http.get(`${URL}/detalle-cartografia/${tareid}`, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarDetalleCartografia(tareid, resp.geojson);
+          return resp.geojson;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**
@@ -107,11 +111,16 @@ export class InstrumentosService {
    * Usado en el perfil del validador
    */
   informacionInstrumento(tareid: string) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token });
-    return this.http.get(`${URL}/${tareid}/informacion/`, { headers })
-      .pipe(map((resp: any) => {
-        return resp.info;
-      }), catchError(e => this.errorService.handleError(e)));
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.cargarInformacionInstrumento(tareid));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token });
+      return this.http.get(`${URL}/${tareid}/informacion/`, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarInformacionInstrumento(tareid, resp.info);
+          return resp.info;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**

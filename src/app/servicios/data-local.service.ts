@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import { UiService } from './ui.service';
 import { Tarea } from '../interfaces/tarea';
 import { Proyecto, ProyectoBackend } from '../interfaces/proyecto';
-import { UtilidadesService } from './utilidades.service';
+import { NavController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +15,12 @@ export class DataLocalService {
    */
   constructor(
     private storage: Storage,
-    public uiService: UiService
+    private uiService: UiService,
+    private navController: NavController
   ) { }
 
-  bajarVersionOffline() {
-
+  toastOnlyOnline() {
+    this.uiService.presentToast('Función disponible online');
   }
 
   /**
@@ -49,17 +50,7 @@ export class DataLocalService {
    * Función que guarda localmente los proyectos en detalle que se consultaron cuando había conexión a internet.
    */
   async guardarDetalleProyecto(resp: ProyectoBackend) {
-
-    const proyectosDetalle: ProyectoBackend[] = await this.storage.get('proyectosDetalle') || [];
-    const i = proyectosDetalle.findIndex(p => p.proyecto.proyid === resp.proyecto.proyid);
-
-    if (i >= 0) {
-      proyectosDetalle[i] = resp;
-    } else {
-      proyectosDetalle.push(resp);
-    }
-
-    await this.storage.set('proyectosDetalle', proyectosDetalle);
+    return this.guardarStorage('proyectos-detalle', resp.proyecto.proyid, resp);
   }
 
   /**
@@ -67,8 +58,7 @@ export class DataLocalService {
    * @param proyid proyecto por cargar.
    */
   async detalleProyecto(proyid: string) {
-    const proyectosDetalle = await this.storage.get('proyectosDetalle') || {};
-    return proyectosDetalle.find(p => p.proyecto.proyid === proyid);
+    return this.cargarStorage('proyectos-detalle', proyid);
   }
 
   /**
@@ -143,27 +133,16 @@ export class DataLocalService {
   /**
    * Función que guarda localmente las tarea en detalle que se consultaron cuando había conexión a internet.
    */
-  async guardarDetalleTarea(resp: Tarea) {
-
-    const tareasDetalle: Tarea[] = await this.storage.get('tareasDetalle') || [];
-    const i = tareasDetalle.findIndex(t => t.tareid === resp.tareid);
-
-    if (i >= 0) {
-      tareasDetalle[i] = resp;
-    } else {
-      tareasDetalle.push(resp);
-    }
-
-    await this.storage.set('tareasDetalle', tareasDetalle);
+  guardarDetalleTarea(tareid: string, data: Tarea) {
+    return this.guardarStorage('tareas-detalle', tareid, data);
   }
 
   /**
    * Carga del almacenamiento local una tarea en detalle
    * @param tareid tarea por cargar.
    */
-  async detalleTarea(tareid: string) {
-    const tareasDetalle: Tarea[] = await this.storage.get('tareasDetalle') || [];
-    return tareasDetalle.find(t => t.tareid === tareid);
+  detalleTarea(tareid: string) {
+    return this.cargarStorage('tareas-detalle', tareid);
   }
 
   /**
@@ -178,7 +157,7 @@ export class DataLocalService {
     const c = await this.storage.get('contextos');
     return JSON.parse(c);
   }
-
+  // OJO
   async guardarCategorizacion(data: any, barrioUbicacion: string, barrioSeleccion: string, anio: number) {
     const categorizaciones: any[] = await this.storage.get('categorizaciones') || [];
 
@@ -258,45 +237,48 @@ export class DataLocalService {
     }
 
   }
+  // OJO FIN
 
-
-
-  async guardarVerificarImplementacion(id: string, data: boolean) {
+  guardarVerificarImplementacion(id: string, data: boolean) {
     return this.guardarStorage('verificarImplementacion', id, data);
   }
 
-  async cargarVerificarImplementacion(id: string) {
-    const vi: any[] = await this.storage.get('verificarImplementacion') || [];
-    const v = vi.find(t => t.id === id);
-    return v ? v.object : false;
+  cargarVerificarImplementacion(id: string) {
+    return this.cargarStorage('verificarImplementacion', id) || false;
   }
 
-  async guardarEnlaceFormularioKoboToolbox(id: string, enlace: string) {
+  guardarEnlaceFormularioKoboToolbox(id: string, enlace: string) {
     return this.guardarStorage('enlaceKoboToolbox', id, enlace);
   }
 
-  async cargarEnlaceFormularioKoboToolbox(id: string) {
-    const vi: any[] = await this.storage.get('enlaceKoboToolbox') || [];
-    const v = vi.find(t => t.id === id);
-    return v ? v.object : '';
+  cargarEnlaceFormularioKoboToolbox(id: string) {
+    return this.cargarStorage('enlaceKoboToolbox', id) || '';
   }
 
-  async guardarDetalleCartografia(tareid: string, geojson: any) {
-    return this.guardarStorage('detalleCartografia', tareid, geojson);
+  guardarDetalleCartografia(tareid: string, geojson: any) {
+    return this.guardarStorage('detalle-cartografia', tareid, geojson);
   }
 
-  async guardarInformacionInstrumento(tareid: string, info: any) {
-    return this.guardarStorage('informacionInstrumento', tareid, info);
+  cargarDetalleCartografia(tareid: string) {
+    return this.cargarStorage('detalle-cartografia', tareid) || '';
   }
 
+  guardarInformacionInstrumento(tareid: string, info: any) {
+    return this.guardarStorage('informacion-instrumento', tareid, info);
+  }
 
+  cargarInformacionInstrumento(tareid: string) {
+    return this.cargarStorage('informacion-instrumento', tareid);
+  }
 
+  guardarDimensionesTerritoriales(proyid: string, data: any) {
+    return this.guardarStorage('dimensiones-territoriales', proyid, JSON.stringify(data));
+  }
 
-
-
-
-
-
+  async cargarDimensionesTerritoriales(proyid: string) {
+    const resp = await this.cargarStorage('dimensiones-territoriales', proyid);
+    return JSON.parse(resp);
+  }
 
 
   async usuario(usuario?) {
@@ -335,9 +317,24 @@ export class DataLocalService {
     return await this.storage.get('elementosOSM');
   }
 
+  /**
+   * Método genérico que carga los elemento almacenados en localStorage
+   * @param keyStorage Llave del campo
+   * @param id del objeto por cargar
+   */
+  async cargarStorage(keyStorage: string, id: string) {
+    const vi: any[] = await this.storage.get(keyStorage) || [];
+    const v = vi.find(t => t.id === id);
+    if (v) {
+      return v.object;
+    } else {
+      this.uiService.presentToast('Recurso no disponible offline');
+      return undefined;
+    }
+  }
 
   /**
-   * Método genérico que guarda objetos en el IndexedBD del equipo
+   * Método genérico que guarda objetos en el localStorage del equipo
    * @param keyStorage Llave del campo
    * @param id del objeto por guardar
    * @param object elemento a guardar o actualizar

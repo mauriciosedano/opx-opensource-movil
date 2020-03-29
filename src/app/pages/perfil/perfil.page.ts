@@ -6,6 +6,7 @@ import { UtilidadesService } from 'src/app/servicios/utilidades.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { User } from 'src/app/interfaces/user';
 import { UiService } from 'src/app/servicios/ui.service';
+import { NetworkService, ConnectionStatus } from 'src/app/servicios/network.service';
 
 @Component({
   selector: 'app-perfil',
@@ -29,12 +30,13 @@ export class PerfilPage implements OnInit {
   name = '';
 
   constructor(
-    public authService: AuthService,
-    private modalCtrl: ModalController,
     private utilidadesService: UtilidadesService,
+    public loadingController: LoadingController,
     private usuarioService: UsuarioService,
-    private uiService: UiService,
-    public loadingController: LoadingController
+    private networkService: NetworkService,
+    private modalCtrl: ModalController,
+    public authService: AuthService,
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
@@ -83,6 +85,11 @@ export class PerfilPage implements OnInit {
   }
 
   hideShowEdit() {
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      this.uiService.presentToast('Función disponible solo online');
+      return;
+    }
+
     this.profileEdit = !this.profileEdit;
     this.profileIcon = this.profileIcon === 'create' ? 'save' : 'create';
 
