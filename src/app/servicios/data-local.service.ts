@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+
 import { UiService } from './ui.service';
 import { Tarea } from '../interfaces/tarea';
 import { Proyecto, ProyectoBackend } from '../interfaces/proyecto';
-import { NavController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +15,7 @@ export class DataLocalService {
    */
   constructor(
     private storage: Storage,
-    private uiService: UiService,
-    private navController: NavController
+    private uiService: UiService
   ) { }
 
   toastOnlyOnline() {
@@ -157,7 +156,7 @@ export class DataLocalService {
     const c = await this.storage.get('contextos');
     return JSON.parse(c);
   }
-  // OJO
+
   async guardarCategorizacion(data: any, barrioUbicacion: string, barrioSeleccion: string, anio: number) {
     const categorizaciones: any[] = await this.storage.get('categorizaciones') || [];
 
@@ -186,8 +185,6 @@ export class DataLocalService {
       c.barrioUbicacion === barrioUbicacion && c.anio === anio);
 
     if (cat) {
-      console.log('cat', cat);
-
       return cat.data;
     } else {
       return [];
@@ -205,17 +202,23 @@ export class DataLocalService {
       c.anio === anio
     );
 
+    // Elimina datos rebundantes generados por otros componentes.
+    data.datasets = data.datasets.map(element => {
+      return {
+        data: element.data,
+        borderColor: element.borderColor,
+        fill: element.fill,
+        label: element.label
+      };
+    });
+
     const cat = { data, labelX, barrioUbicacion, barrioSeleccion, anio };
 
     if (i >= 0) {
-      console.log('Update');
       datosCategorizacion[i] = cat;
     } else {
       datosCategorizacion.push(cat);
-      console.log('push');
     }
-    console.log(i >= 0, cat);
-
     return this.storage.set('datos-categorizacion', datosCategorizacion);
   }
 
@@ -226,18 +229,13 @@ export class DataLocalService {
       c.labelX === labelX &&
       c.barrioSeleccion === barrioSeleccion &&
       c.barrioUbicacion === barrioUbicacion && c.anio === anio);
-    console.log(cat !== undefined, 'cat !== undefined');
 
     if (cat) {
-      console.log('cat', cat);
-
       return cat.data;
     } else {
-      return [];
+      return undefined;
     }
-
   }
-  // OJO FIN
 
   guardarVerificarImplementacion(id: string, data: boolean) {
     return this.guardarStorage('verificar-implementacion', id, data);

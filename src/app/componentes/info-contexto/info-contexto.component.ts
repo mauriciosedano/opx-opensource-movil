@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Chart } from 'chart.js';
 import { ContextosService } from 'src/app/servicios/contextos.service';
+import { UiService } from 'src/app/servicios/ui.service';
 
 @Component({
   selector: 'app-info-contexto',
@@ -64,7 +65,8 @@ export class InfoContextoComponent implements OnInit {
   } */];
 
   constructor(
-    private contextosService: ContextosService
+    private contextosService: ContextosService,
+    private uiService: UiService,
   ) { }
 
   ngOnInit() {
@@ -88,8 +90,6 @@ export class InfoContextoComponent implements OnInit {
           this.barrioUbicacion.id_barrio, this.barrioUbicacion.id_barrio, this.year).toPromise(),
         this.contextosService.categorizacion(this.barrioUbicacion.id_barrio, this.barrioUbicacion.id_barrio, this.year).toPromise()
       ]).then(values => {
-        console.log(values[0]);
-
         this.cargarGraficaLinea(values[0]);
         this.cargarBulletCharts(values[1]);
       });
@@ -98,16 +98,20 @@ export class InfoContextoComponent implements OnInit {
 
   async reproducir() {
     this.cargaReproduccion = true;
-    await this.contextosService.reproducir(this.barrioUbicacion, this.barrioSeleccionado).toPromise();
+    await this.contextosService.reproducir(this.barrioUbicacion, this.barrioSeleccionado);
     this.cargaReproduccion = false;
   }
 
-  cargarGraficaLinea(data: any) {
+  cargarGraficaLinea(datos: any) {
+    if (!datos) {
+      this.uiService.presentToast('Recurso no disponible offline');
+      return;
+    }
     this.cargandoBar = true;
 
     const lineChartData = {
-      labels: data.labels,
-      datasets: data.datasets
+      labels: datos.labels,
+      datasets: datos.datasets
     };
 
     this.barChart = new Chart(this.barCanvas.nativeElement, {
@@ -210,7 +214,6 @@ export class InfoContextoComponent implements OnInit {
   }
 
   ionViewWillLeave() {
-    console.log('BYE');
     this.bulletCharts = [];
     this.barChart = null;
   }

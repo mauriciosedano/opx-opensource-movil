@@ -139,7 +139,7 @@ export class ExplorarPage implements OnInit {
 
   async reproducir() {
     this.cargaReproduccion = true;
-    await this.contextoService.reproducir(this.barrioUbicacion, this.barrioSeleccionado).toPromise();
+    await this.contextoService.reproducir(this.barrioUbicacion, this.barrioSeleccionado);
     this.cargaReproduccion = false;
   }
 

@@ -9,6 +9,7 @@ import { NetworkService, ConnectionStatus } from './network.service';
 import { DataLocalService } from './data-local.service';
 import { OfflineManagerService } from './offline-manager.service';
 import { from } from 'rxjs';
+import { resolve } from 'url';
 
 const URL = environment.API_URL + '/datos-contexto';
 
@@ -82,22 +83,24 @@ export class ContextosService {
     barrioSeleccion: string = '206',
     anio: number = 2010
   ) {
-    const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.dataLocalService.cargarDatosContextualizacion(labelX, barrioUbicacion, barrioSeleccion, anio));
+    } else {
+      const headers = new HttpHeaders({ Authorization: this.authService.token || 'null' });
 
-    let url = `${environment.API_URL}/contextualizacion/${labelX}/?barrioUbicacion=${barrioUbicacion}&barrioSeleccion=${barrioSeleccion}`;
+      let url = `${environment.API_URL}/contextualizacion/${labelX}/?barrioUbicacion=${barrioUbicacion}&barrioSeleccion=${barrioSeleccion}`;
 
-    if (labelX !== 'todo') {
-      url += `&year=${anio}`;
+      if (labelX !== 'todo') {
+        url += `&year=${anio}`;
+      }
+
+      return this.http.get(url, { headers })
+        .pipe(map((resp: any) => {
+          this.dataLocalService.guardarDatosContextualización(resp.data, labelX, barrioUbicacion, barrioSeleccion, anio);
+          return resp.data;
+
+        }), catchError(e => this.errorService.handleError(e)));
     }
-
-    return this.http.get(url, { headers })
-      .pipe(map((resp: any) => {
-        const data = Object.assign({}, resp.data);
-        return this.dataLocalService.guardarDatosContextualización(data, labelX, barrioUbicacion, barrioSeleccion, anio)
-          .then(() => {
-            return resp.data;
-          });
-      }), catchError(e => this.errorService.handleError(e)));
   }
 
   /**
@@ -107,25 +110,27 @@ export class ContextosService {
     let txt = 'El indicador de paz para el barrio ';
     txt += `${barrioSeleccionado ? barrioSeleccionado.barrio : barrioUbicacion.barrio} en el año 2019 `;
 
-    if (barrioSeleccionado) {
-      return this.datosContextualización('todo',
-        barrioUbicacion.id_barrio, barrioSeleccionado.id_barrio, 2019)
-        .pipe(map(async (r: any) => {
-          const index = r.labels.findIndex(f => f === 2019);
-          const seleccion = r.datasets.find(f => f.label === 'Selección').data[index];
-          const ubicacion = r.datasets.find(f => f.label === 'Ubicación').data[index];
-          txt += `es ${seleccion} y respecto a su ubicación es ${ubicacion}.`;
-          return await this.textoVozService.interpretar(txt);
-        }));
-    } else {
-      return this.datosContextualización('todo',
-        barrioUbicacion.id_barrio, barrioUbicacion.id_barrio, 2019)
-        .pipe(map(async (r: any) => {
-          const index = r.labels.findIndex(f => f === 2019);
-          const ubicacion = r.datasets.find(f => f.label === 'Ubicación').data[index];
-          txt += `es ${ubicacion}`;
-          return await this.textoVozService.interpretar(txt);
-        }));
-    }
+    return new Promise(resolve => {
+      if (barrioSeleccionado) {
+        this.datosContextualización('todo',
+          barrioUbicacion.id_barrio, barrioSeleccionado.id_barrio, 2019)
+          .subscribe((r: any) => {
+            const index = r.labels.findIndex(f => f === 2019);
+            const seleccion = r.datasets.find(f => f.label === 'Selección').data[index];
+            const ubicacion = r.datasets.find(f => f.label === 'Ubicación').data[index];
+            txt += `es ${seleccion} y respecto a su ubicación es ${ubicacion}.`;
+            return resolve(this.textoVozService.interpretar(txt));
+          });
+      } else {
+        this.datosContextualización('todo',
+          barrioUbicacion.id_barrio, barrioUbicacion.id_barrio, 2019)
+          .subscribe((r: any) => {
+            const index = r.labels.findIndex(f => f === 2019);
+            const ubicacion = r.datasets.find(f => f.label === 'Ubicación').data[index];
+            txt += `es ${ubicacion}`;
+            return resolve(this.textoVozService.interpretar(txt));
+          });
+      }
+    });
   }
 }
