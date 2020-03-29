@@ -86,7 +86,7 @@ export class AuthService {
     this.token = null;
     this.user = null;
     this.storage.clear();
-    this.navCtrl.navigateRoot('/', { animated: true });
+    this.navCtrl.navigateRoot('/');
   }
 
   /**

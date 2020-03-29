@@ -94,7 +94,6 @@ export class ExplorarPage implements OnInit {
     const myModal = await this.modalController.create({
       component: InfoContextoComponent,
       cssClass: 'my-custom-modal-css',
-      animated: true,
       componentProps: {
         barrioUbicacion: this.barrioUbicacion,
         barrioSeleccionado: this.barrioSeleccionado

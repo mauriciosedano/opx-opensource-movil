@@ -65,7 +65,7 @@ export class ProyectosPage {
   }
 
   irProyecto(proyid: string) {
-    this.navCtrl.navigateForward(`/tabs/proyectos/p/${proyid}`, { animated: true });
+    this.navCtrl.navigateForward(`/tabs/proyectos/p/${proyid}`);
   }
 
 }

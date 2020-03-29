@@ -74,31 +74,25 @@ export class InfoContextoComponent implements OnInit {
   cargarInformacion() {
     this.cargandoBar = this.loadingBullets = true;
     if (this.barrioSeleccionado) {
-
-      this.contextosService.datosContextualización(this.segmentoActual,
-        this.barrioUbicacion.id_barrio, this.barrioSeleccionado.id_barrio, this.year)
-        .subscribe(r => {
-          this.cargarGraficaLinea(r);
-        });
-
-      this.contextosService.categorizacion(this.barrioUbicacion.id_barrio, this.barrioSeleccionado.id_barrio, this.year)
-        .subscribe(r => {
-          console.log('r', r);
-
-          this.cargarBulletCharts(r);
-        });
+      Promise.all([
+        this.contextosService.datosContextualización(this.segmentoActual,
+          this.barrioUbicacion.id_barrio, this.barrioSeleccionado.id_barrio, this.year).toPromise(),
+        this.contextosService.categorizacion(this.barrioUbicacion.id_barrio, this.barrioSeleccionado.id_barrio, this.year).toPromise()
+      ]).then(values => {
+        this.cargarGraficaLinea(values[0]);
+        this.cargarBulletCharts(values[1]);
+      });
     } else {
-      this.contextosService.datosContextualización(this.segmentoActual,
-        this.barrioUbicacion.id_barrio, this.barrioUbicacion.id_barrio, this.year)
-        .subscribe(r => {
-          this.cargarGraficaLinea(r);
-        });
+      Promise.all([
+        this.contextosService.datosContextualización(this.segmentoActual,
+          this.barrioUbicacion.id_barrio, this.barrioUbicacion.id_barrio, this.year).toPromise(),
+        this.contextosService.categorizacion(this.barrioUbicacion.id_barrio, this.barrioUbicacion.id_barrio, this.year).toPromise()
+      ]).then(values => {
+        console.log(values[0]);
 
-      this.contextosService.categorizacion(this.barrioUbicacion.id_barrio, this.barrioUbicacion.id_barrio, this.year)
-        .subscribe(r => {
-          console.log('r', r);
-          this.cargarBulletCharts(r);
-        });
+        this.cargarGraficaLinea(values[0]);
+        this.cargarBulletCharts(values[1]);
+      });
     }
   }
 

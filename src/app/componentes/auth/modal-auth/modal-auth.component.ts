@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+
 import { ModalLoginComponent } from '../modal-login/modal-login.component';
 import { ModalRegistroComponent } from '../modal-registro/modal-registro.component';
 
@@ -20,7 +21,7 @@ export class ModalAuthComponent implements OnInit {
     switch (component) {
       case 'login':
         const modal = await this.modalCtrl.create({
-          component: ModalLoginComponent,
+          component: ModalLoginComponent
         });
         modal.present();
         break;

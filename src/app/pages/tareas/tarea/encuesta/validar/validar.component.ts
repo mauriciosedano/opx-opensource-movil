@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { IonSlides, ModalController, AlertController, LoadingController } from '@ionic/angular';
+import { IonSlides, ModalController, AlertController } from '@ionic/angular';
+
 import { InstrumentosService } from 'src/app/servicios/instrumentos.service';
 import { UiService } from 'src/app/servicios/ui.service';
 
@@ -22,7 +23,6 @@ export class ValidarComponent implements OnInit {
     private modalCtrl: ModalController,
     public alertController: AlertController,
     private instrumentosServices: InstrumentosService,
-    public loadingController: LoadingController,
     private uiService: UiService
   ) { }
 
@@ -37,7 +37,7 @@ export class ValidarComponent implements OnInit {
     const from = await this.slides.getActiveIndex();
     const encuesta = this.encuestas[from];
 
-    await this.presentLoading();
+    this.loading = await this.uiService.presentLoading('');
 
     this.instrumentosServices.revisionEncuesta(encuesta.encuestaid, 2)
       .subscribe(async () => {
@@ -107,7 +107,7 @@ export class ValidarComponent implements OnInit {
             const from = await this.slides.getActiveIndex();
             const encuesta = this.encuestas[from];
 
-            await this.presentLoading();
+            this.loading = await this.uiService.presentLoading('');
 
             this.instrumentosServices.revisionEncuesta(encuesta.encuestaid, 1, e.obs)
               .subscribe(async () => {
@@ -127,14 +127,6 @@ export class ValidarComponent implements OnInit {
     });
 
     await alert.present();
-  }
-
-  async presentLoading() {
-    this.loading = await this.loadingController.create({
-      animated: true,
-      translucent: true
-    });
-    await this.loading.present();
   }
 
   async slideChange(e) {

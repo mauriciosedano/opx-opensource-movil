@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { ModalController, ActionSheetController, AlertController, LoadingController } from '@ionic/angular';
+import { ModalController, ActionSheetController, AlertController } from '@ionic/angular';
 import { Map, tileLayer, FeatureGroup, geoJSON, marker, latLng } from 'leaflet';
 import * as leafletPip from '@mapbox/leaflet-pip';
 import drawLocales from 'leaflet-draw-locales';
@@ -13,7 +13,6 @@ import { UiService } from 'src/app/servicios/ui.service';
 import { AuthService } from 'src/app/servicios/auth.service';
 import { UbicacionService } from 'src/app/servicios/ubicacion.service';
 import { TareasService } from 'src/app/servicios/tareas.service';
-
 
 @Component({
   selector: 'app-mapeo',
@@ -39,7 +38,6 @@ export class MapeoComponent implements OnInit {
     public actionSheetController: ActionSheetController,
     private instrumentosService: InstrumentosService,
     private utilidadesService: UtilidadesService,
-    public loadingController: LoadingController,
     private ubicacionService: UbicacionService,
     public alertController: AlertController,
     private tareasService: TareasService,
@@ -227,7 +225,7 @@ export class MapeoComponent implements OnInit {
    * Elimina una cartografía del api y del mapa.
    */
   async eliminarCartografia(layer) {
-    await this.presentLoading('Eliminando cartografía.');
+    this.loading = await this.uiService.presentLoading('Eliminando cartografía.');
     this.instrumentosService.eliminarCartografia(layer.feature.properties.id)
       .subscribe(async () => {
         await this.loading.dismiss();
@@ -241,7 +239,7 @@ export class MapeoComponent implements OnInit {
   }
 
   async validarCartografia() {
-    await this.presentLoading('Validando');
+    this.loading = await this.uiService.presentLoading('Validando');
     const estadoPrevio = this.tarea.tareestado;
     this.tarea.tareestado = 2;
     this.tareasService.editarTarea(this.tarea)
@@ -276,7 +274,7 @@ export class MapeoComponent implements OnInit {
       buttons.push({
         text: e.nombre,
         handler: async () => {
-          await this.presentLoading('Agregando cartografía.');
+          this.loading = await this.uiService.presentLoading('Agregando cartografía');
           this.instrumentosService.mapeoOSM(this.tarea.tareid, e.elemosmid, coor)
             .subscribe(async () => {
               await this.loading.dismiss();
@@ -324,15 +322,6 @@ export class MapeoComponent implements OnInit {
     await alert.present();
   }
 
-  async presentLoading(message: string) {
-    this.loading = await this.loadingController.create({
-      message,
-      animated: true,
-      translucent: true
-    });
-    await this.loading.present();
-  }
-
   async presentAlertPrompt() {
     const alert = await this.alertController.create({
       header: 'Observación',
@@ -352,7 +341,7 @@ export class MapeoComponent implements OnInit {
         }, {
           text: 'Aceptar',
           handler: async (e) => {
-            await this.presentLoading('Invalidando');
+            this.loading = await this.uiService.presentLoading('Invalidando');
 
             this.tarea.observaciones = e.obs;
             const estadoPrevio = this.tarea.tareestado;

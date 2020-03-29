@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
+
 import { ProyectosService } from 'src/app/servicios/proyectos.service';
 import { AuthService } from 'src/app/servicios/auth.service';
 import { Tarea } from 'src/app/interfaces/tarea';
@@ -26,11 +27,10 @@ export class ProyectoPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
     public authService: AuthService
-  ) {
-    activatedRoute.params.subscribe(params => this.detalleProyecto(params.id));
-  }
+  ) { }
 
   ngOnInit() {
+    this.activatedRoute.params.subscribe(params => this.detalleProyecto(params.id));
   }
 
   detalleProyecto(proyid: string) {

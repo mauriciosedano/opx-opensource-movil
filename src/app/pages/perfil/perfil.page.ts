@@ -1,12 +1,13 @@
+import { NetworkService, ConnectionStatus } from 'src/app/servicios/network.service';
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+
 import { AuthService } from 'src/app/servicios/auth.service';
-import { ModalController, LoadingController } from '@ionic/angular';
 import { ModalLoginComponent } from 'src/app/componentes/auth/modal-login/modal-login.component';
 import { UtilidadesService } from 'src/app/servicios/utilidades.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { User } from 'src/app/interfaces/user';
 import { UiService } from 'src/app/servicios/ui.service';
-import { NetworkService, ConnectionStatus } from 'src/app/servicios/network.service';
 
 @Component({
   selector: 'app-perfil',
@@ -31,7 +32,6 @@ export class PerfilPage implements OnInit {
 
   constructor(
     private utilidadesService: UtilidadesService,
-    public loadingController: LoadingController,
     private usuarioService: UsuarioService,
     private networkService: NetworkService,
     private modalCtrl: ModalController,
@@ -64,20 +64,15 @@ export class PerfilPage implements OnInit {
   }
 
   cargarUtilidades() {
-    this.utilidadesService.listaGeneros()
-      .subscribe(r => {
-        this.generos = r;
-      });
-
-    this.utilidadesService.listaNivelesEducativos()
-      .subscribe(r => {
-        this.nivelesEducativos = r;
-      });
-
-    this.utilidadesService.listaBarrios()
-      .subscribe(r => {
-        this.barrios = r;
-      });
+    Promise.all([
+      this.utilidadesService.listaGeneros().toPromise(),
+      this.utilidadesService.listaNivelesEducativos().toPromise(),
+      this.utilidadesService.listaBarrios().toPromise()
+    ]).then(values => {
+      this.generos = values[0];
+      this.nivelesEducativos = values[1];
+      this.barrios = values[2];
+    });
   }
 
   cerrarSesion() {
@@ -101,7 +96,7 @@ export class PerfilPage implements OnInit {
 
   async guardarUsuario() {
 
-    await this.presentLoading('Guardando');
+    this.loader = await this.uiService.presentLoading('Guardando...');
 
     const date = new Date(this.usuario.fecha_nacimiento);
     const year = date.getFullYear().toString();
@@ -130,13 +125,6 @@ export class PerfilPage implements OnInit {
         this.uiService.presentToastError('Ha ocurrido un error. Por favor intenta de nuevo!');
         console.log('error', error);
       }));
-  }
-
-  async presentLoading(message: string) {
-    this.loader = await this.loadingController.create({
-      message
-    });
-    return this.loader.present();
   }
 
 }

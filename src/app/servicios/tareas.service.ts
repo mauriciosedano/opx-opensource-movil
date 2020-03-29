@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { AuthService } from './auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
-import { ErrorService } from './error.service';
+import { Injectable } from '@angular/core';
 import { from } from 'rxjs';
+
 import { ConnectionStatus, NetworkService } from './network.service';
+import { environment } from 'src/environments/environment';
 import { DataLocalService } from './data-local.service';
-import { OfflineManagerService } from './offline-manager.service';
+import { ErrorService } from './error.service';
+import { AuthService } from './auth.service';
 import { Tarea } from '../interfaces/tarea';
 
 const URL = environment.API_URL + '/tareas';
@@ -26,7 +26,6 @@ export class TareasService {
     private http: HttpClient,
     public authService: AuthService,
     private errorService: ErrorService,
-    private offlineManager: OfflineManagerService,
     private networkService: NetworkService,
     private dataLocalService: DataLocalService
   ) { }
@@ -34,6 +33,7 @@ export class TareasService {
 
   /**
    * Guarda los cambios de una tarea.
+   * SOLO ONLINE
    */
   editarTarea(tarea: Tarea) {
     const headers = new HttpHeaders({

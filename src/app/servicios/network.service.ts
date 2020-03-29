@@ -54,7 +54,6 @@ export class NetworkService {
     const toast = this.toastController.create({
       message: `Conexión ${connection}`,
       duration: 3000,
-      animated: true,
       color: status === ConnectionStatus.Offline ? 'danger' : 'success'
     });
     toast.then(t => t.present());

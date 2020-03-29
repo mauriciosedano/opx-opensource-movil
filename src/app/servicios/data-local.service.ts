@@ -196,8 +196,7 @@ export class DataLocalService {
   }
 
   async guardarDatosContextualización(data: any, labelX: string, barrioUbicacion: string, barrioSeleccion: string, anio: number) {
-    const datosCategorizacion = await this.storage.get('datoscategorizacion') || [];
-    console.log(data, barrioUbicacion, barrioSeleccion, anio);
+    const datosCategorizacion = await this.storage.get('datos-categorizacion') || [];
 
     const i = datosCategorizacion.findIndex(c =>
       c.labelX === labelX &&
@@ -206,27 +205,28 @@ export class DataLocalService {
       c.anio === anio
     );
 
-    const cat = { data, barrioUbicacion, barrioSeleccion, anio };
+    const cat = { data, labelX, barrioUbicacion, barrioSeleccion, anio };
 
     if (i >= 0) {
       console.log('Update');
-      datosCategorizacion[i] = Object.assign({}, cat);
+      datosCategorizacion[i] = cat;
     } else {
-      datosCategorizacion.push(Object.assign({}, cat));
+      datosCategorizacion.push(cat);
       console.log('push');
     }
+    console.log(i >= 0, cat);
 
-    console.log(datosCategorizacion);
-    await this.storage.set('datoscategorizacion', datosCategorizacion);
+    return this.storage.set('datos-categorizacion', datosCategorizacion);
   }
 
   async cargarDatosContextualizacion(labelX: string, barrioUbicacion: string, barrioSeleccion: string, anio: number) {
-    const datosCategorizacion: any[] = await this.storage.get('datoscategorizacion') || [];
+    const datosCategorizacion: any[] = await this.storage.get('datos-categorizacion') || [];
 
     const cat = datosCategorizacion.find(c =>
       c.labelX === labelX &&
       c.barrioSeleccion === barrioSeleccion &&
       c.barrioUbicacion === barrioUbicacion && c.anio === anio);
+    console.log(cat !== undefined, 'cat !== undefined');
 
     if (cat) {
       console.log('cat', cat);
@@ -240,11 +240,11 @@ export class DataLocalService {
   // OJO FIN
 
   guardarVerificarImplementacion(id: string, data: boolean) {
-    return this.guardarStorage('verificarImplementacion', id, data);
+    return this.guardarStorage('verificar-implementacion', id, data);
   }
 
   cargarVerificarImplementacion(id: string) {
-    return this.cargarStorage('verificarImplementacion', id) || false;
+    return this.cargarStorage('verificar-implementacion', id) || false;
   }
 
   guardarEnlaceFormularioKoboToolbox(id: string, enlace: string) {

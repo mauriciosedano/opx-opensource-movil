@@ -67,7 +67,6 @@ export class ContextosService {
 
       return this.http.get(url, { headers })
         .pipe(map((resp: any) => {
-          console.log(resp);
           this.dataLocalService.guardarCategorizacion(resp.data, barrioUbicacion, barrioSeleccion, anio);
           return resp.data;
         }), catchError(e => this.errorService.handleError(e)));
@@ -93,8 +92,11 @@ export class ContextosService {
 
     return this.http.get(url, { headers })
       .pipe(map((resp: any) => {
-        // this.dataLocalService.guardarDatosContextualización(resp.data, labelX, barrioUbicacion, barrioSeleccion, anio);
-        return resp.data;
+        const data = Object.assign({}, resp.data);
+        return this.dataLocalService.guardarDatosContextualización(data, labelX, barrioUbicacion, barrioSeleccion, anio)
+          .then(() => {
+            return resp.data;
+          });
       }), catchError(e => this.errorService.handleError(e)));
   }
 

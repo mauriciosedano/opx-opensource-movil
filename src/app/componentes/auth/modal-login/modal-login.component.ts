@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController, LoadingController, NavController } from '@ionic/angular';
-import { AuthService } from 'src/app/servicios/auth.service';
-import { NgForm } from '@angular/forms';
-import { UiService } from 'src/app/servicios/ui.service';
+import { ModalController, NavController } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+import { AuthService } from 'src/app/servicios/auth.service';
+import { UiService } from 'src/app/servicios/ui.service';
 import { ModalRegistroComponent } from '../modal-registro/modal-registro.component';
+import { environment } from 'src/environments/environment';
+
+const URL = environment.API_URL;
 
 @Component({
   selector: 'app-modal-login',
@@ -17,11 +21,10 @@ export class ModalLoginComponent implements OnInit {
 
   constructor(
     private modalCtrl: ModalController,
-    public loadingController: LoadingController,
     private authService: AuthService,
+    private navCtrl: NavController,
     private uiService: UiService,
     private iab: InAppBrowser,
-    private navCtrl: NavController
   ) { }
 
   ngOnInit() { }
@@ -31,7 +34,8 @@ export class ModalLoginComponent implements OnInit {
       return;
     }
 
-    await this.presentLoading('Ingresando...');
+    this.loading = await this.uiService.presentLoading('Ingresando...');
+
     this.authService.login(form.value.email, form.value.password)
       .subscribe(async () => {
         await this.loading.dismiss();
@@ -47,18 +51,11 @@ export class ModalLoginComponent implements OnInit {
   }
 
   abrirLink() {
-    const browser = this.iab.create('http://167.99.11.184:90/auth/password-reset/', '_system');
-  }
-
-  async presentLoading(message: string) {
-    this.loading = await this.loadingController.create({
-      message
-    });
-    return this.loading.present();
+    this.iab.create(`${URL}/auth/password-reset/`, '_system');
   }
 
   cerrar() {
-    this.navCtrl.navigateForward('/', { animated: true });
+    this.navCtrl.navigateForward('/');
     this.modalCtrl.dismiss();
   }
 

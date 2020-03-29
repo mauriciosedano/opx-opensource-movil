@@ -39,7 +39,7 @@ export class TareaPage implements OnInit {
     private modalCtrl: ModalController,
     public authService: AuthService,
     public navCtrl: NavController
-    ) { }
+  ) { }
 
   ngOnInit() {
     this.ubicacionService.obtenerUbicacionActual();
@@ -73,6 +73,12 @@ export class TareaPage implements OnInit {
           if (this.tarea.taretipo === 1) {
             const res = await this.instrumentosServices.verificarImplementacion(this.tarea.instrid);
             this.implementado = res;
+
+            // Instrucción realizada con el fin de almacenar anticipadamente en localStorage, la URL.
+            this.instrumentosServices.enlaceFormularioKoboToolbox(this.tarea.tareid).subscribe();
+          } else {
+            // Instrucción realizada con el fin de almacenar anticipadamente en localStorage, la URL.
+            this.instrumentosServices.detalleMapeo(this.tarea.tareid).subscribe();
           }
 
           this.geoJS = geoJSON(JSON.parse(this.tarea.geojson_subconjunto)).addTo(this.map);
@@ -124,7 +130,7 @@ export class TareaPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: EncuestaComponent,
       componentProps: {
-        id: this.tarea.tareid
+        id: this.tarea.tareid,
       }
     });
     modal.present();
@@ -199,9 +205,8 @@ export class TareaPage implements OnInit {
 
   async presentAlert() {
     const alert = await this.alertController.create({
-      header: 'Lo lamentamos',
-      animated: true,
-      message: 'Para realizar la tarea debes encontrarte dentro del territorio de la tarea.',
+      header: 'Lo sentimos',
+      message: 'Para continuar debes encontrarte dentro del territorio de la tarea.',
       buttons: ['OK']
     });
 

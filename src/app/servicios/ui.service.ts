@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController, LoadingController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,7 @@ export class UiService {
    * Servicio que centraliza y controla los mensajes emergentes de la aplicación móvil
    */
   constructor(
+    private loadingController: LoadingController,
     private alertController: AlertController,
     private toastController: ToastController
   ) { }
@@ -27,8 +28,7 @@ export class UiService {
     const toast = await this.toastController.create({
       message,
       position: 'top',
-      duration: 2500,
-      animated: true
+      duration: 2500
     });
     toast.present();
   }
@@ -38,8 +38,7 @@ export class UiService {
       message,
       position: 'top',
       color: 'success',
-      duration: 2000,
-      animated: true
+      duration: 2000
     });
     toast.present();
   }
@@ -50,8 +49,15 @@ export class UiService {
       color: 'danger',
       position: 'top',
       duration: 2000,
-      animated: true
     });
     toast.present();
+  }
+
+  async presentLoading(message: string) {
+    const loading = await this.loadingController.create({
+      message
+    });
+    await loading.present();
+    return loading;
   }
 }

@@ -1,5 +1,6 @@
+import { ModalController, IonSlides, IonInput } from '@ionic/angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ModalController, IonSlides, LoadingController, IonInput } from '@ionic/angular';
+
 import { ModalLoginComponent } from '../modal-login/modal-login.component';
 import { UiService } from 'src/app/servicios/ui.service';
 import { AuthService } from 'src/app/servicios/auth.service';
@@ -32,11 +33,10 @@ export class ModalRegistroComponent implements OnInit {
   @ViewChild('inputEmail', { static: true }) inputEmail: IonInput;
 
   constructor(
+    private utilidadesService: UtilidadesService,
     private modalCtrl: ModalController,
-    public loadingController: LoadingController,
     private authService: AuthService,
-    private uiService: UiService,
-    private utilidadesService: UtilidadesService
+    private uiService: UiService
   ) { }
 
   ngOnInit() {
@@ -44,20 +44,15 @@ export class ModalRegistroComponent implements OnInit {
   }
 
   cargarUtilidades() {
-    this.utilidadesService.listaGeneros()
-      .subscribe(r => {
-        this.generos = r;
-      });
-
-    this.utilidadesService.listaNivelesEducativos()
-      .subscribe(r => {
-        this.nivelesEducativos = r;
-      });
-
-    this.utilidadesService.listaBarrios()
-      .subscribe(r => {
-        this.barrios = r;
-      });
+    Promise.all([
+      this.utilidadesService.listaGeneros().toPromise(),
+      this.utilidadesService.listaNivelesEducativos().toPromise(),
+      this.utilidadesService.listaBarrios().toPromise()
+    ]).then(values => {
+      this.generos = values[0];
+      this.nivelesEducativos = values[1];
+      this.barrios = values[2];
+    });
   }
 
   async ionViewDidEnter() {
@@ -67,7 +62,7 @@ export class ModalRegistroComponent implements OnInit {
 
   async registro() {
 
-    await this.presentLoading('Registrando...');
+    this.loading = await this.uiService.presentLoading('Registrando...');
 
     const date = new Date(this.nuevoUsuario.fecha_nacimiento);
     const year = date.getFullYear().toString();
@@ -94,7 +89,7 @@ export class ModalRegistroComponent implements OnInit {
 
         this.cerrar();
         const modal = await this.modalCtrl.create({
-          component: ModalLoginComponent,
+          component: ModalLoginComponent
         });
         modal.present();
 
@@ -141,13 +136,6 @@ export class ModalRegistroComponent implements OnInit {
     }
     this.slideActiveIndex = await this.slides.getActiveIndex();
     this.slides.lockSwipes(true);
-  }
-
-  async presentLoading(message: string) {
-    this.loading = await this.loadingController.create({
-      message
-    });
-    return this.loading.present();
   }
 
   hideShowPassword() {

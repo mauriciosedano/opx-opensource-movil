@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { map, catchError } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { from } from 'rxjs';
+
+import { NetworkService, ConnectionStatus } from './network.service';
+import { environment } from 'src/environments/environment';
+import { DataLocalService } from './data-local.service';
 import { ErrorService } from './error.service';
 import { AuthService } from './auth.service';
-import { DataLocalService } from './data-local.service';
-import { NetworkService, ConnectionStatus } from './network.service';
-import { from } from 'rxjs';
 
 const URL = environment.API_URL;
 

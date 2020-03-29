@@ -126,7 +126,6 @@ export class ProyectistaPage implements OnInit {
 
   async presentPicker() {
     const picker = await this.pickerController.create({
-      animated: true,
       buttons: [{
         text: 'Cancelar'
       }, {
@@ -177,7 +176,6 @@ export class ProyectistaPage implements OnInit {
 
     const alert = await this.alertController.create({
       header: 'Ingresa una nueva cantidad',
-      animated: true,
       inputs: [{
         name: 'number',
         type: 'number',
@@ -233,8 +231,7 @@ export class ProyectistaPage implements OnInit {
       this.uiService.presentToast('Función disponible solo online');
       return;
     }
-    this.navCtrl.navigateForward(`/tabs/explorar/proyectista/decision/${decision}/${this.territorioSeleccionado.proyid}`,
-      { animated: true });
+    this.navCtrl.navigateForward(`/tabs/explorar/proyectista/decision/${decision}/${this.territorioSeleccionado.proyid}`);
   }
 
   colorAleatorio() {

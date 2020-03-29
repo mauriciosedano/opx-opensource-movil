@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ToastController } from '@ionic/angular';
 import { Observable, from, of, forkJoin } from 'rxjs';
-import { switchMap, finalize } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
+import { AuthService } from './auth.service';
+import { UiService } from './ui.service';
 
 const STORAGE_REQ_KEY = 'requests';
 
@@ -26,26 +28,38 @@ export class OfflineManagerService {
   constructor(
     private storage: Storage,
     private http: HttpClient,
-    private toastController: ToastController) { }
+    private uiService: UiService,
+    private authService: AuthService,
+    private toastController: ToastController,
+  ) { }
 
   checkForEvents(): Observable<any> {
     return from(this.storage.get(STORAGE_REQ_KEY)).pipe(
-      switchMap(storedOperations => {
+      switchMap(async storedOperations => {
         const storedObj = JSON.parse(storedOperations);
         if (storedObj && storedObj.length > 0) {
-          return this.sendRequests(storedObj).pipe(
-            finalize(() => {
-              const toast = this.toastController.create({
-                message: `¡Los datos se sincronizados correctamente!`,
-                duration: 3000,
-                position: 'bottom',
-                color: 'success'
+
+          const loading = await this.uiService.presentLoading('Cargando acciones realizadas offline');
+
+          return this.sendRequests(storedObj).toPromise()
+            .then(() => {
+              loading.dismiss().then(() => {
+                const toast = this.toastController.create({
+                  message: `¡Los datos sincronizados correctamente!`,
+                  duration: 3000,
+                  position: 'middle',
+                  color: 'success'
+                });
+                toast.then(t => t.present());
               });
-              toast.then(t => t.present());
 
               this.storage.remove(STORAGE_REQ_KEY);
-            })
-          );
+            }); /*
+            .pipe(
+              finalize(async () => {
+
+              })
+            ); */
         } else {
           console.log('No local events to sync');
           return of(false);
@@ -58,9 +72,14 @@ export class OfflineManagerService {
   sendRequests(operations: StoredRequest[]) {
     const obs = [];
 
+    const headers = new HttpHeaders({
+      Authorization: this.authService.token,
+      'Content-Type': 'application/json'
+    });
+
     for (const op of operations) {
       console.log('Make one request: ', op);
-      const oneObs = this.http.request(op.type, op.url, { body: op.data });
+      const oneObs = this.http.request(op.type, op.url, { body: op.data, headers });
       obs.push(oneObs);
     }
 
@@ -71,6 +90,7 @@ export class OfflineManagerService {
     const toast = this.toastController.create({
       message: `Datos almacenados localmente porque parece estar desconectado.`,
       duration: 3000,
+      animated: true,
       position: 'bottom'
     });
     toast.then((t: any) => t.present());

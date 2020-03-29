@@ -1,12 +1,14 @@
-import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ErrorService } from './error.service';
-import { environment } from 'src/environments/environment';
+import { Injectable } from '@angular/core';
 import { map, catchError } from 'rxjs/operators';
-import { DataLocalService } from './data-local.service';
-import { ConnectionStatus, NetworkService } from './network.service';
 import { from } from 'rxjs';
+
+import { AuthService } from './auth.service';
+import { ErrorService } from './error.service';
+import { DataLocalService } from './data-local.service';
+import { environment } from 'src/environments/environment';
+import { ConnectionStatus, NetworkService } from './network.service';
+import { OfflineManagerService } from './offline-manager.service';
 
 const URL = environment.API_URL + '/instrumentos';
 
@@ -20,7 +22,8 @@ export class InstrumentosService {
     public authService: AuthService,
     private errorService: ErrorService,
     private networkService: NetworkService,
-    private dataLocalService: DataLocalService
+    private dataLocalService: DataLocalService,
+    private offlineManager: OfflineManagerService
   ) { }
 
   /**
@@ -68,15 +71,22 @@ export class InstrumentosService {
    * @param coordinates Coordenadas de mapeo realizado.
    */
   mapeoOSM(tareid: string, osmelement: string, coordinates) {
+
     const data = JSON.stringify({ osmelement, coordinates });
-    const headers = new HttpHeaders({
-      Authorization: this.authService.token,
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(`${URL}/mapear/${tareid}`, data, { headers })
-      .pipe(map((resp: any) => {
-        return resp;
-      }), catchError(e => this.errorService.handleError(e)));
+
+    if (this.networkService.getCurrentNetworkStatus() === ConnectionStatus.Offline) {
+      return from(this.offlineManager.storeRequest(`${URL}/mapear/${tareid}`, 'POST', data));
+    } else {
+
+      const headers = new HttpHeaders({
+        Authorization: this.authService.token,
+        'Content-Type': 'application/json'
+      });
+      return this.http.post(`${URL}/mapear/${tareid}`, data, { headers })
+        .pipe(map((resp: any) => {
+          return resp;
+        }), catchError(e => this.errorService.handleError(e)));
+    }
   }
 
   /**
