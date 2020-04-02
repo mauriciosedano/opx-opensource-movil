@@ -1,8 +1,8 @@
 {
   "name": "opc-app",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "version": "1.0.0",
+  "author": "Neuromedia",
+  "homepage": "https://neuromedia.com.co",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
