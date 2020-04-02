@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { ModalLoginComponent } from '../auth/modal-login/modal-login.component';
 import { ModalRegistroComponent } from '../auth/modal-registro/modal-registro.component';
 
@@ -12,9 +12,11 @@ export class PeticionLoginComponent implements OnInit {
 
   @Input() pantalla = '';
   @Input() mensaje = '';
+  @Input() back = false;
 
   constructor(
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() { }
@@ -33,6 +35,11 @@ export class PeticionLoginComponent implements OnInit {
         });
         modalR.present();
         break;
+    }
+
+    // Usado para salir del componente de Proyectos y no cargue los mismos que están antes de loguearse
+    if (this.back) {
+      this.navCtrl.back();
     }
   }
 
