@@ -1,62 +1,46 @@
 import { Component } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { Platform, ModalController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-
-import { ApiRestService } from './services/api-rest.service';
-
-import { Router } from '@angular/router';
+import { timer } from 'rxjs';
+import { AuthService } from './servicios/auth.service';
+import { ModalAuthComponent } from './componentes/auth/modal-auth/modal-auth.component';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-  providers: [ApiRestService]
+  styleUrls: ['./app.component.scss'],
+  template: `<div *ngIf="showSplash" class="splash"> <div class="spinner"><ion-img src="assets/icon/logo-splash.png"></ion-img></div> </div>
+    <ion-app><ion-router-outlet></ion-router-outlet></ion-app>`
 })
 export class AppComponent {
 
-  private tabState = false;
+  showSplash = true;
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private api: ApiRestService,
-    private router: Router
-  ) 
-  {
+    private authService: AuthService,
+    private modalCtrl: ModalController
+  ) {
     this.initializeApp();
-
-    this.api.authenticationStateObservable().subscribe(result => {
-
-      this.tabState = result;
-
-      // if(!this.tabState){
-
-      // } else{
-
-      //   this.router.navigate(['login'])
-      // }
-    })
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-    });
-  }
-
-  logout(){
-
-    this.api.logout().then(() => {
-      
-      this.api.authenticationState.next(false);
-    })
-    .catch(() => {
-
-      console.log("No entro")
+      this.authService.loadToken();
+      timer(3000).subscribe(async () => {
+        this.showSplash = false;
+        if (!this.authService.token) {
+          const modal = await this.modalCtrl.create({
+            component: ModalAuthComponent
+          });
+          modal.present();
+        }
+      });
     });
   }
 }
