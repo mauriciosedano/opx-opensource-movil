@@ -24,7 +24,7 @@ export class ModalLoginComponent implements OnInit {
     private authService: AuthService,
     private navCtrl: NavController,
     private uiService: UiService,
-    private iab: InAppBrowser,
+    private iab: InAppBrowser
   ) { }
 
   ngOnInit() { }

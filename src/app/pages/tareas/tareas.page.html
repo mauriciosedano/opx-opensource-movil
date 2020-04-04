@@ -10,8 +10,8 @@
   <ion-grid class="ion-padding-top" *ngIf="!cargando">
     <ion-row>
       <ion-col size="6" class="ion-padding-horizontal">
-        <round-progress [current]="50" [max]="100" [rounded]="true" [responsive]="true" [duration]="800"
-          [animation]="'easeInOutQuart'" [animationDelay]="0">
+        <round-progress [current]="usuario.puntaje || 0" [max]="usuario.promocion.puntaje" [rounded]="true"
+          [responsive]="true" [duration]="800" [animation]="'easeInOutQuart'" [animationDelay]="0">
         </round-progress>
         <ion-label class="card-title ion-text-center">
           <ion-text color="success">
