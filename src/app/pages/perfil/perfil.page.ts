@@ -8,6 +8,10 @@ import { UtilidadesService } from 'src/app/servicios/utilidades.service';
 import { UsuarioService } from 'src/app/servicios/usuario.service';
 import { User } from 'src/app/interfaces/user';
 import { UiService } from 'src/app/servicios/ui.service';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { environment } from 'src/environments/environment';
+
+const URL = environment.API_URL;
 
 @Component({
   selector: 'app-perfil',
@@ -36,7 +40,8 @@ export class PerfilPage implements OnInit {
     private networkService: NetworkService,
     private modalCtrl: ModalController,
     public authService: AuthService,
-    private uiService: UiService
+    private uiService: UiService,
+    private iab: InAppBrowser
   ) { }
 
   ngOnInit() {
@@ -125,6 +130,10 @@ export class PerfilPage implements OnInit {
         this.uiService.presentToastError('Ha ocurrido un error. Por favor intenta de nuevo!');
         console.log('error', error);
       }));
+  }
+
+  abrirLink() {
+    this.iab.create(`${URL}`, '_system');
   }
 
 }

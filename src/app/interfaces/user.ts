@@ -11,4 +11,5 @@ export interface User {
     generoid?: string;
     userfullname?: string;
     telefono?: string;
+    promocion?: any;
 }
